@@ -52,13 +52,15 @@ group :development, :test do
   gem "ruby-lsp"
   gem "standard", require: false
   gem "rspec-rails"
+  gem "factory_bot_rails"
 end
 
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
+  gem "annotaterb"
 end
 
-group :development, :test do
-  gem "factory_bot_rails"
-end
+gem "state_machines-activerecord"
+gem "acts_as_list"
+gem "view_component"
