@@ -1,8 +1,8 @@
-class User < ApplicationRecord
-  has_secure_password
-  has_many :sessions, dependent: :destroy
-
-  normalizes :email_address, with: ->(e) { e.strip.downcase }
+FactoryBot.define do
+  factory :user do
+    email_address { "test@example.com" }
+    password { "password" }
+  end
 end
 
 # == Schema Information

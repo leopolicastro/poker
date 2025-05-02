@@ -64,3 +64,7 @@ end
 gem "state_machines-activerecord"
 gem "acts_as_list"
 gem "view_component"
+
+group :test do
+  gem "shoulda-matchers"
+end

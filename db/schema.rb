@@ -10,11 +10,46 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_02_122940) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_02_123233) do
+  create_table "cards", force: :cascade do |t|
+    t.integer "deck_id", null: false
+    t.string "cardable_type"
+    t.integer "cardable_id"
+    t.integer "position"
+    t.string "rank"
+    t.string "suit"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["cardable_type", "cardable_id"], name: "index_cards_on_cardable"
+    t.index ["deck_id"], name: "index_cards_on_deck_id"
+  end
+
+  create_table "decks", force: :cascade do |t|
+    t.string "deckable_type"
+    t.integer "deckable_id"
+    t.string "state"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deckable_type", "deckable_id"], name: "index_decks_on_deckable"
+  end
+
   create_table "games", force: :cascade do |t|
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "players", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "game_id", null: false
+    t.boolean "dealer", default: false, null: false
+    t.integer "position", default: 0, null: false
+    t.string "table_position", default: "field", null: false
+    t.boolean "turn", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["game_id"], name: "index_players_on_game_id"
+    t.index ["user_id"], name: "index_players_on_user_id"
   end
 
   create_table "sessions", force: :cascade do |t|
@@ -34,5 +69,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_02_122940) do
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
   end
 
+  add_foreign_key "cards", "decks"
+  add_foreign_key "players", "games"
+  add_foreign_key "players", "users"
   add_foreign_key "sessions", "users"
 end

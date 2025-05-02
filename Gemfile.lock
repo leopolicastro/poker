@@ -292,6 +292,8 @@ GEM
       sorbet-runtime (>= 0.5.10782)
     ruby-progressbar (1.13.0)
     securerandom (0.4.1)
+    shoulda-matchers (6.5.0)
+      activesupport (>= 5.2.0)
     solid_cable (3.0.7)
       actioncable (>= 7.2)
       activejob (>= 7.2)
@@ -412,6 +414,7 @@ DEPENDENCIES
   rails (~> 8.0.2)
   rspec-rails
   ruby-lsp
+  shoulda-matchers
   solid_cable
   solid_cache
   solid_queue
