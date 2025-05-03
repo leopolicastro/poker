@@ -17,21 +17,11 @@ class Player < ApplicationRecord
 
   delegate :board, to: :game
 
+  after_update_commit :sync_turns, if: -> { turn_changed? && turn? }
+
   include Chippable
   include Cardable
   include Bets
-
-  state_machine :turn, initial: false do
-    event :start_turn do
-      transition false => true
-    end
-
-    event :end_turn do
-      transition true => false
-    end
-
-    after_transition false => true, :do => :sync_turns
-  end
 
   def dealer?
     table_position == "button"
@@ -79,6 +69,14 @@ class Player < ApplicationRecord
     game.players.where.not(id: id).each do |player|
       player.end_turn! if player.turn?
     end
+  end
+
+  def start_turn!
+    update(turn: true)
+  end
+
+  def end_turn!
+    update(turn: false)
   end
 end
 

@@ -114,6 +114,22 @@ RSpec.describe Player, type: :model do
       expect(game.chips.count).to eq(0)
     end
   end
+
+  describe "#start_turn!" do
+    let(:player) { create(:player, game:, turn: false) }
+    it "starts the turn" do
+      player.send(:start_turn!)
+      expect(player.turn).to be_truthy
+    end
+  end
+
+  describe "#end_turn!" do
+    let(:player) { create(:player, game:, turn: true) }
+    it "ends the turn" do
+      player.send(:end_turn!)
+      expect(player.turn).to be_falsey
+    end
+  end
 end
 
 # == Schema Information
