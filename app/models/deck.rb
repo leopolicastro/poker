@@ -4,57 +4,37 @@ class Deck < ApplicationRecord
 
   has_many :drawn, -> { order(position: :asc) }, as: :cardable, dependent: :destroy, class_name: "Card"
 
-  after_create :setup
+  after_create :shuffle!
 
-  state_machine :state, initial: :initial do
-    event :shuffle do
-      transition any => :initial
-    end
+  def shuffle!
+    cards.delete_all if cards.any?
+    cards_array = []
 
-    event :draw_cards do
-      transition any - [:drawn] => :drawn
-    end
-
-    event :discard do
-      transition any => :discarded
-    end
-
-    after_transition on: :shuffle, do: :setup
-  end
-
-  def setup
-    return shuffle unless initial?
-
-    cards.delete_all
-    cards = []
-
-    Card::SUITS.each do |suit|
-      Card::RANKS.each do |rank|
+    Card::SUITS.each_with_index do |suit, index|
+      Card::RANKS.each_with_index do |rank, rank_index|
         card = {
           deck_id: id,
           suit:,
-          rank:
+          rank:,
+          position: cards_array.length + 1
         }
-        cards << card
+        cards_array << card
       end
     end
-    cards.shuffle!
-    cards.each_with_index do |card, index|
-      card[:position] = index + 1
-    end
-    Card.insert_all(cards)
+    cards_array.shuffle!
+    Card.insert_all(cards_array)
 
     reload
   end
 
   def draw(count: 1, cardable: nil)
-    draw_cards unless drawn?
-
-    cards.left.take(count).map do |card|
+    drawn_cards = cards.left.take(count)
+    drawn_cards.map! do |card|
       cardable = cardable.present? ? cardable : self
       card.update(cardable:)
       card
     end
+    drawn_cards
   end
 
   def cards_left
@@ -72,7 +52,6 @@ end
 #
 #  id            :integer          not null, primary key
 #  deckable_type :string
-#  state         :string
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
 #  deckable_id   :integer

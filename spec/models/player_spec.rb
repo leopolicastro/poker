@@ -1,9 +1,117 @@
 require "rails_helper"
 
 RSpec.describe Player, type: :model do
-  describe "factories" do
+  let(:game) { create(:game) }
+  let!(:player1) { create(:player, game: game) }
+  let!(:player2) { create(:player, game: game) }
+  let!(:player3) { create(:player, game: game) }
+  let(:deck) { create(:deck, deckable: game) }
+
+  describe "factory" do
     it "has a valid factory" do
       expect(build(:player)).to be_valid
+    end
+  end
+
+  describe "#position" do
+    # let(:game) { create(:game) }
+
+    before do
+      player1
+      player2
+      player3
+    end
+
+    it "auto increments the position" do
+      expect(player1.position).to eq(1)
+      expect(player2.position).to eq(2)
+      expect(player3.position).to eq(3)
+    end
+
+    it "manages positions per game" do
+      game2 = create(:game)
+      player4 = create(:player, game: game2)
+      player5 = create(:player, game: game2)
+      expect(player4.position).to eq(1)
+      expect(player5.position).to eq(2)
+    end
+
+    it "updates the position when a player is destroyed" do
+      player2.destroy
+      player3.reload
+      expect(player3.position).to eq(2)
+    end
+
+    it "updates the position when a player is inserted in the middle" do
+      player2.destroy
+      player4 = create(:player, game: game)
+      player3.reload
+      expect(player3.position).to eq(2)
+      expect(player4.position).to eq(3)
+    end
+
+    describe "higher_item" do
+      it "returns the next higher item" do
+        expect(player1.higher_item).to eq(nil)
+        expect(player2.higher_item).to eq(player1)
+        expect(player3.higher_item).to eq(player2)
+      end
+    end
+
+    describe "lower_item" do
+      it "returns the next lower item" do
+        expect(player1.lower_item).to eq(player2)
+        expect(player2.lower_item).to eq(player3)
+        expect(player3.lower_item).to eq(nil)
+      end
+    end
+
+    describe "gets the first item" do
+    end
+  end
+
+  describe "#cards_left" do
+    let(:player) { create(:player, game:) }
+    let(:player_cards) {
+      [
+        deck.find_card("2", "Hearts"),
+        deck.find_card("3", "Hearts")
+      ]
+    }
+
+    before do
+      player_cards.each do |card|
+        card.update(cardable: player)
+      end
+    end
+
+    it "returns the number of cards left" do
+      expect(player.cards_left).to eq(2)
+    end
+  end
+
+  describe "#place_bet" do
+    let(:player) { create(:player, game: game) }
+
+    before do
+      create(:player_chip, chippable: player, value: 100)
+      create(:player_chip, chippable: player, value: 200)
+      create(:player_chip, chippable: player, value: 150)
+    end
+
+    it "places a bet" do
+      bet = player.place_bet(100)
+      expect(bet).to be_valid
+      expect(player.current_holdings).to eq(350)
+      expect(player.bets.count).to eq(1)
+      expect(game.chips.count).to eq(1)
+    end
+
+    it "does not place a bet if the player does not have enough chips" do
+      expect(player.current_holdings).to eq(450)
+      bet = player.place_bet(500)
+      expect(bet).to be_nil
+      expect(game.chips.count).to eq(0)
     end
   end
 end

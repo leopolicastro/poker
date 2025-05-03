@@ -8,6 +8,10 @@ module Chippable
     accepts_nested_attributes_for :chips, allow_destroy: true
 
     def current_holdings
+      # You never count your money
+      # When you're sittin' at the table
+      # There'll be time enough for countin'
+      # When the dealin's done
       chips.sum(:value)
     end
     alias_method :pot, :current_holdings

@@ -5,18 +5,6 @@ RSpec.describe Card, type: :model do
     it "has a valid factory" do
       expect(build(:card)).to be_valid
     end
-
-    # it "has a valid player_card factory" do
-    #   expect(build(:player_card)).to be_valid
-    # end
-
-    # it "has a valid game_card factory" do
-    #   expect(build(:game_card)).to be_valid
-    # end
-
-    # it "has a valid texas_holdem_card factory" do
-    #   expect(build(:texas_holdem_card)).to be_valid
-    # end
   end
 
   describe "associations" do
@@ -107,12 +95,6 @@ RSpec.describe Card, type: :model do
       describe "#image" do
         it "returns the card image" do
           expect(card.image).to eq("https://lbpdev.us-mia-1.linodeobjects.com/active_deck/cards/2H.png")
-        end
-      end
-
-      describe ".random_image" do
-        it "returns a random card image" do
-          expect(Card.random_image).to match(/https:\/\/lbpdev.us-mia-1.linodeobjects.com\/active_deck\/cards\/[A-Z0-9]{2}\.png/)
         end
       end
     end

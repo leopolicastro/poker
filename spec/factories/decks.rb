@@ -1,7 +1,5 @@
 FactoryBot.define do
   factory :deck do
-    # association :deckable, factory: :player
-    state { "initial" }
   end
 end
 
@@ -11,7 +9,6 @@ end
 #
 #  id            :integer          not null, primary key
 #  deckable_type :string
-#  state         :string
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
 #  deckable_id   :integer

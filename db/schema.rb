@@ -10,7 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_02_123233) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_03_011706) do
+  create_table "bets", force: :cascade do |t|
+    t.integer "player_id", null: false
+    t.integer "amount", default: 0, null: false
+    t.integer "state", default: 0, null: false
+    t.boolean "answered", default: false, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["player_id"], name: "index_bets_on_player_id"
+  end
+
   create_table "cards", force: :cascade do |t|
     t.integer "deck_id", null: false
     t.string "cardable_type"
@@ -24,10 +34,18 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_02_123233) do
     t.index ["deck_id"], name: "index_cards_on_deck_id"
   end
 
+  create_table "chips", force: :cascade do |t|
+    t.float "value"
+    t.string "chippable_type"
+    t.integer "chippable_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["chippable_type", "chippable_id"], name: "index_chips_on_chippable"
+  end
+
   create_table "decks", force: :cascade do |t|
     t.string "deckable_type"
     t.integer "deckable_id"
-    t.string "state"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["deckable_type", "deckable_id"], name: "index_decks_on_deckable"
@@ -35,6 +53,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_02_123233) do
 
   create_table "games", force: :cascade do |t|
     t.string "name", null: false
+    t.integer "state", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -69,6 +88,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_02_123233) do
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
   end
 
+  add_foreign_key "bets", "players"
   add_foreign_key "cards", "decks"
   add_foreign_key "players", "games"
   add_foreign_key "players", "users"

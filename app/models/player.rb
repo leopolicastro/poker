@@ -1,6 +1,85 @@
 class Player < ApplicationRecord
   belongs_to :user
-  belongs_to :game
+  belongs_to :game, touch: true
+
+  acts_as_list scope: :game
+  validates :game_id, uniqueness: {scope: :user_id}
+  delegate :name, to: :user
+
+  scope :ordered, -> { order(position: :asc) }
+  scope :active, -> { where.not(state: :folded) }
+  scope :folded, -> { where(state: :folded) }
+
+  scope :field, -> { where(table_position: :field) }
+  scope :button, -> { where(table_position: :button) }
+  scope :small_blind, -> { where(table_position: :small_blind) }
+  scope :big_blind, -> { where(table_position: :big_blind) }
+
+  delegate :board, to: :game
+
+  include Chippable
+  include Cardable
+  include Bets
+
+  state_machine :turn, initial: false do
+    event :start_turn do
+      transition false => true
+    end
+
+    event :end_turn do
+      transition true => false
+    end
+
+    after_transition false => true, :do => :sync_turns
+  end
+
+  def dealer?
+    table_position == "button"
+  end
+
+  def to_the_left
+    game.players.ordered.where("position > ?", position).first || game.players.ordered.first
+  end
+
+  def to_the_right
+    game.players.ordered.where("position < ?", position).last || game.players.ordered.last
+  end
+
+  def hand
+    h = Hands::Hand.new(cards: cards + board, player_id: id)
+    Hands::Index.new(h)
+  end
+
+  def active?
+    !folded? && game.current_round.state != "setup"
+  end
+
+  def buy_in(amount)
+    raise if amount > user.current_holdings
+
+    chips = user.split_chips(amount:, chippable: self)
+    chips.update(chippable: self)
+  end
+
+  def set_next_turn
+    to_the_left.start_turn!
+  end
+
+  def current_bet
+    bets.placed.sum(:amount)
+  end
+
+  private
+
+  def conditions_met?
+    game.current_turn.nil? && position >= 4 && game.rounds_count == 1 && game.players.count >= 4
+  end
+
+  def sync_turns
+    game.players.where.not(id: id).each do |player|
+      player.end_turn! if player.turn?
+    end
+  end
 end
 
 # == Schema Information
