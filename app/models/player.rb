@@ -10,10 +10,28 @@ class Player < ApplicationRecord
   scope :active, -> { where.not(state: :folded) }
   scope :folded, -> { where(state: :folded) }
 
-  scope :field, -> { where(table_position: :field) }
-  scope :button, -> { where(table_position: :button) }
-  scope :small_blind, -> { where(table_position: :small_blind) }
-  scope :big_blind, -> { where(table_position: :big_blind) }
+  enum :table_position, {
+    field: 0,
+    button: 1,
+    small_blind: 2,
+    big_blind: 3
+  }
+
+  def small_blind!
+    place_bet!(amount: game.small_blind, bet_type: :blinds)
+    super
+  end
+
+  def big_blind!
+    place_bet!(amount: game.big_blind, bet_type: :blinds)
+    super
+  end
+
+  enum :state, {
+    active: 0,
+    folded: 1,
+    all_in: 2
+  }
 
   delegate :board, to: :game
 
@@ -22,6 +40,11 @@ class Player < ApplicationRecord
   include Chippable
   include Cardable
   include Bets
+  has_many :rounds, through: :bets
+
+  def folded?
+    bets.where(round: game.current_round, bet_type: :fold).any?
+  end
 
   def dealer?
     table_position == "button"
@@ -32,7 +55,7 @@ class Player < ApplicationRecord
   end
 
   def to_the_right
-    game.players.ordered.where("position < ?", position).last || game.players.ordered.last
+    game.players.ordered.where("position < ?", position).last || game.players.ordered.first
   end
 
   def hand
@@ -59,6 +82,14 @@ class Player < ApplicationRecord
     bets.placed.sum(:amount)
   end
 
+  def start_turn!
+    update(turn: true)
+  end
+
+  def display_name
+    name || "Player #{id}"
+  end
+
   private
 
   def conditions_met?
@@ -71,12 +102,8 @@ class Player < ApplicationRecord
     end
   end
 
-  def start_turn!
-    update(turn: true)
-  end
-
   def end_turn!
-    update(turn: false)
+    update!(turn: false)
   end
 end
 
@@ -87,7 +114,8 @@ end
 #  id             :integer          not null, primary key
 #  dealer         :boolean          default(FALSE), not null
 #  position       :integer          default(0), not null
-#  table_position :string           default("field"), not null
+#  state          :integer          default("active"), not null
+#  table_position :integer          default("field"), not null
 #  turn           :boolean          default(FALSE), not null
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null

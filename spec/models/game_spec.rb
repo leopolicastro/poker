@@ -12,9 +12,11 @@ end
 #
 # Table name: games
 #
-#  id         :integer          not null, primary key
-#  name       :string           not null
-#  state      :integer          default("pending"), not null
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
+#  id          :integer          not null, primary key
+#  big_blind   :integer
+#  name        :string           not null
+#  small_blind :integer
+#  state       :integer          default("pending"), not null
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
 #

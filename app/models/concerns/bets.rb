@@ -6,18 +6,10 @@ module Bets
 
     accepts_nested_attributes_for :bets, allow_destroy: true
 
-    def place_bet(amount)
+    def place_bet!(amount:, bet_type:)
       return unless current_holdings >= amount
 
-      bets.create!(amount:)
-    end
-
-    def current_bet
-      bets.last
-    end
-
-    def current_bet_amount
-      current_bet&.amount || 0
+      bets.create!(amount:, round: game.rounds.last, bet_type:)
     end
   end
 end

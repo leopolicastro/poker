@@ -1,30 +1,32 @@
 class Bet < ApplicationRecord
   belongs_to :player
+  belongs_to :round
 
-  after_create_commit :balance_the_books
+  delegate :game, to: :player
 
-  after_update_commit :payout_winner!, if: -> { won? }
+  after_create_commit :throw_into_pot!
+  after_update_commit :payout_winner!, if: -> { state_previously_changed? && won? }
 
   include Chippable
 
   enum :state, {
     placed: 0,
-    raised: 1,
-    won: 2,
-    lost: 3,
-    resolved: 4
+    won: 1,
+    lost: 2
   }
 
-  # aliias won! and lost!
-  alias_method :win!, :won!
-  alias_method :lose!, :lost!
+  enum :bet_type, {
+    check: 0,
+    call: 1,
+    raise: 2,
+    fold: 3,
+    blinds: 4
+  }
 
-  # TODO: bets need a bet type state, or enum, to differentiate between different types of bets
-
-  def balance_the_books
-    # consolidate the player's chips into one chip record
+  def throw_into_pot!
+    # consolidate the players chips into one chip record
     player.consolidate_chips
-    # get the amount of the bet in chips
+    # place the bet in the post
     player.split_chips(amount:, chippable: player.game)
   end
 
@@ -35,6 +37,7 @@ class Bet < ApplicationRecord
     chip.update!(chippable: player)
     # consolidate the player's chips into one chip record
     player.consolidate_chips
+    won!
   end
 end
 
@@ -45,16 +48,20 @@ end
 #  id         :integer          not null, primary key
 #  amount     :integer          default(0), not null
 #  answered   :boolean          default(FALSE), not null
+#  bet_type   :integer          default("check"), not null
 #  state      :integer          default("placed"), not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #  player_id  :integer          not null
+#  round_id   :integer          not null
 #
 # Indexes
 #
 #  index_bets_on_player_id  (player_id)
+#  index_bets_on_round_id   (round_id)
 #
 # Foreign Keys
 #
 #  player_id  (player_id => players.id)
+#  round_id   (round_id => rounds.id)
 #

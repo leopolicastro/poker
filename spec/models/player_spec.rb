@@ -2,6 +2,7 @@ require "rails_helper"
 
 RSpec.describe Player, type: :model do
   let(:game) { create(:game) }
+
   let!(:player1) { create(:player, game: game) }
   let!(:player2) { create(:player, game: game) }
   let!(:player3) { create(:player, game: game) }
@@ -90,17 +91,18 @@ RSpec.describe Player, type: :model do
     end
   end
 
-  describe "#place_bet" do
+  describe "#place_bet!" do
     let(:player) { create(:player, game: game) }
 
     before do
       create(:player_chip, chippable: player, value: 100)
       create(:player_chip, chippable: player, value: 200)
       create(:player_chip, chippable: player, value: 150)
+      create(:round, game:, current_turn: player)
     end
 
     it "places a bet" do
-      bet = player.place_bet(100)
+      bet = player.place_bet!(amount: 100, bet_type: :raise)
       expect(bet).to be_valid
       expect(player.current_holdings).to eq(350)
       expect(player.bets.count).to eq(1)
@@ -109,7 +111,7 @@ RSpec.describe Player, type: :model do
 
     it "does not place a bet if the player does not have enough chips" do
       expect(player.current_holdings).to eq(450)
-      bet = player.place_bet(500)
+      bet = player.place_bet!(amount: 500, bet_type: :raise)
       expect(bet).to be_nil
       expect(game.chips.count).to eq(0)
     end
@@ -139,7 +141,8 @@ end
 #  id             :integer          not null, primary key
 #  dealer         :boolean          default(FALSE), not null
 #  position       :integer          default(0), not null
-#  table_position :string           default("field"), not null
+#  state          :integer          default("active"), not null
+#  table_position :integer          default("field"), not null
 #  turn           :boolean          default(FALSE), not null
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null

@@ -1,0 +1,80 @@
+<section>
+  <h1 class="text-4xl font-bold mb-8">Demo Game</h1>
+  <section class="flex  gap-8">
+    <div class="border rounded-lg py-8 px-8">
+      <h2 class="text-2xl font-bold mb-8">Game:</h2>
+      <div class="mt-4">
+        <strong>State:</strong> <%= game.state %>
+      </div>
+      <div class="mt-4">
+        <strong>Current Turn:</strong> <%= game.current_turn&.name %>
+      </div>
+      <div class="mt-4">
+        <strong>Small Blind:</strong> <%= number_to_currency(game.small_blind) %>
+      </div>
+      <div class="mt-4">
+        <strong>Big Blind:</strong> <%= number_to_currency(game.big_blind) %>
+      </div>
+      <div class="mt-4">
+        <strong>Chip leader:</strong> <%= game.chip_leader&.name %>
+      </div>
+      <div class="mt-4">
+        <strong>Pot:</strong> <%= number_to_currency(game.pot) %>
+      </div>
+    </div>
+    <div class="border rounded-lg py-8 px-8">
+      <h2 class="text-2xl font-bold mb-8">Rounds:</h2>
+      <div class="mt-4">
+        <strong>Count:</strong> <%= game.rounds.count %>
+      </div>
+      <div class=" mt-4">
+        <strong>Phase:</strong> <%= game.current_round.phase %>
+      </div>
+      <div class="mt-4">
+        <strong>Next Turn:</strong> <%= game.next_player&.name %>
+      </div>
+    </div>
+  </section>
+  <aside class="flex flex-wrap gap-8 mt-16">
+    <% game.players.each do |player| %>
+      <div class="flex flex-col gap-2 border rounded-lg p-5">
+        <div>
+          <strong><%= player.display_name %></strong>
+        </div>
+        <div>
+          <strong>Table position:</strong> <%= player.table_position %>
+        </div>
+        <div>
+          <strong>In for:</strong> <%= number_to_currency(player.bets.where(round: game.current_round).sum(:amount)) %>
+        </div>
+        <div>
+          <strong>Turn:</strong> <%= player.turn %>
+        </div>
+        <div>
+          <strong>Folded:</strong> <%= player.folded? %>
+        </div>
+        <div>
+          <strong>Current Holdings:</strong> <%= number_to_currency(player.current_holdings) %>
+        </div>
+        <div>
+          <strong>Cards:</strong>
+          <%= player.cards.map(&:to_s).join(", ") %>
+        </div>
+      </div>
+    <% end %>
+  </aside>
+  <section class="flex items-center gap-8 mt-16">
+    <div class="border rounded-lg py-8 px-8">
+      <h2 class="text-2xl font-bold mb-8">Current Round:</h2>
+      <div class="flex flex-col gap-2">
+        <strong>Phase:</strong> <%= game.current_round.phase %>
+      </div>
+    </div>
+    <div class="border rounded-lg py-8 px-8">
+      <h2 class="text-2xl font-bold mb-8">Game Deck:</h2>
+      <div class="flex flex-col gap-2">
+        <strong>Cards left:</strong> <%= game.deck.cards_left %>
+      </div>
+    </div>
+  </section>
+</section>

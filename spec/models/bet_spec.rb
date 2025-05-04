@@ -5,10 +5,12 @@ RSpec.describe Bet, type: :model do
     expect(build(:bet)).to be_valid
   end
 
-  let(:player) { create(:player) }
-  let(:player2) { create(:player) }
-  let(:bet) { create(:bet, player:, amount: 100) }
-  let(:bet2) { create(:bet, player: player2, amount: 200) }
+  let(:game) { create(:game) }
+  let(:player) { create(:player, game:) }
+  let(:player2) { create(:player, game:) }
+  let(:round) { create(:round, game:, current_turn: player) }
+  let(:bet) { create(:bet, player:, amount: 100, round:) }
+  let(:bet2) { create(:bet, player: player2, amount: 200, round:) }
 
   before do
     create(:player_chip, chippable: player, value: 100)
@@ -17,7 +19,7 @@ RSpec.describe Bet, type: :model do
     create(:player_chip, chippable: player2, value: 400)
   end
 
-  describe "#balance_the_books" do
+  describe "#throw_into_pot!" do
     before do
       expect(player.chips.count).to eq(3)
       expect(player.current_holdings).to eq(450)
@@ -42,8 +44,8 @@ RSpec.describe Bet, type: :model do
 
   describe "#payout_winner!" do
     before do
-      bet.win!
-      bet2.lose!
+      bet.won!
+      bet2.lost!
     end
 
     it "gives the chips to the winner" do
@@ -70,16 +72,20 @@ end
 #  id         :integer          not null, primary key
 #  amount     :integer          default(0), not null
 #  answered   :boolean          default(FALSE), not null
+#  bet_type   :integer          default("check"), not null
 #  state      :integer          default("placed"), not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #  player_id  :integer          not null
+#  round_id   :integer          not null
 #
 # Indexes
 #
 #  index_bets_on_player_id  (player_id)
+#  index_bets_on_round_id   (round_id)
 #
 # Foreign Keys
 #
 #  player_id  (player_id => players.id)
+#  round_id   (round_id => rounds.id)
 #

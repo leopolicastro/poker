@@ -12,7 +12,8 @@ end
 #  id             :integer          not null, primary key
 #  dealer         :boolean          default(FALSE), not null
 #  position       :integer          default(0), not null
-#  table_position :string           default("field"), not null
+#  state          :integer          default("active"), not null
+#  table_position :integer          default("field"), not null
 #  turn           :boolean          default(FALSE), not null
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null

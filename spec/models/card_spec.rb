@@ -23,7 +23,7 @@ RSpec.describe Card, type: :model do
 
     describe "#to_s" do
       it "returns the rank and suit icon" do
-        expect(card.to_s).to eq("2♥")
+        expect(card.to_s).to eq("2 ♥")
       end
     end
 

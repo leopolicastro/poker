@@ -20,7 +20,7 @@ class Card < ApplicationRecord
   SUITS = %w[Spades Hearts Diamonds Clubs].freeze
 
   def to_s
-    "#{rank}#{suit_icon}"
+    "#{rank} #{suit_icon}"
   end
 
   def suit_icon
