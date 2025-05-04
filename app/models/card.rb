@@ -23,6 +23,15 @@ class Card < ApplicationRecord
     "#{rank} #{suit_icon}"
   end
 
+  def to_html
+    res = <<~HTML
+      <div class="flex flex-col gap-2 #{["Diamonds", "Hearts"].include?(suit) && "text-red-500"}">
+        #{self}
+      </div>
+    HTML
+    res.html_safe
+  end
+
   def suit_icon
     case suit
     when "Spades" then "♠"

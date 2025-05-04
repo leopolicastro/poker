@@ -69,3 +69,5 @@ gem "view_component"
 group :test do
   gem "shoulda-matchers"
 end
+
+gem "mission_control-jobs"

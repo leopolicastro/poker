@@ -98,7 +98,7 @@ RSpec.describe Player, type: :model do
       create(:player_chip, chippable: player, value: 100)
       create(:player_chip, chippable: player, value: 200)
       create(:player_chip, chippable: player, value: 150)
-      create(:round, game:, current_turn: player)
+      create(:pre_flop, game:)
     end
 
     it "places a bet" do
@@ -114,14 +114,6 @@ RSpec.describe Player, type: :model do
       bet = player.place_bet!(amount: 500, bet_type: :raise)
       expect(bet).to be_nil
       expect(game.chips.count).to eq(0)
-    end
-  end
-
-  describe "#start_turn!" do
-    let(:player) { create(:player, game:, turn: false) }
-    it "starts the turn" do
-      player.send(:start_turn!)
-      expect(player.turn).to be_truthy
     end
   end
 

@@ -8,7 +8,7 @@ RSpec.describe Bet, type: :model do
   let(:game) { create(:game) }
   let(:player) { create(:player, game:) }
   let(:player2) { create(:player, game:) }
-  let(:round) { create(:round, game:, current_turn: player) }
+  let(:round) { create(:pre_flop, game:) }
   let(:bet) { create(:bet, player:, amount: 100, round:) }
   let(:bet2) { create(:bet, player: player2, amount: 200, round:) }
 

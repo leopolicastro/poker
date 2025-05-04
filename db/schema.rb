@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_03_023418) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_03_024706) do
   create_table "bets", force: :cascade do |t|
     t.integer "player_id", null: false
     t.integer "round_id", null: false
@@ -79,11 +79,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_03_023418) do
 
   create_table "rounds", force: :cascade do |t|
     t.integer "game_id", null: false
-    t.integer "current_turn_id", null: false
-    t.integer "phase", default: 0, null: false
+    t.string "type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["current_turn_id"], name: "index_rounds_on_current_turn_id"
     t.index ["game_id"], name: "index_rounds_on_game_id"
   end
 
@@ -112,6 +110,5 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_03_023418) do
   add_foreign_key "players", "games"
   add_foreign_key "players", "users"
   add_foreign_key "rounds", "games"
-  add_foreign_key "rounds", "players", column: "current_turn_id"
   add_foreign_key "sessions", "users"
 end

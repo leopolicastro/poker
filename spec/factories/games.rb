@@ -1,6 +1,8 @@
 FactoryBot.define do
   factory :game do
     name { "Texas Hold'em" }
+    small_blind { 1 }
+    big_blind { 2 }
   end
 end
 

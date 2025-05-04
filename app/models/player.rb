@@ -1,6 +1,6 @@
 class Player < ApplicationRecord
   belongs_to :user
-  belongs_to :game, touch: true
+  belongs_to :game
 
   acts_as_list scope: :game
   validates :game_id, uniqueness: {scope: :user_id}
@@ -9,6 +9,8 @@ class Player < ApplicationRecord
   scope :ordered, -> { order(position: :asc) }
   scope :active, -> { where.not(state: :folded) }
   scope :folded, -> { where(state: :folded) }
+  scope :turn, -> { where(turn: true) }
+  scope :not_turn, -> { where.not(turn: true) }
 
   enum :table_position, {
     field: 0,
@@ -32,8 +34,6 @@ class Player < ApplicationRecord
     folded: 1,
     all_in: 2
   }
-
-  delegate :board, to: :game
 
   after_update_commit :sync_turns, if: -> { turn_changed? && turn? }
 
@@ -59,7 +59,7 @@ class Player < ApplicationRecord
   end
 
   def hand
-    h = Hands::Hand.new(cards: cards + board, player_id: id)
+    h = Hands::Hand.new(cards: cards + game.cards, player_id: id)
     Hands::Index.new(h)
   end
 
@@ -74,20 +74,21 @@ class Player < ApplicationRecord
     chips.update(chippable: self)
   end
 
-  def set_next_turn
-    to_the_left.start_turn!
-  end
-
   def current_bet
     bets.placed.sum(:amount)
   end
 
-  def start_turn!
-    update(turn: true)
-  end
-
   def display_name
     name || "Player #{id}"
+  end
+
+  def end_turn!
+    update!(turn: false)
+    to_the_left.update!(turn: true)
+  end
+
+  def current_hand
+    hand&.level&.to_s&.demodulize&.titleize
   end
 
   private
@@ -100,10 +101,6 @@ class Player < ApplicationRecord
     game.players.where.not(id: id).each do |player|
       player.end_turn! if player.turn?
     end
-  end
-
-  def end_turn!
-    update!(turn: false)
   end
 end
 

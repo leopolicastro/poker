@@ -17,11 +17,17 @@ class Game < ApplicationRecord
     finished: 2
   }
 
-  def assign_starting_positions!
+  def draw(count: 1, cardable: self)
+    deck.draw(count:, cardable: self)
+  end
+
+  def assign_starting_positions_and_turn!
     players.each_with_index do |player, index|
       player.send(position_map(index))
     end
-    players.big_blind.first.set_next_turn
+    # This ends the big blinds turn, and starts the next players turn
+    # Big blinds turn is not a real turn, it is just the "first" turn of the round
+    players.big_blind.first.to_the_left.update!(turn: true)
   end
 
   def position_map(index)
@@ -47,14 +53,10 @@ class Game < ApplicationRecord
   end
 
   def in_progress!
-    create_round! unless rounds.any?
+    rounds.create!(type: "PreFlop") unless rounds.any?
   end
 
   scope :ordered, -> { order(created_at: :desc) }
-
-  def create_round!
-    rounds.create!(current_turn: first_player)
-  end
 
   def add_player(user:)
     players.create(user:)

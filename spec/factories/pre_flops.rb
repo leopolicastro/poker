@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :round do
+  factory :pre_flop do
     association :game, factory: :game
   end
 end

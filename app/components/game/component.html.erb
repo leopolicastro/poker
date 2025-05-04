@@ -1,8 +1,7 @@
-<section>
-  <h1 class="text-4xl font-bold mb-8">Demo Game</h1>
-  <section class="flex  gap-8">
-    <div class="border rounded-lg py-8 px-8">
-      <h2 class="text-2xl font-bold mb-8">Game:</h2>
+<section class="w-full">
+  <section class="flex  gap-8 w-full">
+    <div class="border rounded-lg py-8 px-8 w-full">
+      <h2 class="text-2xl font-bold mb-8">Demo Game:</h2>
       <div class="mt-4">
         <strong>State:</strong> <%= game.state %>
       </div>
@@ -21,25 +20,47 @@
       <div class="mt-4">
         <strong>Pot:</strong> <%= number_to_currency(game.pot) %>
       </div>
+      <div class="mt-4">
+        <strong>Concluded:</strong> <%= game.current_round.concluded? %>
+      </div>
     </div>
-    <div class="border rounded-lg py-8 px-8">
+    <div class="border rounded-lg py-8 px-8 w-full">
       <h2 class="text-2xl font-bold mb-8">Rounds:</h2>
       <div class="mt-4">
-        <strong>Count:</strong> <%= game.rounds.count %>
+        <strong>Number of rounds:</strong> <%= game.rounds.count %>
       </div>
       <div class=" mt-4">
-        <strong>Phase:</strong> <%= game.current_round.phase %>
+        <strong>Current Round Type:</strong> <%= game.current_round.type %>
       </div>
       <div class="mt-4">
-        <strong>Next Turn:</strong> <%= game.next_player&.name %>
+        <strong>Current Turn:</strong> <%= game.current_turn&.display_name %>
+      </div>
+      <div class="mt-4">
+        <strong>Next Turn:</strong> <%= game.next_player&.display_name %>
+      </div>
+    </div>
+    <div class="border rounded-lg py-8 px-8 w-full">
+      <h2 class="text-2xl font-bold mb-8">Deck:</h2>
+      <div class="flex flex-col gap-2">
+        <strong>Cards left:</strong> <%= game.deck.cards_left %>
       </div>
     </div>
   </section>
-  <aside class="flex flex-wrap gap-8 mt-16">
+  <aside class="flex flex-wrap gap-8 mt-16 justify-center">
+    <% game.cards.each do |card| %>
+      <div class="flex flex-col gap-2">
+        <%=  card.to_html %>
+      </div>
+    <% end %>
+  </aside>
+  <aside class="flex flex-wrap gap-8 mt-16 justify-center">
     <% game.players.each do |player| %>
-      <div class="flex flex-col gap-2 border rounded-lg p-5">
+      <div class="flex flex-col gap-2 border rounded-lg p-4 min-w-[273px]">
         <div>
           <strong><%= player.display_name %></strong>
+        </div>
+        <div>
+          <strong>Hand:</strong> <%= player.current_hand %>
         </div>
         <div>
           <strong>Table position:</strong> <%= player.table_position %>
@@ -48,7 +69,7 @@
           <strong>In for:</strong> <%= number_to_currency(player.bets.where(round: game.current_round).sum(:amount)) %>
         </div>
         <div>
-          <strong>Turn:</strong> <%= player.turn %>
+          <strong>Turn:</strong> <%= player.turn? %>
         </div>
         <div>
           <strong>Folded:</strong> <%= player.folded? %>
@@ -58,23 +79,24 @@
         </div>
         <div>
           <strong>Cards:</strong>
-          <%= player.cards.map(&:to_s).join(", ") %>
+          <div class="flex flex-wrap gap-2">
+            <% player.cards.each do |card| %>
+              <%= card.to_html %>
+            <% end %>
+          </div>
         </div>
+        <% if player.turn? %>
+          <div class="inline-flex rounded-md shadow-xs mt-5" role="group">
+            <%= button_to "Check/Call", game_bets_path(game_id: game.id), params: { player_id: player.id, amount: game.big_blind }, class: "cursor-pointer px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white" %>
+            <button type="button" class="px-4 py-2 text-sm font-medium text-gray-900 bg-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
+              Raise
+            </button>
+            <button type="button" class="px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-e-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
+              Fold
+            </button>
+          </div>
+        <% end %>
       </div>
     <% end %>
   </aside>
-  <section class="flex items-center gap-8 mt-16">
-    <div class="border rounded-lg py-8 px-8">
-      <h2 class="text-2xl font-bold mb-8">Current Round:</h2>
-      <div class="flex flex-col gap-2">
-        <strong>Phase:</strong> <%= game.current_round.phase %>
-      </div>
-    </div>
-    <div class="border rounded-lg py-8 px-8">
-      <h2 class="text-2xl font-bold mb-8">Game Deck:</h2>
-      <div class="flex flex-col gap-2">
-        <strong>Cards left:</strong> <%= game.deck.cards_left %>
-      </div>
-    </div>
-  </section>
 </section>

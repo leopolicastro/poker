@@ -1,6 +1,7 @@
-FactoryBot.define do
-  factory :round do
-    association :game, factory: :game
+class PreFlop < Round
+  def handle_round!
+    deck.shuffle!
+    current_turn.end_turn! if current_turn.present?
   end
 end
 

@@ -1,6 +1,9 @@
-FactoryBot.define do
-  factory :round do
-    association :game, factory: :game
+class Flop < Round
+  def handle_round!
+    players.active.update_all(turn: false)
+    players.small_blind.first.update!(turn: true)
+    game.draw(count: 3)
+    super
   end
 end
 
