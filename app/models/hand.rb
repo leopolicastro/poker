@@ -1,7 +1,16 @@
-require 'rails_helper'
+class Hand < ApplicationRecord
+  belongs_to :game
+  has_many :rounds
+  has_many :bets, through: :rounds
 
-RSpec.describe Hand, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  delegate :players, to: :game
+
+  after_create_commit :create_round!
+
+  def create_round!
+    rounds.create!(type: "PreFlop")
+    players.update_all(state: "active")
+  end
 end
 
 # == Schema Information

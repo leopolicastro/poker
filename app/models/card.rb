@@ -49,6 +49,10 @@ class Card < ApplicationRecord
     ACE_LOW_RANKS.index(rank) + 1
   end
 
+  def ace_high_value
+    RANKS.index(rank) + 2
+  end
+
   def image
     "https://lbpdev.us-mia-1.linodeobjects.com/active_deck/cards/#{rank_key}#{suit_key}.png"
   end

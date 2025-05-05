@@ -1,7 +1,7 @@
-require 'rails_helper'
-
-RSpec.describe Hand, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+FactoryBot.define do
+  factory :game_hand, class: "Hand" do
+    association :game, factory: :game
+  end
 end
 
 # == Schema Information

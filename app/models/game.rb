@@ -3,8 +3,8 @@ class Game < ApplicationRecord
 
   has_one :deck, as: :deckable, dependent: :destroy
   has_many :players, dependent: :destroy
-  has_many :rounds, dependent: :destroy
-  has_many :bets, through: :rounds
+  has_many :hands, dependent: :destroy
+  has_many :bets, through: :hands
 
   after_create_commit :create_deck!
 
@@ -16,6 +16,21 @@ class Game < ApplicationRecord
     in_progress: 1,
     finished: 2
   }
+
+  def current_winner
+    player_hands = players.active.map do |player|
+      Hands::Hand.new(cards: player.cards, player_id: player.id)
+      # player.hand.hand
+      # h = Hands::Hand.new(cards: cards, player_id: id)
+      # Hands::Index.new(h).hand
+    end
+    res = Hands::Evaluator.find_winners(player_hands, cards)
+    res.map { |player_id| players.find(player_id).display_name }.join(", ")
+  end
+
+  def last_hand
+    hands.last
+  end
 
   def draw(count: 1, cardable: self)
     deck.draw(count:, cardable: self)
@@ -53,7 +68,8 @@ class Game < ApplicationRecord
   end
 
   def in_progress!
-    rounds.create!(type: "PreFlop") unless rounds.any?
+    hand = hands.first_or_create!
+    hand.rounds.create!(type: "PreFlop") unless hand.rounds.any?
   end
 
   scope :ordered, -> { order(created_at: :desc) }
@@ -83,7 +99,11 @@ class Game < ApplicationRecord
   end
 
   def current_round
-    rounds.last
+    current_hand.rounds.last
+  end
+
+  def current_hand
+    hands.last
   end
 
   def pot

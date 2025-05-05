@@ -43,7 +43,11 @@ class Player < ApplicationRecord
   has_many :rounds, through: :bets
 
   def folded?
-    bets.where(round: game.current_round, bet_type: :fold).any?
+    state == "folded"
+  end
+
+  def still_in?
+    state != "folded"
   end
 
   def dealer?
@@ -51,7 +55,7 @@ class Player < ApplicationRecord
   end
 
   def to_the_left
-    game.players.ordered.where("position > ?", position).first || game.players.ordered.first
+    game.players.active.ordered.where("position > ?", position).first || game.players.active.ordered.first
   end
 
   def to_the_right

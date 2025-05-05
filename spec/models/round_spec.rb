@@ -14,13 +14,13 @@ end
 #  type       :string
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
-#  game_id    :integer          not null
+#  hand_id    :integer          not null
 #
 # Indexes
 #
-#  index_rounds_on_game_id  (game_id)
+#  index_rounds_on_hand_id  (hand_id)
 #
 # Foreign Keys
 #
-#  game_id  (game_id => games.id)
+#  hand_id  (hand_id => hands.id)
 #

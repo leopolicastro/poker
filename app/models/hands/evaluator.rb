@@ -4,9 +4,7 @@ module Hands
 
     def find_winners(hands, board)
       top_hand_per_player_id = find_top_hands(hands, board)
-
       best_hand = top_hand_per_player_id.values.max
-
       top_hand_per_player_id
         .filter_map { |player_id, hand| player_id if hand == best_hand }
     end
@@ -15,7 +13,7 @@ module Hands
       result = {}
       indexes = hands.map do |hand|
         find_best_hand(board, hand)
-      end
+      end.compact
       indexes.each do |index|
         player_id = index.hand.player_id
 
@@ -30,10 +28,10 @@ module Hands
     end
 
     def best_combination_index(cards, hand)
-      combinations = cards.combination(5).map { |five_cards|
+      combinations = cards.combination(cards.size).map { |passed_cards|
         Index.new(
           Hand.new(
-            cards: five_cards,
+            cards: passed_cards,
             player_id: hand.player_id
           )
         )

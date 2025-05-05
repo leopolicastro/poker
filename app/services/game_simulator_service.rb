@@ -20,7 +20,8 @@ class GameSimulatorService
     return unless game.pending?
 
     generate_players unless game.players.any?
-    game.rounds.create!(type: "PreFlop") unless game.rounds.any?
+
+    game.hands.first_or_create!
     game.assign_starting_positions_and_turn!
     game.in_progress! unless game.in_progress?
     game.players.active.ordered.each do |player|

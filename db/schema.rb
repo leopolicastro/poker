@@ -63,6 +63,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_03_024706) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "hands", force: :cascade do |t|
+    t.integer "game_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["game_id"], name: "index_hands_on_game_id"
+  end
+
   create_table "players", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "game_id", null: false
@@ -78,11 +85,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_03_024706) do
   end
 
   create_table "rounds", force: :cascade do |t|
-    t.integer "game_id", null: false
+    t.integer "hand_id", null: false
     t.string "type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["game_id"], name: "index_rounds_on_game_id"
+    t.index ["hand_id"], name: "index_rounds_on_hand_id"
   end
 
   create_table "sessions", force: :cascade do |t|
@@ -107,8 +114,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_03_024706) do
   add_foreign_key "bets", "players"
   add_foreign_key "bets", "rounds"
   add_foreign_key "cards", "decks"
+  add_foreign_key "hands", "games"
   add_foreign_key "players", "games"
   add_foreign_key "players", "users"
-  add_foreign_key "rounds", "games"
+  add_foreign_key "rounds", "hands"
   add_foreign_key "sessions", "users"
 end

@@ -5,9 +5,8 @@ module Hands
     end
 
     def self.top_five(hand)
-      five = hand.cards.sort_by(&:value).last(5)
-      five.reverse!
-      five
+      ace_high = hand.cards.sort_by(&:value).last(5).reverse
+      [ace_high].max_by { |cards| cards.map(&:value) }
     end
   end
 end

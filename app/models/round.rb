@@ -1,6 +1,8 @@
 class Round < ApplicationRecord
-  belongs_to :game, touch: true
+  belongs_to :hand
   has_many :bets, dependent: :destroy
+
+  delegate :game, to: :hand
 
   delegate :deck, :players, :current_turn, to: :game
 
@@ -21,7 +23,11 @@ class Round < ApplicationRecord
   def next_round!
     current_type_index = ROUND_TYPES.index(type)
     next_type = ROUND_TYPES[current_type_index + 1]
-    game.rounds.create!(type: next_type) if next_type
+    if game.hands.last.rounds.last.type == "Showdown"
+      game.hands.create!
+    elsif next_type
+      game.hands.last.rounds.create!(type: next_type)
+    end
   end
 end
 
@@ -33,13 +39,13 @@ end
 #  type       :string
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
-#  game_id    :integer          not null
+#  hand_id    :integer          not null
 #
 # Indexes
 #
-#  index_rounds_on_game_id  (game_id)
+#  index_rounds_on_hand_id  (hand_id)
 #
 # Foreign Keys
 #
-#  game_id  (game_id => games.id)
+#  hand_id  (hand_id => hands.id)
 #

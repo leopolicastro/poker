@@ -21,12 +21,14 @@ module Hands
 
       return rank_comparison unless rank_comparison.zero?
 
-      level <=> other.level
+      # When hands are of the same type, use the level's detail_compare method
+      level.new(hand) <=> level.new(other.hand)
     end
 
-    def >(other)
-      level <=> other.level
-    end
+    # def >(other)
+    #   debugger
+    #   level <=> other.level
+    # end
 
     def level
       @level ||=

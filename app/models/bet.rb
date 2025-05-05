@@ -28,6 +28,10 @@ class Bet < ApplicationRecord
     player.consolidate_chips
     # place the bet in the post
     player.split_chips(amount:, chippable: player.game)
+
+    if fold?
+      player.folded!
+    end
   end
 
   def payout_winner!

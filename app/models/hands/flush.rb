@@ -1,5 +1,5 @@
 module Hands
-  class Flush
+  class Flush < Base
     def self.satisfied?(hand)
       suits = hand.suits
       suits.any? { |suit| suits.count(suit) >= 5 }
