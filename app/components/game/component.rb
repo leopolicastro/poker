@@ -4,4 +4,16 @@ class Game::Component < ViewComponent::Base
   def initialize(game:)
     @game = game
   end
+
+  def render?
+    game.present?
+  end
+
+  def check_or_call(player)
+    if player.owes_the_pot.positive?
+      "call"
+    else
+      "check"
+    end
+  end
 end

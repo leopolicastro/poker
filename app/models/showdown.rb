@@ -1,6 +1,14 @@
 class Showdown < Round
   def handle_round!
-    game.players.update_all(turn: false)
+    game.current_turn.update!(turn: false)
+    game.top_hands.each(&:payout!)
+    game.hands.last.bets.placed.update_all(state: :lost)
+
+    StartNextHandJob.set(wait: 30.seconds).perform_later(game_id: game.id)
+  end
+
+  def pot
+    hand.bets.sum(:amount)
   end
 end
 

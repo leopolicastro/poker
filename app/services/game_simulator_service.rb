@@ -1,36 +1,33 @@
 class GameSimulatorService
   attr_reader :game
 
-  def self.run
-    new.run
+  def self.run(players_count: 5, small_blind: 10, big_blind: 20)
+    new(players_count:, small_blind:, big_blind:).run
   end
 
-  def initialize
+  def initialize(players_count:, small_blind:, big_blind:)
     @game = Game.find_or_create_by!(name: "Demo Game")
-    @game.update(small_blind: 10, big_blind: 20)
+    @game.update(small_blind:, big_blind:)
+    @players_count = players_count
   end
 
   def run
-    setup_game
+    setup_preflop!
+    game
   end
 
   private
 
-  def setup_game
-    return unless game.pending?
-
+  def setup_preflop!
     generate_players unless game.players.any?
+    game.hands.create!
 
-    game.hands.first_or_create!
+    # hand.create_pre_flop!
     game.assign_starting_positions_and_turn!
-    game.in_progress! unless game.in_progress?
-    game.players.active.ordered.each do |player|
-      game.deck.draw(count: 2, cardable: player)
-    end
   end
 
   def generate_players
-    [1, 2, 3, 4, 5].each do |i|
+    (1..@players_count).each do |i|
       user = User.find_or_create_by!(email_address: "demo-player#{i}@example.com") do |user|
         user.password = "password"
       end

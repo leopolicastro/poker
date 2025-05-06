@@ -15,9 +15,19 @@ class Round < ApplicationRecord
   after_create_commit :handle_round!
 
   def concluded?
-    # TODO: this should be game.big_blind || game.current_bet ish
-    # TODO: this is wrong, this only works if no one has bet yet
-    players.active.all? { |player| player.bets.where(round: self).sum(:amount) >= game.big_blind }
+    return false if bets.last&.raise?
+
+    if type == "PreFlop" && game.current_hand.bets.where(bet_type: :raise).empty?
+      players.active.all? do |player|
+        player.bets.where(round: self).any? && (player.bets.where(round: self).sum(:amount) >= game.big_blind)
+      end && ["check", "fold"].include?(game.players.big_blind.first&.bets&.last&.bet_type)
+    else
+      players.all? do |player|
+        round_bets = player.bets.where(round: self)
+        round_bets.any? { |bet| bet.bet_type == "fold" } ||
+          (round_bets.any? && round_bets.sum(:amount) >= player.owes_the_pot)
+      end
+    end
   end
 
   def next_round!

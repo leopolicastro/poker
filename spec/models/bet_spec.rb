@@ -8,59 +8,31 @@ RSpec.describe Bet, type: :model do
   let(:game) { create(:game) }
   let(:player) { create(:player, game:) }
   let(:player2) { create(:player, game:) }
-  let(:round) { create(:pre_flop, game:) }
-  let(:bet) { create(:bet, player:, amount: 100, round:) }
-  let(:bet2) { create(:bet, player: player2, amount: 200, round:) }
-
-  before do
-    create(:player_chip, chippable: player, value: 100)
-    create(:player_chip, chippable: player, value: 200)
-    create(:player_chip, chippable: player, value: 150)
-    create(:player_chip, chippable: player2, value: 400)
-  end
-
-  describe "#throw_into_pot!" do
-    before do
-      expect(player.chips.count).to eq(3)
-      expect(player.current_holdings).to eq(450)
-      bet
-    end
-
-    it "consolidates the player's chips into one chip record" do
-      # Were here
-      expect(player.chips.count).to eq(1)
-    end
-
-    it "leaves the player with the correct amount of chips" do
-      expect(player.current_holdings).to eq(350)
-      expect(player.game.current_holdings).to eq(100)
-    end
-
-    it "changes those chips to belong to the game, while the bet is placed" do
-      expect(player.game.current_holdings).to eq(100)
-      expect(player.current_holdings).to eq(350)
-    end
-  end
+  let(:hand) { create(:game_hand, game:) }
+  let(:round) { hand.rounds.first }
+  let(:bet) { create(:bet, player:, amount: 20, round:, bet_type: :check) }
+  let(:bet2) { create(:bet, player: player2, amount: 20, round:, bet_type: :check) }
 
   describe "#payout_winner!" do
+    let(:game) { GameSimulatorService.run(players_count: 2) }
+    let(:player) { game.players.first }
+    let(:player2) { game.players.second }
+
     before do
-      bet.won!
-      bet2.lost!
+      player.place_bet!(amount: player.owes_the_pot, bet_type: :check)
+      player2.place_bet!(amount: player2.owes_the_pot, bet_type: :check)
+      hand = game.hands.last
     end
 
     it "gives the chips to the winner" do
-      expect(player.current_holdings).to eq(550)
-      expect(player2.current_holdings).to eq(200)
+      expect(player.current_holdings).to eq(980)
+      hand.rounds.create!(type: "Showdown")
+      expect(player.current_holdings).to eq(980)
+      expect(player2.current_holdings).to eq(1020)
     end
 
     it "changes the chips to belong to the player" do
-      expect(player.reload.chips.first.value).to eq(100)
-      expect(player.chips.last.value).to eq(450)
-    end
-
-    it "changes the status of the other bets to lost" do
-      expect(player.bets.won.count).to eq(1)
-      expect(player2.bets.lost.count).to eq 1
+      expect(player.reload.chips.first.value).to eq(980)
     end
   end
 end

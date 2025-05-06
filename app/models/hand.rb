@@ -5,11 +5,12 @@ class Hand < ApplicationRecord
 
   delegate :players, to: :game
 
-  after_create_commit :create_round!
+  after_create_commit :create_pre_flop!
 
-  def create_round!
-    rounds.create!(type: "PreFlop")
+  def create_pre_flop!
+    PreFlop.create!(hand: self)
     players.update_all(state: "active")
+    players.active.where.not(table_position: :button).ordered.first.update!(turn: true) unless game.hands.count == 1
   end
 end
 

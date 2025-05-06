@@ -17,7 +17,7 @@ class Game < ApplicationRecord
     finished: 2
   }
 
-  def current_winner
+  def top_hands
     player_hands = players.active.map do |player|
       Hands::Hand.new(cards: player.cards, player_id: player.id)
       # player.hand.hand
@@ -25,11 +25,7 @@ class Game < ApplicationRecord
       # Hands::Index.new(h).hand
     end
     res = Hands::Evaluator.find_winners(player_hands, cards)
-    res.map { |player_id| players.find(player_id).display_name }.join(", ")
-  end
-
-  def last_hand
-    hands.last
+    res.map { |player_id| players.find(player_id) }
   end
 
   def draw(count: 1, cardable: self)
@@ -70,6 +66,7 @@ class Game < ApplicationRecord
   def in_progress!
     hand = hands.first_or_create!
     hand.rounds.create!(type: "PreFlop") unless hand.rounds.any?
+    super
   end
 
   scope :ordered, -> { order(created_at: :desc) }
@@ -107,8 +104,7 @@ class Game < ApplicationRecord
   end
 
   def pot
-    # TODO: thjis is the wrong definition of current bet
-    bets.placed.sum(:amount)
+    current_hand.bets.placed.sum(:amount)
   end
 
   def heads_up?
@@ -117,6 +113,10 @@ class Game < ApplicationRecord
 
   def three_player?
     players.size == 3
+  end
+
+  def on_the_button
+    players.button.first
   end
 end
 

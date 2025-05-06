@@ -2,6 +2,10 @@ class PreFlop < Round
   def handle_round!
     deck.shuffle!
     current_turn.end_turn! if current_turn.present?
+    game.in_progress!
+    game.players.active.ordered.each do |player|
+      game.deck.draw(count: 2, cardable: player)
+    end
   end
 end
 

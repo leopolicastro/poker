@@ -35,6 +35,10 @@ module Hands
       cards.sort_by(&:value)
     end
 
+    # def hand_strength
+    #   @hand_strength ||= HandStrength.new(self)
+    # end
+
     def +(other)
       Hand.new(cards: cards + other.cards, player_id:)
     end

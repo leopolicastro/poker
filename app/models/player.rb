@@ -12,12 +12,30 @@ class Player < ApplicationRecord
   scope :turn, -> { where(turn: true) }
   scope :not_turn, -> { where.not(turn: true) }
 
+  validate :only_one_player_per_turn
+
+  def only_one_player_per_turn
+    if game.players.turn.count > 1
+      errors.add(:base, "Only one player can have turn at a time")
+    end
+  end
+
   enum :table_position, {
     field: 0,
     button: 1,
     small_blind: 2,
     big_blind: 3
   }
+
+  def payout!
+    # TODO: this method only works correctly when there is one winner
+    chip = game.consolidate_chips
+    # give them to the winner
+    chip.update!(chippable: self)
+    # consolidate the player's chips into one chip record
+    consolidate_chips
+    game.current_hand.bets.placed.where(player: self).update_all(state: :won)
+  end
 
   def small_blind!
     place_bet!(amount: game.small_blind, bet_type: :blinds)
@@ -29,13 +47,33 @@ class Player < ApplicationRecord
     super
   end
 
+  def owes_the_pot
+    current_round = game.current_round
+    relevant_bets = current_round.bets.where.not(bet_type: [:blinds, :fold])
+    if game.current_round.type == "PreFlop"
+      # TODO: should this be checking
+      game.big_blind - bets.where(round: game.current_round).sum(:amount)
+    elsif relevant_bets.any?
+      # The highest amount any player has bet in this round
+      highest_bet = relevant_bets.group(:player_id).sum(:amount).values.max || 0
+
+      # How much this player has already bet in this round
+      my_bet = relevant_bets.where(player: self).sum(:amount)
+
+      # The amount needed to call (can't be negative)
+      [highest_bet - my_bet, 0].max
+    else
+      0
+    end
+  end
+
   enum :state, {
     active: 0,
     folded: 1,
     all_in: 2
   }
 
-  after_update_commit :sync_turns, if: -> { turn_changed? && turn? }
+  # after_update_commit :sync_turns, if: -> { turn_changed? && turn? }
 
   include Chippable
   include Cardable
@@ -78,17 +116,17 @@ class Player < ApplicationRecord
     chips.update(chippable: self)
   end
 
-  def current_bet
-    bets.placed.sum(:amount)
-  end
-
   def display_name
     name || "Player #{id}"
   end
 
   def end_turn!
     update!(turn: false)
-    to_the_left.update!(turn: true)
+    if game.players.active.count.zero?
+      game.hands.create!
+    else
+      to_the_left.update!(turn: true)
+    end
   end
 
   def current_hand

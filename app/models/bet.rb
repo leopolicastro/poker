@@ -5,7 +5,6 @@ class Bet < ApplicationRecord
   delegate :game, to: :player
 
   after_create_commit :throw_into_pot!
-  after_update_commit :payout_winner!, if: -> { state_previously_changed? && won? }
 
   include Chippable
 
@@ -32,16 +31,6 @@ class Bet < ApplicationRecord
     if fold?
       player.folded!
     end
-  end
-
-  def payout_winner!
-    # TODO: this method only works correctly when there is one winner
-    chip = player.game.consolidate_chips
-    # give them to the winner
-    chip.update!(chippable: player)
-    # consolidate the player's chips into one chip record
-    player.consolidate_chips
-    won!
   end
 end
 

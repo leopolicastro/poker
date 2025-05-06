@@ -4,6 +4,14 @@ class Flop < Round
     players.small_blind.first.update!(turn: true)
     game.draw(count: 3)
   end
+
+  def concluded?
+    return false if bets.last&.raise?
+
+    players.active.all? do |player|
+      player.bets.where(round: self).any? && player.bets.where(round: self).sum(:amount) >= player.owes_the_pot
+    end
+  end
 end
 
 # == Schema Information

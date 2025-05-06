@@ -26,9 +26,14 @@ module Hands
     end
 
     # def >(other)
-    #   debugger
-    #   level <=> other.level
+    #   level <=> other.level && top_five.map(&:value) > other.top_five.map(&:value)
     # end
+
+    def ==(other)
+      return false unless other.is_a?(Index)
+
+      level == other.level && top_five.map(&:value) == other.top_five.map(&:value)
+    end
 
     def level
       @level ||=
