@@ -1,4 +1,8 @@
-class Raise < Bet
+class Bets::Fold < Bet
+  def throw_into_pot!
+    super
+    player.folded!
+  end
 end
 
 # == Schema Information

@@ -80,6 +80,9 @@
           <strong>In for:</strong> <%= number_to_currency(game.current_hand.bets.where(player: player).sum(:amount)) %>
         </div>
         <div>
+          <strong>Position #:</strong> <%= player.position %>
+        </div>
+        <div>
           <strong>Turn:</strong> <%= player.turn? %>
         </div>
         <div>

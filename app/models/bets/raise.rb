@@ -1,4 +1,4 @@
-class Blind < Bet
+class Bets::Raise < Bet
 end
 
 # == Schema Information

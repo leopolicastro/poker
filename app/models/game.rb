@@ -17,6 +17,17 @@ class Game < ApplicationRecord
     finished: 2
   }
 
+  def split_pot_payout!(winners:)
+    pot = consolidate_chips
+    winnings_per_player = pot.value / winners.size
+    winners.each do |player|
+      player.chips.create!(value: winnings_per_player)
+      player.consolidate_chips
+      game.current_hand.bets.placed.where(player:).update_all(state: :won)
+    end
+    pot.destroy!
+  end
+
   def draw(count: 1, burn_card: false)
     deck.draw(count:, cardable: self, burn_card:)
   end
@@ -29,34 +40,22 @@ class Game < ApplicationRecord
     res.map { |player_id| players.find(player_id) }
   end
 
-  def assign_starting_positions_and_turn!
+  def assign_starting_positions!
     players.each_with_index do |player, index|
       player.send(position_map(index))
     end
-    # This ends the big blinds turn, and starts the next players turn
-    # Big blinds turn is not a real turn, it is just the "first" turn of the round
-    players.big_blind.first.to_the_right.update!(turn: true)
   end
 
   def position_map(index)
-    if players.size >= 3
-      case index
-      when 0
-        :button!
-      when 1
-        :small_blind!
-      when 2
-        :big_blind!
-      else
-        :field!
-      end
+    case index
+    when 0
+      (players.size >= 3) ? :button! : :big_blind!
+    when 1
+      :small_blind!
+    when 2
+      :big_blind!
     else
-      case index
-      when 0
-        :big_blind!
-      when 1
-        :small_blind!
-      end
+      :field!
     end
   end
 
@@ -110,6 +109,10 @@ class Game < ApplicationRecord
 
   def on_the_button
     players.button.first
+  end
+
+  def first_hand?
+    hands.count == 1
   end
 end
 

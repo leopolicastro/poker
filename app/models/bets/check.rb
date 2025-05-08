@@ -1,4 +1,4 @@
-class Call < Bet
+class Bets::Check < Bet
 end
 
 # == Schema Information

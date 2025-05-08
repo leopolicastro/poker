@@ -1,7 +1,13 @@
 class Rounds::Flop < Round
   def handle_round!
+    if game.players.active.count.zero?
+      return game.hands.create!
+    end
+
     players.active.update_all(turn: false)
-    players.small_blind.first.update!(turn: true)
+
+    first_to_act.update!(turn: true)
+
     game.draw(count: 1, burn_card: true)
     game.draw(count: 3)
   end
@@ -9,7 +15,7 @@ class Rounds::Flop < Round
   def concluded?
     players.active.all? do |player|
       bets = player.bets.where(round: self)
-      bets.any? { |bet| ["AllIn"].include?(bet.type) } ||
+      bets.any? { |bet| ["Bets::AllIn"].include?(bet.type) } ||
         (bets.any? && bets.sum(:amount) >= player.owes_the_pot)
     end
   end

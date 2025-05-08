@@ -1,6 +1,12 @@
 class Player < ApplicationRecord
   belongs_to :user
-  belongs_to :game
+  belongs_to :game, touch: true
+
+  include Chippable
+  include Cardable
+  has_many :bets, dependent: :destroy
+
+  accepts_nested_attributes_for :bets, allow_destroy: true
 
   acts_as_list scope: :game
   validates :game_id, uniqueness: {scope: :user_id}
@@ -37,19 +43,26 @@ class Player < ApplicationRecord
     game.current_hand.bets.placed.where(player: self).update_all(state: :won)
   end
 
+  def place_bet!(amount:, type:)
+    return unless amount.present?
+    return if current_holdings < amount
+
+    bets.create!(amount:, round: game.hands.last.rounds.last, type:)
+  end
+
   def small_blind!
-    place_bet!(amount: game.small_blind, type: "Blind")
+    place_bet!(amount: game.small_blind, type: "Bets::Blind")
     super
   end
 
   def big_blind!
-    place_bet!(amount: game.big_blind, type: "Blind")
+    place_bet!(amount: game.big_blind, type: "Bets::Blind")
     super
   end
 
   def owes_the_pot
     current_round = game.current_round
-    relevant_bets = current_round.bets.where.not(type: ["Blind", "Fold"])
+    relevant_bets = current_round.bets.where.not(type: ["Bets::Blind", "Bets::Fold"])
     if game.current_round.type == "Rounds::PreFlop"
       # TODO: should this be checking
       game.big_blind - bets.where(round: game.current_round).sum(:amount)
@@ -73,9 +86,6 @@ class Player < ApplicationRecord
     all_in: 2
   }
 
-  include Chippable
-  include Cardable
-  include Bets
   has_many :rounds, through: :bets
 
   def folded?
@@ -103,10 +113,6 @@ class Player < ApplicationRecord
     Hands::Index.new(h)
   end
 
-  def active?
-    !folded? && game.current_round.state != "setup"
-  end
-
   def buy_in(amount)
     raise if amount > user.current_holdings
 
@@ -116,15 +122,6 @@ class Player < ApplicationRecord
 
   def display_name
     name || "Player #{id}"
-  end
-
-  def end_turn!
-    update!(turn: false)
-    if game.players.active.count.zero?
-      game.hands.create!
-    else
-      to_the_right.update!(turn: true)
-    end
   end
 
   def current_hand

@@ -1,4 +1,4 @@
-class Check < Bet
+class Bets::AllIn < Bet
 end
 
 # == Schema Information

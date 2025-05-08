@@ -1,4 +1,4 @@
-class AllIn < Bet
+class Bets::Call < Bet
 end
 
 # == Schema Information

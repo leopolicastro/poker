@@ -9,7 +9,7 @@ class Round < ApplicationRecord
   ROUND_TYPES = %w[Rounds::PreFlop Rounds::Flop Rounds::Turn Rounds::River Rounds::Showdown].freeze
 
   ROUND_TYPES.each do |round_type|
-    scope round_type, -> { where(type: round_type) }
+    scope round_type.demodulize.underscore, -> { where(type: round_type) }
   end
 
   after_create_commit :handle_round!
@@ -17,7 +17,7 @@ class Round < ApplicationRecord
   def concluded?
     players.active.all? do |player|
       round_bets = player.bets.where(round: self)
-      round_bets.any? { |bet| ["AllIn"].include?(bet.type) } ||
+      round_bets.any? { |bet| ["Bets::AllIn"].include?(bet.type) } ||
         (round_bets.any? && round_bets.sum(:amount) >= player.owes_the_pot)
     end
   end
@@ -30,6 +30,19 @@ class Round < ApplicationRecord
     elsif next_type
       game.hands.last.rounds.create!(type: next_type)
     end
+  end
+
+  def first_to_act
+    # Start from the position after small blind
+    small_blind_position = players.small_blind.first.position
+
+    # Find the first active player to the right of small blind
+    # Using a single query instead of a loop
+    players.active.ordered
+      .where("position >= ?", small_blind_position)
+      .first || players.active.ordered.first
+
+    # Return nil if no active players found
   end
 end
 

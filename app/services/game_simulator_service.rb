@@ -21,7 +21,6 @@ class GameSimulatorService
   def setup_preflop!
     generate_players unless game.players.any?
     game.hands.create!
-    game.assign_starting_positions_and_turn!
   end
 
   def generate_players

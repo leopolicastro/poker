@@ -12,12 +12,12 @@ class BetsController < ApplicationController
     @game.current_round.bets.create!(
       player: @player,
       amount: amount,
-      type: infer_bet_type
+      type: "Bets::#{infer_bet_type}"
     )
     if @game.current_round.concluded?
       @game.current_round.next_round!
     else
-      @player.end_turn!
+      RotateTurnService.call(game: @game)
     end
 
     redirect_back(fallback_location: root_path)

@@ -82,7 +82,7 @@ RSpec.describe Player, type: :model do
     end
 
     it "places a bet" do
-      bet = player.place_bet!(amount: 100, type: "Raise")
+      bet = player.place_bet!(amount: 100, type: "Bets::Raise")
       expect(bet).to be_valid
       expect(player.current_holdings).to eq(350)
       expect(player.bets.count).to eq(1)
@@ -91,17 +91,9 @@ RSpec.describe Player, type: :model do
 
     it "does not place a bet if the player does not have enough chips" do
       expect(player.current_holdings).to eq(450)
-      bet = player.place_bet!(amount: 500, type: "Raise")
+      bet = player.place_bet!(amount: 500, type: "Bets::Raise")
       expect(bet).to be_nil
       expect(game.chips.count).to eq(0)
-    end
-  end
-
-  describe "#end_turn!" do
-    let(:player) { create(:player, game:, turn: true) }
-    it "ends the turn" do
-      player.send(:end_turn!)
-      expect(player.turn).to be_falsey
     end
   end
 end

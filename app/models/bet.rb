@@ -14,10 +14,9 @@ class Bet < ApplicationRecord
     lost: 2
   }
 
-  BET_TYPES = %w[Check Call Raise Fold Blind AllIn].freeze
-
-  BET_TYPES.each do |type|
-    scope type, -> { where(type:) }
+  BET_TYPES = %w[Bets::Check Bets::Call Bets::Raise Bets::Fold Bets::Blind Bets::AllIn].freeze
+  BET_TYPES.each do |bet_type|
+    scope bet_type.demodulize.underscore, -> { where(type: bet_type) }
   end
 
   def throw_into_pot!

@@ -1,12 +1,13 @@
 class Rounds::PreFlop < Round
   def handle_round!
     deck.shuffle!
-    current_turn.end_turn! if current_turn.present?
     game.in_progress!
 
     game.players.ordered.each do |player|
       game.deck.draw(count: 2, cardable: player)
     end
+    game.assign_starting_positions! if game.first_hand?
+    first_to_act.update!(turn: true)
   end
 
   def concluded?
@@ -18,6 +19,11 @@ class Rounds::PreFlop < Round
   def big_blind_checked?
     big_blind_bets = game.players.big_blind.first.bets
     big_blind_bets.count > 1
+  end
+
+  # PICK UP HERE
+  def first_to_act
+    game.players.big_blind.first.to_the_right
   end
 end
 

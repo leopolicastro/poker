@@ -1,6 +1,7 @@
 class Rounds::River < Round
   def handle_round!
-    game.current_turn.end_turn!
+    players.update_all(turn: false)
+    first_to_act.update!(turn: true)
     game.draw(count: 1, burn_card: true)
     game.draw
   end
