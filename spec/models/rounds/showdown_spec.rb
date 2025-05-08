@@ -1,15 +1,7 @@
-class Showdown < Round
-  def handle_round!
-    game.current_turn.update!(turn: false)
-    game.top_hands.each(&:payout!)
-    game.hands.last.bets.placed.update_all(state: :lost)
+require "rails_helper"
 
-    StartNextHandJob.set(wait: 30.seconds).perform_later(game_id: game.id)
-  end
-
-  def pot
-    hand.bets.sum(:amount)
-  end
+RSpec.describe Rounds::Showdown, type: :model do
+  pending "add some examples to (or delete) #{__FILE__}"
 end
 
 # == Schema Information

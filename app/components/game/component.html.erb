@@ -35,7 +35,7 @@
       <div class=" mt-4">
         <strong>Current Round:</strong> <%= game.current_round.type %>
       </div>
-      <% if(game.current_round.type == "Showdown") %>
+      <% if(game.current_round.type == "Rounds::Showdown") %>
         <div class="mt-4">
           <strong>Won:</strong> <%= number_to_currency(game.current_round.pot) %>
         </div>
@@ -61,7 +61,7 @@
       </div>
     <% end %>
   </aside>
-  <aside class="flex flex-wrap gap-8 mt-16 justify-center">
+  <aside class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 mt-16 justify-center">
     <% game.players.each do |player| %>
       <div class="flex flex-col gap-2 border rounded-lg p-4 min-w-[273px] <%= player.folded? ? "bg-gray-200" : "" %>">
         <div>
@@ -69,7 +69,9 @@
         </div>
         <div>
           <strong>Hand:</strong> <%= player.current_hand %>
-          <%= player.hand.class.name %>
+          <aside class="flex flex-wrap gap-2">
+            <%= player.hand.top_five.map { |card| card.to_html }.join("").html_safe %>
+          </aside>
         </div>
         <div>
           <strong>Table position:</strong> <%= player.table_position %>
@@ -97,7 +99,7 @@
             <% end %>
           </div>
         </div>
-        <% if player.turn? && player.still_in? && game.current_round.type != "Showdown" %>
+        <% if player.turn? && player.still_in? && game.current_round.type != "Rounds::Showdown" %>
           <div class="inline-flex justify-center rounded-md shadow-xs mt-5" role="group">
             <%= button_to check_or_call(player).capitalize, game_bets_path(game_id: game.id, type: check_or_call(player)), params: { player_id: player.id, amount: game.big_blind }, class: "cursor-pointer px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white" %>
             <button type="button" class="px-4 py-2 text-sm font-medium text-gray-900 bg-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">

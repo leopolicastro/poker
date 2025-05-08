@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :turn do
+  factory :flop, class: "Rounds::Flop" do
     association :game, factory: :game
   end
 end

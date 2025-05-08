@@ -50,7 +50,7 @@ class Player < ApplicationRecord
   def owes_the_pot
     current_round = game.current_round
     relevant_bets = current_round.bets.where.not(type: ["Blind", "Fold"])
-    if game.current_round.type == "PreFlop"
+    if game.current_round.type == "Rounds::PreFlop"
       # TODO: should this be checking
       game.big_blind - bets.where(round: game.current_round).sum(:amount)
     elsif relevant_bets.any?

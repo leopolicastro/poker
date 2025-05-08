@@ -6,10 +6,10 @@ class Round < ApplicationRecord
 
   delegate :deck, :players, :current_turn, to: :game
 
-  ROUND_TYPES = %w[PreFlop Flop Turn River Showdown].freeze
+  ROUND_TYPES = %w[Rounds::PreFlop Rounds::Flop Rounds::Turn Rounds::River Rounds::Showdown].freeze
 
-  ROUND_TYPES.each do |type|
-    scope type, -> { where(type:) }
+  ROUND_TYPES.each do |round_type|
+    scope round_type, -> { where(type: round_type) }
   end
 
   after_create_commit :handle_round!
@@ -25,7 +25,7 @@ class Round < ApplicationRecord
   def next_round!
     current_type_index = ROUND_TYPES.index(type)
     next_type = ROUND_TYPES[current_type_index + 1]
-    if game.hands.last.rounds.last.type == "Showdown"
+    if game.hands.last.rounds.last.type == "Rounds::Showdown"
       game.hands.create!
     elsif next_type
       game.hands.last.rounds.create!(type: next_type)

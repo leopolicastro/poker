@@ -1,6 +1,10 @@
 class BetsController < ApplicationController
   allow_unauthenticated_access
   def create
+    unless params[:type].present?
+      redirect_back(fallback_location: root_path)
+    end
+
     @game = Game.find(params[:game_id])
     @player = @game.players.active.find(params[:player_id])
 

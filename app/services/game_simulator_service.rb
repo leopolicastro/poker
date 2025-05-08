@@ -7,7 +7,7 @@ class GameSimulatorService
 
   def initialize(players_count:, small_blind:, big_blind:)
     @game = Game.find_or_create_by!(name: "Demo Game")
-    @game.update(small_blind:, big_blind:)
+    @game.update!(small_blind:, big_blind:)
     @players_count = players_count
   end
 
@@ -21,8 +21,6 @@ class GameSimulatorService
   def setup_preflop!
     generate_players unless game.players.any?
     game.hands.create!
-
-    # hand.create_pre_flop!
     game.assign_starting_positions_and_turn!
   end
 

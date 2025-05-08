@@ -1,4 +1,4 @@
-class PreFlop < Round
+class Rounds::PreFlop < Round
   def handle_round!
     deck.shuffle!
     current_turn.end_turn! if current_turn.present?
@@ -12,7 +12,12 @@ class PreFlop < Round
   def concluded?
     players.active.all? do |player|
       player.bets.where(round: self).any? && (player.bets.where(round: self).sum(:amount) >= game.big_blind)
-    end && ["Check", "Fold"].include?(game.players.big_blind.first&.bets&.last&.type)
+    end && big_blind_checked?
+  end
+
+  def big_blind_checked?
+    big_blind_bets = game.players.big_blind.first.bets
+    big_blind_bets.count > 1
   end
 end
 

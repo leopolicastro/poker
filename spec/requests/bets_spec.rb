@@ -22,7 +22,7 @@ RSpec.describe "Bets", type: :request do
 
   describe "GET /create" do
     it "returns http success" do
-      post "/games/#{game.id}/bets", params: {player_id: player.id, amount: game.big_blind}
+      post "/games/#{game.id}/bets?type=Fold", params: {player_id: player.id, amount: game.big_blind}
       expect(response).to redirect_to(root_path)
     end
   end

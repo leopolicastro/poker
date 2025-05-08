@@ -1,6 +1,14 @@
-FactoryBot.define do
-  factory :river do
-    association :game, factory: :game
+class Rounds::Showdown < Round
+  def handle_round!
+    game.current_turn.update!(turn: false)
+    game.top_hands.each(&:payout!)
+    game.hands.last.bets.placed.update_all(state: :lost)
+
+    StartNextHandJob.set(wait: 5.seconds).perform_later(game_id: game.id)
+  end
+
+  def pot
+    hand.bets.sum(:amount)
   end
 end
 

@@ -5,7 +5,7 @@ RSpec.describe Bet, type: :model do
     expect(build(:bet)).to be_valid
   end
 
-  let(:game) { create(:game) }
+  # let(:game) { create(:game) }
   let(:player) { create(:player, game:) }
   let(:player2) { create(:player, game:) }
   let(:hand) { create(:game_hand, game:) }
@@ -19,14 +19,14 @@ RSpec.describe Bet, type: :model do
     let(:player2) { game.players.second }
 
     before do
-      player.place_bet!(amount: player.owes_the_pot, type: "Check")
-      player2.place_bet!(amount: player2.owes_the_pot, type: "Check")
+      player.place_bet!(amount: player.owes_the_pot, type: "Blind")
+      player2.place_bet!(amount: player2.owes_the_pot, type: "Blind")
     end
 
     it "gives the chips to the winner" do
       expect(player.current_holdings).to eq(980)
       expect(player2.current_holdings).to eq(980)
-      hand.rounds.create!(type: "Showdown")
+      hand.rounds.create!(type: "Rounds::Showdown")
       expect(player.current_holdings).to eq(980)
       expect(player2.current_holdings).to eq(1020)
     end
