@@ -21,18 +21,18 @@ RSpec.describe Bet, type: :model do
     before do
       player.place_bet!(amount: player.owes_the_pot, type: "Check")
       player2.place_bet!(amount: player2.owes_the_pot, type: "Check")
-      hand = game.hands.last
     end
 
     it "gives the chips to the winner" do
       expect(player.current_holdings).to eq(980)
+      expect(player2.current_holdings).to eq(980)
       hand.rounds.create!(type: "Showdown")
       expect(player.current_holdings).to eq(980)
       expect(player2.current_holdings).to eq(1020)
     end
 
     it "changes the chips to belong to the player" do
-      expect(player.reload.chips.first.value).to eq(980)
+      expect(player.reload.chips.sum(:value)).to eq(980)
     end
   end
 end

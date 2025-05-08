@@ -1,6 +1,7 @@
 class Turn < Round
   def handle_round!
     game.current_turn.end_turn!
+    game.draw(count: 1, burn_card: true)
     game.draw
   end
 end

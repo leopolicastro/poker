@@ -73,8 +73,6 @@ class Player < ApplicationRecord
     all_in: 2
   }
 
-  # after_update_commit :sync_turns, if: -> { turn_changed? && turn? }
-
   include Chippable
   include Cardable
   include Bets
@@ -101,7 +99,7 @@ class Player < ApplicationRecord
   end
 
   def hand
-    h = Hands::Hand.new(cards: cards + game.cards, player_id: id)
+    h = Hands::Hand.new(cards: cards + game.cards.not_burned, player_id: id)
     Hands::Index.new(h)
   end
 
@@ -137,12 +135,6 @@ class Player < ApplicationRecord
 
   def conditions_met?
     game.current_turn.nil? && position >= 4 && game.rounds_count == 1 && game.players.count >= 4
-  end
-
-  def sync_turns
-    game.players.where.not(id: id).each do |player|
-      player.end_turn! if player.turn?
-    end
   end
 end
 

@@ -6,6 +6,7 @@ class CreateCards < ActiveRecord::Migration[8.0]
       t.integer :position
       t.string :rank
       t.string :suit
+      t.boolean :burn_card, default: false, null: false
 
       t.timestamps
     end

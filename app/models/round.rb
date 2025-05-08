@@ -20,11 +20,11 @@ class Round < ApplicationRecord
     if type == "PreFlop" && game.current_hand.bets.where(type: "Raise").empty?
       players.active.all? do |player|
         player.bets.where(round: self).any? && (player.bets.where(round: self).sum(:amount) >= game.big_blind)
-      end && ["check", "fold"].include?(game.players.big_blind.first&.bets&.last&.bet_type)
+      end && ["Check", "Fold"].include?(game.players.big_blind.first&.bets&.last&.type)
     else
-      players.all? do |player|
+      players.active.all? do |player|
         round_bets = player.bets.where(round: self)
-        round_bets.any? { |bet| ["all_in", "fold"].include?(bet.bet_type) } ||
+        round_bets.any? { |bet| ["AllIn"].include?(bet.type) } ||
           (round_bets.any? && round_bets.sum(:amount) >= player.owes_the_pot)
       end
     end

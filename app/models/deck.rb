@@ -12,14 +12,18 @@ class Deck < ApplicationRecord
 
     # Update each card's position in a single query per card
     card_ids.zip(shuffled_positions).each do |card_id, new_position|
-      cards.where(id: card_id).update_all(position: new_position)
+      cards.where(id: card_id).update_all(
+        position: new_position,
+        cardable_id: nil,
+        cardable_type: nil
+      )
     end
   end
 
-  def draw(count: 1, cardable: nil)
+  def draw(count: 1, cardable: nil, burn_card: false)
     drawn_cards = cards.left.take(count)
     drawn_cards.map! do |card|
-      card.update!(cardable: cardable || self)
+      card.update!(cardable: cardable || self, burn_card:)
       card
     end
   end

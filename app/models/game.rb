@@ -17,14 +17,15 @@ class Game < ApplicationRecord
     finished: 2
   }
 
+  def draw(count: 1, burn_card: false)
+    deck.draw(count:, cardable: self, burn_card:)
+  end
+
   def top_hands
     player_hands = players.active.map do |player|
       Hands::Hand.new(cards: player.cards, player_id: player.id)
-      # player.hand.hand
-      # h = Hands::Hand.new(cards: cards, player_id: id)
-      # Hands::Index.new(h).hand
     end
-    res = Hands::Evaluator.find_winners(player_hands, cards)
+    res = Hands::Evaluator.find_winners(player_hands, cards.not_burned)
     res.map { |player_id| players.find(player_id) }
   end
 
@@ -60,7 +61,7 @@ class Game < ApplicationRecord
   end
 
   def in_progress!
-    hand = hands.first_or_create!
+    hand = hands.last
     hand.rounds.create!(type: "PreFlop") unless hand.rounds.any?
     super
   end
@@ -81,10 +82,6 @@ class Game < ApplicationRecord
 
   def first_player
     players.ordered.first || players.create(user: User.first)
-  end
-
-  def last_player
-    players.ordered.last
   end
 
   def next_player

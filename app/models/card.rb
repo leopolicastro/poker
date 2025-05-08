@@ -14,6 +14,9 @@ class Card < ApplicationRecord
   scope :drawn, -> { where.not(cardable: nil) }
   scope :shuffled, -> { order(position: :asc) }
   scope :updated_at_desc, -> { order(updated_at: :desc) }
+  scope :not_burned, -> { where(burn_card: false) }
+  scope :burned, -> { where(burn_card: true) }
+  scope :updated_at_asc, -> { order(updated_at: :asc) }
 
   acts_as_list scope: :deck
 
@@ -33,6 +36,7 @@ end
 # Table name: cards
 #
 #  id            :integer          not null, primary key
+#  burn_card     :boolean          default(FALSE), not null
 #  cardable_type :string
 #  position      :integer
 #  rank          :string

@@ -99,6 +99,7 @@ end
 # Table name: cards
 #
 #  id            :integer          not null, primary key
+#  burn_card     :boolean          default(FALSE), not null
 #  cardable_type :string
 #  position      :integer
 #  rank          :string

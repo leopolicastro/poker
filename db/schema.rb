@@ -31,6 +31,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_03_024706) do
     t.integer "position"
     t.string "rank"
     t.string "suit"
+    t.boolean "burn_card", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["cardable_type", "cardable_id"], name: "index_cards_on_cardable"

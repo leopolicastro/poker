@@ -1,0 +1,8 @@
+bin/rails db:drop
+bin/rails db:create
+bin/rails solid_queue:install
+bin/rails db:prepare
+
+git checkout db/cable_schema.rb
+git checkout db/cache_schema.rb
+git checkout db/queue_schema.rb
