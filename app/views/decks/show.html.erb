@@ -1,0 +1,17 @@
+<%= turbo_stream_from @deck %>
+<h2 class="text-2xl font-bold">Drawn cards</h2>
+<section class="flex flex-wrap gap-4">
+  <% @deck.cards.drawn.each do |card| %>
+    <div>
+      <%= image_tag card.image, class: "h-24" %>
+    </div>
+  <% end %>
+</section>
+<h2 class="text-2xl font-bold">Cards not drawn</h2>
+<section class="flex flex-wrap gap-4">
+  <% @deck.cards.left.each do |card| %>
+    <div>
+      <%= image_tag card.image, class: "h-24" %>
+    </div>
+  <% end %>
+</section>

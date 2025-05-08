@@ -1,9 +1,7 @@
-FactoryBot.define do
-  factory :bet do
-    association :player, factory: :player
-    association :round, factory: :round
-    amount { 1 }
-    type { "Check" }
+class Fold < Bet
+  def throw_into_pot!
+    super
+    player.folded!
   end
 end
 

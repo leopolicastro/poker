@@ -14,23 +14,17 @@ class Bet < ApplicationRecord
     lost: 2
   }
 
-  enum :bet_type, {
-    check: 0,
-    call: 1,
-    raise: 2,
-    fold: 3,
-    blinds: 4
-  }
+  BET_TYPES = %w[Check Call Raise Fold Blind AllIn].freeze
+
+  BET_TYPES.each do |type|
+    scope type, -> { where(type:) }
+  end
 
   def throw_into_pot!
     # consolidate the players chips into one chip record
     player.consolidate_chips
     # place the bet in the post
     player.split_chips(amount:, chippable: player.game)
-
-    if fold?
-      player.folded!
-    end
   end
 end
 
@@ -41,8 +35,8 @@ end
 #  id         :integer          not null, primary key
 #  amount     :integer          default(0), not null
 #  answered   :boolean          default(FALSE), not null
-#  bet_type   :integer          default("check"), not null
 #  state      :integer          default("placed"), not null
+#  type       :string           not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #  player_id  :integer          not null

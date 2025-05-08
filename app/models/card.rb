@@ -1,45 +1,23 @@
 class Card < ApplicationRecord
-  belongs_to :deck
+  RANKS = %w[2 3 4 5 6 7 8 9 10 J Q K A].freeze
+  ACE_LOW_RANKS = %w[A 2 3 4 5 6 7 8 9 10 J Q K].freeze
+  SUITS = %w[Spade Heart Diamond Club].freeze
+
+  belongs_to :deck, touch: true
   belongs_to :cardable, polymorphic: true, optional: true
 
-  acts_as_list scope: :deck
-
   validates :rank, presence: true, uniqueness: {scope: %i[deck_id suit]}
-  validates :suit, presence: true
+  validates :suit, presence: true, inclusion: {in: SUITS}
   validates :position, uniqueness: {scope: :deck_id}
-
-  scope :ordered, -> { order(position: :asc) }
-
-  include Images
 
   scope :left, -> { where(cardable: nil) }
   scope :drawn, -> { where.not(cardable: nil) }
+  scope :shuffled, -> { order(position: :asc) }
+  scope :updated_at_desc, -> { order(updated_at: :desc) }
 
-  RANKS = %w[2 3 4 5 6 7 8 9 10 Jack Queen King Ace].freeze
-  ACE_LOW_RANKS = %w[Ace 2 3 4 5 6 7 8 9 10 Jack Queen King].freeze
-  SUITS = %w[Spades Hearts Diamonds Clubs].freeze
+  acts_as_list scope: :deck
 
-  def to_s
-    "#{rank} #{suit_icon}"
-  end
-
-  def to_html
-    res = <<~HTML
-      <div class="flex flex-col gap-2 #{["Diamonds", "Hearts"].include?(suit) && "text-red-500"}">
-        #{self}
-      </div>
-    HTML
-    res.html_safe
-  end
-
-  def suit_icon
-    case suit
-    when "Spades" then "♠"
-    when "Hearts" then "♥"
-    when "Diamonds" then "♦"
-    when "Clubs" then "♣"
-    end
-  end
+  include Presenter
 
   def value
     RANKS.index(rank) + 2
@@ -47,50 +25,6 @@ class Card < ApplicationRecord
 
   def ace_low_value
     ACE_LOW_RANKS.index(rank) + 1
-  end
-
-  def ace_high_value
-    RANKS.index(rank) + 2
-  end
-
-  def image
-    "https://lbpdev.us-mia-1.linodeobjects.com/active_deck/cards/#{rank_key}#{suit_key}.png"
-  end
-
-  def self.image_mapper
-    {
-      suit: {
-        Hearts: "H",
-        Spades: "S",
-        Diamonds: "D",
-        Clubs: "C"
-      },
-      rank: {
-        Ace: "A",
-        King: "K",
-        Queen: "Q",
-        Jack: "J",
-        "10": "0",
-        "9": "9",
-        "8": "8",
-        "7": "7",
-        "6": "6",
-        "5": "5",
-        "4": "4",
-        "3": "3",
-        "2": "2"
-      }
-    }
-  end
-
-  private
-
-  def suit_key(suit = self.suit)
-    Card.image_mapper[:suit][suit.to_sym]
-  end
-
-  def rank_key(rank = self.rank)
-    Card.image_mapper[:rank][rank.to_sym]
   end
 end
 

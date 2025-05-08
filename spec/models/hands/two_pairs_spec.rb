@@ -6,13 +6,13 @@ RSpec.describe Hands::TwoPairs, type: :model do
   describe ".satisfied?" do
     it "returns true if the cards have two pairs" do
       cards = Hands::Hand.new(cards: [
-        deck.cards.find_by(rank: "7", suit: "Hearts"),
-        deck.cards.find_by(rank: "9", suit: "Clubs"),
-        deck.cards.find_by(rank: "7", suit: "Spades"),
-        deck.cards.find_by(rank: "9", suit: "Diamonds"),
-        deck.cards.find_by(rank: "2", suit: "Diamonds"),
-        deck.cards.find_by(rank: "3", suit: "Diamonds"),
-        deck.cards.find_by(rank: "4", suit: "Diamonds")
+        deck.cards.find_by(rank: "7", suit: "Heart"),
+        deck.cards.find_by(rank: "9", suit: "Club"),
+        deck.cards.find_by(rank: "7", suit: "Spade"),
+        deck.cards.find_by(rank: "9", suit: "Diamond"),
+        deck.cards.find_by(rank: "2", suit: "Diamond"),
+        deck.cards.find_by(rank: "3", suit: "Diamond"),
+        deck.cards.find_by(rank: "4", suit: "Diamond")
 
       ], player_id: 1)
 
@@ -21,13 +21,13 @@ RSpec.describe Hands::TwoPairs, type: :model do
 
     it "returns false if the cards don't have two pairs" do
       cards = Hands::Hand.new cards: [
-        deck.cards.find_by(rank: "7", suit: "Hearts"),
-        deck.cards.find_by(rank: "8", suit: "Spades"),
-        deck.cards.find_by(rank: "9", suit: "Clubs"),
-        deck.cards.find_by(rank: "10", suit: "Diamonds"),
-        deck.cards.find_by(rank: "2", suit: "Diamonds"),
-        deck.cards.find_by(rank: "3", suit: "Diamonds"),
-        deck.cards.find_by(rank: "4", suit: "Diamonds")
+        deck.cards.find_by(rank: "7", suit: "Heart"),
+        deck.cards.find_by(rank: "8", suit: "Spade"),
+        deck.cards.find_by(rank: "9", suit: "Club"),
+        deck.cards.find_by(rank: "10", suit: "Diamond"),
+        deck.cards.find_by(rank: "2", suit: "Diamond"),
+        deck.cards.find_by(rank: "3", suit: "Diamond"),
+        deck.cards.find_by(rank: "4", suit: "Diamond")
       ], player_id: 1
 
       expect(described_class.satisfied?(cards)).to eq(false)
@@ -35,13 +35,13 @@ RSpec.describe Hands::TwoPairs, type: :model do
 
     it "returns false if the cards only have one pair" do
       cards = Hands::Hand.new cards: [
-        deck.cards.find_by(rank: "7", suit: "Hearts"),
-        deck.cards.find_by(rank: "7", suit: "Spades"),
-        deck.cards.find_by(rank: "9", suit: "Clubs"),
-        deck.cards.find_by(rank: "10", suit: "Diamonds"),
-        deck.cards.find_by(rank: "2", suit: "Diamonds"),
-        deck.cards.find_by(rank: "3", suit: "Diamonds"),
-        deck.cards.find_by(rank: "4", suit: "Diamonds")
+        deck.cards.find_by(rank: "7", suit: "Heart"),
+        deck.cards.find_by(rank: "7", suit: "Spade"),
+        deck.cards.find_by(rank: "9", suit: "Club"),
+        deck.cards.find_by(rank: "10", suit: "Diamond"),
+        deck.cards.find_by(rank: "2", suit: "Diamond"),
+        deck.cards.find_by(rank: "3", suit: "Diamond"),
+        deck.cards.find_by(rank: "4", suit: "Diamond")
       ], player_id: 1
 
       expect(described_class.satisfied?(cards)).to eq(false)
@@ -54,18 +54,18 @@ RSpec.describe Hands::TwoPairs, type: :model do
 
     let(:extras) {
       [
-        deck.cards.find_by(rank: "2", suit: "Spades"),
-        deck.cards.find_by(rank: "3", suit: "Clubs")
+        deck.cards.find_by(rank: "2", suit: "Spade"),
+        deck.cards.find_by(rank: "3", suit: "Club")
       ]
     }
 
     let(:top_five) {
       [
-        deck.cards.find_by(rank: "5", suit: "Hearts"),
-        deck.cards.find_by(rank: "5", suit: "Spades"),
-        deck.cards.find_by(rank: "10", suit: "Diamonds"),
-        deck.cards.find_by(rank: "9", suit: "Clubs"),
-        deck.cards.find_by(rank: "9", suit: "Spades")
+        deck.cards.find_by(rank: "5", suit: "Heart"),
+        deck.cards.find_by(rank: "5", suit: "Spade"),
+        deck.cards.find_by(rank: "10", suit: "Diamond"),
+        deck.cards.find_by(rank: "9", suit: "Club"),
+        deck.cards.find_by(rank: "9", suit: "Spade")
 
       ]
     }

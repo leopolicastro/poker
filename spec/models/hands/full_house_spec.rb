@@ -4,17 +4,17 @@ RSpec.describe Hands::FullHouse, type: :model do
   let(:deck) { create(:deck) }
   let(:full_house) {
     [
-      deck.cards.find_by(rank: "2", suit: "Hearts"),
-      deck.cards.find_by(rank: "2", suit: "Spades"),
-      deck.cards.find_by(rank: "3", suit: "Diamonds"),
-      deck.cards.find_by(rank: "2", suit: "Clubs"),
-      deck.cards.find_by(rank: "3", suit: "Hearts")
+      deck.cards.find_by(rank: "2", suit: "Heart"),
+      deck.cards.find_by(rank: "2", suit: "Spade"),
+      deck.cards.find_by(rank: "3", suit: "Diamond"),
+      deck.cards.find_by(rank: "2", suit: "Club"),
+      deck.cards.find_by(rank: "3", suit: "Heart")
     ]
   }
   let(:extras) {
     [
-      deck.cards.find_by(rank: "8", suit: "Diamonds"),
-      deck.cards.find_by(rank: "7", suit: "Diamonds")
+      deck.cards.find_by(rank: "8", suit: "Diamond"),
+      deck.cards.find_by(rank: "7", suit: "Diamond")
     ]
   }
   let(:cards) { (full_house + extras).shuffle }
@@ -30,11 +30,11 @@ RSpec.describe Hands::FullHouse, type: :model do
     context "when there are no three cards with the same rank and two cards with the same rank" do
       let(:full_house) {  # not a full house
         [
-          deck.cards.find_by(rank: "2", suit: "Hearts"),
-          deck.cards.find_by(rank: "9", suit: "Spades"),
-          deck.cards.find_by(rank: "8", suit: "Clubs"),
-          deck.cards.find_by(rank: "3", suit: "Diamonds"),
-          deck.cards.find_by(rank: "3", suit: "Hearts")
+          deck.cards.find_by(rank: "2", suit: "Heart"),
+          deck.cards.find_by(rank: "9", suit: "Spade"),
+          deck.cards.find_by(rank: "8", suit: "Club"),
+          deck.cards.find_by(rank: "3", suit: "Diamond"),
+          deck.cards.find_by(rank: "3", suit: "Heart")
         ]
       }
 
@@ -56,11 +56,11 @@ RSpec.describe Hands::FullHouse, type: :model do
     context "when there are multiple possible full houses" do
       let(:full_house) {
         [
-          deck.cards.find_by(rank: "8", suit: "Hearts"),
-          deck.cards.find_by(rank: "7", suit: "Spades"),
-          deck.cards.find_by(rank: "8", suit: "Diamonds"),
-          deck.cards.find_by(rank: "2", suit: "Clubs"),
-          deck.cards.find_by(rank: "2", suit: "Hearts")
+          deck.cards.find_by(rank: "8", suit: "Heart"),
+          deck.cards.find_by(rank: "7", suit: "Spade"),
+          deck.cards.find_by(rank: "8", suit: "Diamond"),
+          deck.cards.find_by(rank: "2", suit: "Club"),
+          deck.cards.find_by(rank: "2", suit: "Heart")
 
         ]
       }

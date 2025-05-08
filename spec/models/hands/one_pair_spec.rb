@@ -6,13 +6,13 @@ RSpec.describe Hands::OnePair, type: :model do
   describe ".satisfied?" do
     it "returns true if the cards have one pair" do
       cards = Hands::Hand.new(cards: [
-        deck.cards.find_by(rank: "7", suit: "Hearts"),
-        deck.cards.find_by(rank: "9", suit: "Clubs"),
-        deck.cards.find_by(rank: "7", suit: "Spades"),
-        deck.cards.find_by(rank: "10", suit: "Diamonds"),
-        deck.cards.find_by(rank: "3", suit: "Clubs"),
-        deck.cards.find_by(rank: "2", suit: "Spades"),
-        deck.cards.find_by(rank: "8", suit: "Spades")
+        deck.cards.find_by(rank: "7", suit: "Heart"),
+        deck.cards.find_by(rank: "9", suit: "Club"),
+        deck.cards.find_by(rank: "7", suit: "Spade"),
+        deck.cards.find_by(rank: "10", suit: "Diamond"),
+        deck.cards.find_by(rank: "3", suit: "Club"),
+        deck.cards.find_by(rank: "2", suit: "Spade"),
+        deck.cards.find_by(rank: "8", suit: "Spade")
       ], player_id: 1)
 
       expect(Hands::OnePair.satisfied?(cards)).to eq(true)
@@ -20,12 +20,12 @@ RSpec.describe Hands::OnePair, type: :model do
 
     it "returns false if the cards don't have one pair" do
       cards = Hands::Hand.new(cards: [
-        deck.cards.find_by(rank: "7", suit: "Hearts"),
-        deck.cards.find_by(rank: "8", suit: "Spades"),
-        deck.cards.find_by(rank: "9", suit: "Clubs"),
-        deck.cards.find_by(rank: "10", suit: "Diamonds"),
-        deck.cards.find_by(rank: "3", suit: "Clubs"),
-        deck.cards.find_by(rank: "4", suit: "Spades")
+        deck.cards.find_by(rank: "7", suit: "Heart"),
+        deck.cards.find_by(rank: "8", suit: "Spade"),
+        deck.cards.find_by(rank: "9", suit: "Club"),
+        deck.cards.find_by(rank: "10", suit: "Diamond"),
+        deck.cards.find_by(rank: "3", suit: "Club"),
+        deck.cards.find_by(rank: "4", suit: "Spade")
       ], player_id: 1)
 
       expect(Hands::OnePair.satisfied?(cards)).to eq(false)
@@ -37,18 +37,18 @@ RSpec.describe Hands::OnePair, type: :model do
 
     let(:extras) {
       [
-        deck.cards.find_by(rank: "2", suit: "Spades"),
-        deck.cards.find_by(rank: "3", suit: "Clubs")
+        deck.cards.find_by(rank: "2", suit: "Spade"),
+        deck.cards.find_by(rank: "3", suit: "Club")
       ]
     }
 
     let(:top_five) {
       [
-        deck.cards.find_by(rank: "7", suit: "Hearts"),
-        deck.cards.find_by(rank: "7", suit: "Spades"),
-        deck.cards.find_by(rank: "10", suit: "Diamonds"),
-        deck.cards.find_by(rank: "9", suit: "Clubs"),
-        deck.cards.find_by(rank: "8", suit: "Spades")
+        deck.cards.find_by(rank: "7", suit: "Heart"),
+        deck.cards.find_by(rank: "7", suit: "Spade"),
+        deck.cards.find_by(rank: "10", suit: "Diamond"),
+        deck.cards.find_by(rank: "9", suit: "Club"),
+        deck.cards.find_by(rank: "8", suit: "Spade")
 
       ]
     }

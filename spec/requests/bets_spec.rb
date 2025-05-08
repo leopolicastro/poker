@@ -2,7 +2,8 @@ require "rails_helper"
 
 RSpec.describe "Bets", type: :request do
   let(:game) { create(:game) }
-  let(:round) { create(:pre_flop, game:) }
+  let(:hand) { create(:game_hand, game:) }
+  let(:round) { create(:pre_flop, hand:) }
 
   let(:player) { create(:player, game:, user:) }
   let(:session) { create(:session, user:) }

@@ -2,7 +2,7 @@ FactoryBot.define do
   factory :card do
     association :deck
     rank { "2" }
-    suit { "Hearts" }
+    suit { "Heart" }
   end
 
   # factory :player_card, parent: :card do

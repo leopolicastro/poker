@@ -21,7 +21,6 @@ module Hands
       # Get the top five cards for both hands
       my_top_five = self.class.top_five(hand)
       other_top_five = self.class.top_five(other.hand)
-
       # For one pair hands, we need to compare the pairs first, then the kickers
       if self.class == Hands::OnePair
         # Get the pair values
@@ -40,7 +39,6 @@ module Hands
           comparison = my_card.value <=> other_card.value
           return comparison unless comparison.zero?
         end
-
         return 0
       end
 

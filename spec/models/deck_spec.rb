@@ -3,10 +3,6 @@ require "rails_helper"
 RSpec.describe Deck, type: :model do
   let(:deck) { create(:deck) }
 
-  before do
-    deck.shuffle!
-  end
-
   describe "factories" do
     it "has a valid factory" do
       expect(build(:deck)).to be_valid
@@ -55,16 +51,19 @@ RSpec.describe Deck, type: :model do
 
   describe "find_card" do
     it "returns the card with the given rank and suit" do
-      card = deck.find_card("Ace", "Hearts")
+      card = deck.find_card("A", "Heart")
       expect(card).to be_an_instance_of(Card)
-      expect(card.rank).to eq("Ace")
-      expect(card.suit).to eq("Hearts")
+      expect(card.rank).to eq("A")
+      expect(card.suit).to eq("Heart")
     end
   end
 
-  describe "shuffle" do
+  describe "shuffle!" do
     it "returns the deck" do
-      expect(deck.shuffle!).to eq(deck)
+      pre_shuffle_cards = deck.cards.pluck(:rank, :suit)
+      deck.shuffle!
+      post_shuffle_cards = deck.cards.pluck(:rank, :suit)
+      expect(post_shuffle_cards).not_to eq(pre_shuffle_cards)
     end
 
     it "shuffles the deck" do
@@ -74,19 +73,37 @@ RSpec.describe Deck, type: :model do
       expect(new_cards).not_to eq(current_cards)
     end
   end
+
+  describe "setup!" do
+    it "creates 52 cards" do
+      expect(deck.cards.count).to eq(52)
+    end
+
+    context "when the deck is created" do
+      let(:deck) { build(:deck) }
+      it "shuffles the cards" do
+        allow(deck).to receive(:shuffle!)
+        deck.save!
+        expect(deck).to have_received(:shuffle!)
+      end
+    end
+  end
 end
 
 # == Schema Information
 #
 # Table name: decks
 #
-#  id            :integer          not null, primary key
-#  deckable_type :string
-#  created_at    :datetime         not null
-#  updated_at    :datetime         not null
-#  deckable_id   :integer
+#  id         :integer          not null, primary key
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#  game_id    :integer
 #
 # Indexes
 #
-#  index_decks_on_deckable  (deckable_type,deckable_id)
+#  index_decks_on_game_id  (game_id)
+#
+# Foreign Keys
+#
+#  game_id  (game_id => games.id)
 #

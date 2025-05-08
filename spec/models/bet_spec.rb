@@ -10,8 +10,8 @@ RSpec.describe Bet, type: :model do
   let(:player2) { create(:player, game:) }
   let(:hand) { create(:game_hand, game:) }
   let(:round) { hand.rounds.first }
-  let(:bet) { create(:bet, player:, amount: 20, round:, bet_type: :check) }
-  let(:bet2) { create(:bet, player: player2, amount: 20, round:, bet_type: :check) }
+  let(:bet) { create(:bet, player:, amount: 20, round:, type: "Check") }
+  let(:bet2) { create(:bet, player: player2, amount: 20, round:, type: "Check") }
 
   describe "#payout_winner!" do
     let(:game) { GameSimulatorService.run(players_count: 2) }
@@ -19,8 +19,8 @@ RSpec.describe Bet, type: :model do
     let(:player2) { game.players.second }
 
     before do
-      player.place_bet!(amount: player.owes_the_pot, bet_type: :check)
-      player2.place_bet!(amount: player2.owes_the_pot, bet_type: :check)
+      player.place_bet!(amount: player.owes_the_pot, type: "Check")
+      player2.place_bet!(amount: player2.owes_the_pot, type: "Check")
       hand = game.hands.last
     end
 
@@ -44,8 +44,8 @@ end
 #  id         :integer          not null, primary key
 #  amount     :integer          default(0), not null
 #  answered   :boolean          default(FALSE), not null
-#  bet_type   :integer          default("check"), not null
 #  state      :integer          default("placed"), not null
+#  type       :string           not null
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #  player_id  :integer          not null

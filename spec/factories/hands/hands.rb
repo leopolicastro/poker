@@ -6,13 +6,13 @@ FactoryBot.define do
 
     cards do
       [
-        deck.cards.find_by(rank: "2", suit: "Hearts"),
-        deck.cards.find_by(rank: "3", suit: "Clubs"),
-        deck.cards.find_by(rank: "4", suit: "Spades"),
-        deck.cards.find_by(rank: "5", suit: "Diamonds"),
-        deck.cards.find_by(rank: "9", suit: "Diamonds"),
-        deck.cards.find_by(rank: "8", suit: "Diamonds"),
-        deck.cards.find_by(rank: "7", suit: "Diamonds")
+        deck.cards.find_by(rank: "2", suit: "Heart"),
+        deck.cards.find_by(rank: "3", suit: "Club"),
+        deck.cards.find_by(rank: "4", suit: "Spade"),
+        deck.cards.find_by(rank: "5", suit: "Diamond"),
+        deck.cards.find_by(rank: "9", suit: "Diamond"),
+        deck.cards.find_by(rank: "8", suit: "Diamond"),
+        deck.cards.find_by(rank: "7", suit: "Diamond")
       ]
     end
 
@@ -24,13 +24,13 @@ FactoryBot.define do
   factory :high_card, parent: :hand do
     cards do
       [
-        deck.cards.find_by(rank: "2", suit: "Hearts"),
-        deck.cards.find_by(rank: "3", suit: "Clubs"),
-        deck.cards.find_by(rank: "4", suit: "Spades"),
-        deck.cards.find_by(rank: "5", suit: "Diamonds"),
-        deck.cards.find_by(rank: "9", suit: "Diamonds"),
-        deck.cards.find_by(rank: "8", suit: "Diamonds"),
-        deck.cards.find_by(rank: "Ace", suit: "Diamonds")
+        deck.cards.find_by(rank: "2", suit: "Heart"),
+        deck.cards.find_by(rank: "3", suit: "Club"),
+        deck.cards.find_by(rank: "4", suit: "Spade"),
+        deck.cards.find_by(rank: "5", suit: "Diamond"),
+        deck.cards.find_by(rank: "9", suit: "Diamond"),
+        deck.cards.find_by(rank: "8", suit: "Diamond"),
+        deck.cards.find_by(rank: "A", suit: "Diamond")
       ]
     end
   end
@@ -38,13 +38,13 @@ FactoryBot.define do
   factory :one_pair, parent: :hand do
     cards do
       [
-        deck.cards.find_by(rank: "2", suit: "Hearts"),
-        deck.cards.find_by(rank: "2", suit: "Clubs"),
-        deck.cards.find_by(rank: "4", suit: "Spades"),
-        deck.cards.find_by(rank: "5", suit: "Diamonds"),
-        deck.cards.find_by(rank: "9", suit: "Diamonds"),
-        deck.cards.find_by(rank: "8", suit: "Diamonds"),
-        deck.cards.find_by(rank: "7", suit: "Diamonds")
+        deck.cards.find_by(rank: "2", suit: "Heart"),
+        deck.cards.find_by(rank: "2", suit: "Club"),
+        deck.cards.find_by(rank: "4", suit: "Spade"),
+        deck.cards.find_by(rank: "5", suit: "Diamond"),
+        deck.cards.find_by(rank: "9", suit: "Diamond"),
+        deck.cards.find_by(rank: "8", suit: "Diamond"),
+        deck.cards.find_by(rank: "7", suit: "Diamond")
       ]
     end
   end
@@ -52,13 +52,13 @@ FactoryBot.define do
   factory :two_pairs, parent: :hand do
     cards do
       [
-        deck.cards.find_by(rank: "2", suit: "Hearts"),
-        deck.cards.find_by(rank: "2", suit: "Clubs"),
-        deck.cards.find_by(rank: "4", suit: "Spades"),
-        deck.cards.find_by(rank: "4", suit: "Diamonds"),
-        deck.cards.find_by(rank: "9", suit: "Diamonds"),
-        deck.cards.find_by(rank: "8", suit: "Diamonds"),
-        deck.cards.find_by(rank: "7", suit: "Diamonds")
+        deck.cards.find_by(rank: "2", suit: "Heart"),
+        deck.cards.find_by(rank: "2", suit: "Club"),
+        deck.cards.find_by(rank: "4", suit: "Spade"),
+        deck.cards.find_by(rank: "4", suit: "Diamond"),
+        deck.cards.find_by(rank: "9", suit: "Diamond"),
+        deck.cards.find_by(rank: "8", suit: "Diamond"),
+        deck.cards.find_by(rank: "7", suit: "Diamond")
       ]
     end
   end
@@ -66,13 +66,13 @@ FactoryBot.define do
   factory :three_of_a_kind, parent: :hand do
     cards do
       [
-        deck.cards.find_by(rank: "2", suit: "Hearts"),
-        deck.cards.find_by(rank: "2", suit: "Clubs"),
-        deck.cards.find_by(rank: "2", suit: "Spades"),
-        deck.cards.find_by(rank: "5", suit: "Diamonds"),
-        deck.cards.find_by(rank: "9", suit: "Diamonds"),
-        deck.cards.find_by(rank: "8", suit: "Diamonds"),
-        deck.cards.find_by(rank: "7", suit: "Diamonds")
+        deck.cards.find_by(rank: "2", suit: "Heart"),
+        deck.cards.find_by(rank: "2", suit: "Club"),
+        deck.cards.find_by(rank: "2", suit: "Spade"),
+        deck.cards.find_by(rank: "5", suit: "Diamond"),
+        deck.cards.find_by(rank: "9", suit: "Diamond"),
+        deck.cards.find_by(rank: "8", suit: "Diamond"),
+        deck.cards.find_by(rank: "7", suit: "Diamond")
       ]
     end
   end
@@ -80,13 +80,13 @@ FactoryBot.define do
   factory :straight, parent: :hand do
     cards do
       [
-        deck.cards.find_by(rank: "10", suit: "Hearts"),
-        deck.cards.find_by(rank: "Jack", suit: "Clubs"),
-        deck.cards.find_by(rank: "4", suit: "Spades"),
-        deck.cards.find_by(rank: "5", suit: "Diamonds"),
-        deck.cards.find_by(rank: "6", suit: "Diamonds"),
-        deck.cards.find_by(rank: "8", suit: "Diamonds"),
-        deck.cards.find_by(rank: "7", suit: "Diamonds")
+        deck.cards.find_by(rank: "10", suit: "Heart"),
+        deck.cards.find_by(rank: "J", suit: "Club"),
+        deck.cards.find_by(rank: "4", suit: "Spade"),
+        deck.cards.find_by(rank: "5", suit: "Diamond"),
+        deck.cards.find_by(rank: "6", suit: "Diamond"),
+        deck.cards.find_by(rank: "8", suit: "Diamond"),
+        deck.cards.find_by(rank: "7", suit: "Diamond")
       ]
     end
   end
@@ -94,13 +94,13 @@ FactoryBot.define do
   factory :flush, parent: :hand do
     cards do
       [
-        deck.cards.find_by(rank: "2", suit: "Hearts"),
-        deck.cards.find_by(rank: "3", suit: "Hearts"),
-        deck.cards.find_by(rank: "4", suit: "Hearts"),
-        deck.cards.find_by(rank: "5", suit: "Hearts"),
-        deck.cards.find_by(rank: "9", suit: "Hearts"),
-        deck.cards.find_by(rank: "8", suit: "Hearts"),
-        deck.cards.find_by(rank: "7", suit: "Hearts")
+        deck.cards.find_by(rank: "2", suit: "Heart"),
+        deck.cards.find_by(rank: "3", suit: "Heart"),
+        deck.cards.find_by(rank: "4", suit: "Heart"),
+        deck.cards.find_by(rank: "5", suit: "Heart"),
+        deck.cards.find_by(rank: "9", suit: "Heart"),
+        deck.cards.find_by(rank: "8", suit: "Heart"),
+        deck.cards.find_by(rank: "7", suit: "Heart")
       ]
     end
   end
@@ -108,13 +108,13 @@ FactoryBot.define do
   factory :full_house, parent: :hand do
     cards do
       [
-        deck.cards.find_by(rank: "2", suit: "Hearts"),
-        deck.cards.find_by(rank: "2", suit: "Clubs"),
-        deck.cards.find_by(rank: "2", suit: "Spades"),
-        deck.cards.find_by(rank: "5", suit: "Diamonds"),
-        deck.cards.find_by(rank: "5", suit: "Hearts"),
-        deck.cards.find_by(rank: "8", suit: "Diamonds"),
-        deck.cards.find_by(rank: "7", suit: "Diamonds")
+        deck.cards.find_by(rank: "2", suit: "Heart"),
+        deck.cards.find_by(rank: "2", suit: "Club"),
+        deck.cards.find_by(rank: "2", suit: "Spade"),
+        deck.cards.find_by(rank: "5", suit: "Diamond"),
+        deck.cards.find_by(rank: "5", suit: "Heart"),
+        deck.cards.find_by(rank: "8", suit: "Diamond"),
+        deck.cards.find_by(rank: "7", suit: "Diamond")
       ]
     end
   end
@@ -122,13 +122,13 @@ FactoryBot.define do
   factory :four_of_a_kind, parent: :hand do
     cards do
       [
-        deck.cards.find_by(rank: "2", suit: "Hearts"),
-        deck.cards.find_by(rank: "2", suit: "Clubs"),
-        deck.cards.find_by(rank: "2", suit: "Spades"),
-        deck.cards.find_by(rank: "2", suit: "Diamonds"),
-        deck.cards.find_by(rank: "9", suit: "Diamonds"),
-        deck.cards.find_by(rank: "8", suit: "Diamonds"),
-        deck.cards.find_by(rank: "7", suit: "Diamonds")
+        deck.cards.find_by(rank: "2", suit: "Heart"),
+        deck.cards.find_by(rank: "2", suit: "Club"),
+        deck.cards.find_by(rank: "2", suit: "Spade"),
+        deck.cards.find_by(rank: "2", suit: "Diamond"),
+        deck.cards.find_by(rank: "9", suit: "Diamond"),
+        deck.cards.find_by(rank: "8", suit: "Diamond"),
+        deck.cards.find_by(rank: "7", suit: "Diamond")
       ]
     end
   end
@@ -136,13 +136,13 @@ FactoryBot.define do
   factory :straight_flush, parent: :hand do
     cards do
       [
-        deck.cards.find_by(rank: "10", suit: "Hearts"),
-        deck.cards.find_by(rank: "Jack", suit: "Hearts"),
-        deck.cards.find_by(rank: "Queen", suit: "Hearts"),
-        deck.cards.find_by(rank: "King", suit: "Hearts"),
-        deck.cards.find_by(rank: "Ace", suit: "Hearts"),
-        deck.cards.find_by(rank: "8", suit: "Diamonds"),
-        deck.cards.find_by(rank: "7", suit: "Diamonds")
+        deck.cards.find_by(rank: "10", suit: "Heart"),
+        deck.cards.find_by(rank: "J", suit: "Heart"),
+        deck.cards.find_by(rank: "Q", suit: "Heart"),
+        deck.cards.find_by(rank: "K", suit: "Heart"),
+        deck.cards.find_by(rank: "A", suit: "Heart"),
+        deck.cards.find_by(rank: "8", suit: "Diamond"),
+        deck.cards.find_by(rank: "7", suit: "Diamond")
       ]
     end
   end

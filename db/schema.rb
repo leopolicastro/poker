@@ -15,7 +15,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_03_024706) do
     t.integer "player_id", null: false
     t.integer "round_id", null: false
     t.integer "amount", default: 0, null: false
-    t.integer "bet_type", default: 0, null: false
+    t.string "type", null: false
     t.integer "state", default: 0, null: false
     t.boolean "answered", default: false, null: false
     t.datetime "created_at", null: false
@@ -47,11 +47,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_03_024706) do
   end
 
   create_table "decks", force: :cascade do |t|
-    t.string "deckable_type"
-    t.integer "deckable_id"
+    t.integer "game_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["deckable_type", "deckable_id"], name: "index_decks_on_deckable"
+    t.index ["game_id"], name: "index_decks_on_game_id"
   end
 
   create_table "games", force: :cascade do |t|
@@ -114,6 +113,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_03_024706) do
   add_foreign_key "bets", "players"
   add_foreign_key "bets", "rounds"
   add_foreign_key "cards", "decks"
+  add_foreign_key "decks", "games"
   add_foreign_key "hands", "games"
   add_foreign_key "players", "games"
   add_foreign_key "players", "users"

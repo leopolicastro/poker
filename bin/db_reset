@@ -1,1 +1,1 @@
-rails db:drop:primary db:create:primary db:migrate:primary db:seed
+rails db:drop:primary db:create:primary db:migrate db:seed

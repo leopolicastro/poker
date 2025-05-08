@@ -6,26 +6,26 @@ RSpec.describe Hands::ThreeOfAKind, type: :model do
   describe ".satisfied" do
     it "returns true when there are three cards with the same rank" do
       cards = Hands::Hand.new(cards: [
-        deck.cards.find_by(rank: "2", suit: "Hearts"),
-        deck.cards.find_by(rank: "2", suit: "Clubs"),
-        deck.cards.find_by(rank: "2", suit: "Spades"),
-        deck.cards.find_by(rank: "3", suit: "Diamonds"),
-        deck.cards.find_by(rank: "9", suit: "Diamonds"),
-        deck.cards.find_by(rank: "8", suit: "Diamonds"),
-        deck.cards.find_by(rank: "7", suit: "Diamonds")
+        deck.cards.find_by(rank: "2", suit: "Heart"),
+        deck.cards.find_by(rank: "2", suit: "Club"),
+        deck.cards.find_by(rank: "2", suit: "Spade"),
+        deck.cards.find_by(rank: "3", suit: "Diamond"),
+        deck.cards.find_by(rank: "9", suit: "Diamond"),
+        deck.cards.find_by(rank: "8", suit: "Diamond"),
+        deck.cards.find_by(rank: "7", suit: "Diamond")
       ], player_id: 1)
       expect(described_class.satisfied?(cards)).to be_truthy
     end
 
     it "returns false when there are no three cards with the same rank" do
       cards = Hands::Hand.new(cards: [
-        deck.cards.find_by(rank: "2", suit: "Hearts"),
-        deck.cards.find_by(rank: "3", suit: "Clubs"),
-        deck.cards.find_by(rank: "4", suit: "Spades"),
-        deck.cards.find_by(rank: "5", suit: "Diamonds"),
-        deck.cards.find_by(rank: "9", suit: "Diamonds"),
-        deck.cards.find_by(rank: "8", suit: "Diamonds"),
-        deck.cards.find_by(rank: "7", suit: "Diamonds")
+        deck.cards.find_by(rank: "2", suit: "Heart"),
+        deck.cards.find_by(rank: "3", suit: "Club"),
+        deck.cards.find_by(rank: "4", suit: "Spade"),
+        deck.cards.find_by(rank: "5", suit: "Diamond"),
+        deck.cards.find_by(rank: "9", suit: "Diamond"),
+        deck.cards.find_by(rank: "8", suit: "Diamond"),
+        deck.cards.find_by(rank: "7", suit: "Diamond")
       ], player_id: 1)
 
       expect(described_class.satisfied?(cards)).to be_falsey
@@ -38,18 +38,18 @@ RSpec.describe Hands::ThreeOfAKind, type: :model do
 
     let(:extras) {
       [
-        deck.cards.find_by(rank: "2", suit: "Spades"),
-        deck.cards.find_by(rank: "3", suit: "Clubs")
+        deck.cards.find_by(rank: "2", suit: "Spade"),
+        deck.cards.find_by(rank: "3", suit: "Club")
       ]
     }
 
     let(:top_five) {
       [
-        deck.cards.find_by(rank: "9", suit: "Spades"),
-        deck.cards.find_by(rank: "9", suit: "Hearts"),
-        deck.cards.find_by(rank: "9", suit: "Clubs"),
-        deck.cards.find_by(rank: "10", suit: "Diamonds"),
-        deck.cards.find_by(rank: "4", suit: "Spades")
+        deck.cards.find_by(rank: "9", suit: "Spade"),
+        deck.cards.find_by(rank: "9", suit: "Heart"),
+        deck.cards.find_by(rank: "9", suit: "Club"),
+        deck.cards.find_by(rank: "10", suit: "Diamond"),
+        deck.cards.find_by(rank: "4", suit: "Spade")
 
       ]
     }

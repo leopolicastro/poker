@@ -6,18 +6,18 @@ RSpec.describe Hands::FourOfAKind, type: :model do
 
   let(:extras) {
     [
-      deck.cards.find_by(rank: "2", suit: "Spades"),
-      deck.cards.find_by(rank: "9", suit: "Diamonds")
+      deck.cards.find_by(rank: "2", suit: "Spade"),
+      deck.cards.find_by(rank: "9", suit: "Diamond")
     ]
   }
 
   let(:top_five) {
     [
-      deck.cards.find_by(rank: "9", suit: "Spades"),
-      deck.cards.find_by(rank: "9", suit: "Hearts"),
-      deck.cards.find_by(rank: "9", suit: "Clubs"),
-      deck.cards.find_by(rank: "10", suit: "Diamonds"),
-      deck.cards.find_by(rank: "4", suit: "Spades")
+      deck.cards.find_by(rank: "9", suit: "Spade"),
+      deck.cards.find_by(rank: "9", suit: "Heart"),
+      deck.cards.find_by(rank: "9", suit: "Club"),
+      deck.cards.find_by(rank: "10", suit: "Diamond"),
+      deck.cards.find_by(rank: "4", suit: "Spade")
 
     ]
   }
@@ -33,11 +33,11 @@ RSpec.describe Hands::FourOfAKind, type: :model do
     context "when there are no four cards with the same rank" do
       let(:top_five) {  # not four of a kind
         [
-          deck.cards.find_by(rank: "9", suit: "Spades"),
-          deck.cards.find_by(rank: "9", suit: "Hearts"),
-          deck.cards.find_by(rank: "8", suit: "Clubs"),
-          deck.cards.find_by(rank: "10", suit: "Diamonds"),
-          deck.cards.find_by(rank: "4", suit: "Spades")
+          deck.cards.find_by(rank: "9", suit: "Spade"),
+          deck.cards.find_by(rank: "9", suit: "Heart"),
+          deck.cards.find_by(rank: "8", suit: "Club"),
+          deck.cards.find_by(rank: "10", suit: "Diamond"),
+          deck.cards.find_by(rank: "4", suit: "Spade")
         ]
       }
 
@@ -55,13 +55,13 @@ RSpec.describe Hands::FourOfAKind, type: :model do
     context "with an A kicker" do
       let(:extras) {
         [
-          deck.cards.find_by(rank: "Ace", suit: "Spades"),
-          deck.cards.find_by(rank: "9", suit: "Diamonds")
+          deck.cards.find_by(rank: "A", suit: "Spade"),
+          deck.cards.find_by(rank: "9", suit: "Diamond")
         ]
       }
 
       it "returns the four cards with the same rank and the next highest card" do
-        expect(described_class.top_five(hand).map(&:to_s)).to eq(["9 ♣", "9 ♦", "9 ♥", "9 ♠", "Ace ♠"])
+        expect(described_class.top_five(hand).map(&:to_s)).to eq(["9 ♣", "9 ♦", "9 ♥", "9 ♠", "A ♠"])
       end
     end
   end

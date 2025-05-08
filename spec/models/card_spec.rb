@@ -19,7 +19,7 @@ RSpec.describe Card, type: :model do
 
   describe "instance methods" do
     let(:deck) { create(:deck) }
-    let(:card) { deck.find_card("2", "Hearts") }
+    let(:card) { deck.find_card("2", "Heart") }
 
     describe "#to_s" do
       it "returns the rank and suit icon" do
@@ -29,7 +29,7 @@ RSpec.describe Card, type: :model do
 
     describe "#suit_icon" do
       it "returns the suit icon" do
-        expect(card.suit_icon).to eq("♥")
+        expect(card.send(:suit_icon)).to eq("♥")
       end
     end
 
@@ -38,19 +38,12 @@ RSpec.describe Card, type: :model do
         expect(card.value).to eq(2)
       end
     end
-
-    describe "#ace_low_value" do
-      let(:card) { deck.find_card("Ace", "Hearts") }
-      it "returns the ace low value of the card" do
-        expect(card.ace_low_value).to eq(1)
-      end
-    end
   end
 
   describe "scopes" do
     describe ".drawn" do
       let(:deck) { create(:deck) }
-      let(:card) { deck.find_card("2", "Hearts") }
+      let(:card) { deck.find_card("2", "Heart") }
       let(:player) { create(:player) }
 
       it "returns drawn cards" do
@@ -61,7 +54,7 @@ RSpec.describe Card, type: :model do
 
     describe ".left" do
       let(:deck) { create(:deck) }
-      let(:card) { deck.find_card("2", "Hearts") }
+      let(:card) { deck.find_card("2", "Heart") }
 
       it "returns cards left" do
         expect(Card.left).to include(card)
@@ -71,26 +64,26 @@ RSpec.describe Card, type: :model do
 
   describe "constants" do
     it "has RANKS" do
-      expect(Card::RANKS).to eq(%w[2 3 4 5 6 7 8 9 10 Jack Queen King Ace])
+      expect(Card::RANKS).to eq(%w[2 3 4 5 6 7 8 9 10 J Q K A])
     end
 
     it "has ACE_LOW_RANKS" do
-      expect(Card::ACE_LOW_RANKS).to eq(%w[Ace 2 3 4 5 6 7 8 9 10 Jack Queen King])
+      expect(Card::ACE_LOW_RANKS).to eq(%w[A 2 3 4 5 6 7 8 9 10 J Q K])
     end
 
     it "has SUITS" do
-      expect(Card::SUITS).to eq(%w[Spades Hearts Diamonds Clubs])
+      expect(Card::SUITS).to eq(%w[Spade Heart Diamond Club])
     end
   end
 
   describe "concerns" do
     it "includes Images" do
-      expect(Card.included_modules).to include(Card::Images)
+      expect(Card.included_modules).to include(Card::Presenter)
     end
 
     describe "Images" do
       let(:deck) { create(:deck) }
-      let(:card) { deck.find_card("2", "Hearts") }
+      let(:card) { deck.find_card("2", "Heart") }
 
       describe "#image" do
         it "returns the card image" do

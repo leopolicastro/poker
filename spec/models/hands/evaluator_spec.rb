@@ -4,15 +4,15 @@ RSpec.describe Hands::Evaluator, type: :module do
   let(:game) { create(:game) }
   let(:player1) { create(:player, game:) }
   let(:player2) { create(:player, game:) }
-  let(:deck) { create(:deck, deckable: game) }
+  let(:deck) { create(:deck, game:) }
 
   let(:board) {
     [
-      deck.cards.find_by(rank: "2", suit: "Spades"),
-      deck.cards.find_by(rank: "3", suit: "Clubs"),
-      deck.cards.find_by(rank: "4", suit: "Spades"),
-      deck.cards.find_by(rank: "7", suit: "Clubs"),
-      deck.cards.find_by(rank: "9", suit: "Clubs")
+      deck.cards.find_by(rank: "2", suit: "Spade"),
+      deck.cards.find_by(rank: "3", suit: "Club"),
+      deck.cards.find_by(rank: "4", suit: "Spade"),
+      deck.cards.find_by(rank: "7", suit: "Club"),
+      deck.cards.find_by(rank: "9", suit: "Club")
     ]
   }
   let(:player2_cards) { [] }
@@ -33,17 +33,17 @@ RSpec.describe Hands::Evaluator, type: :module do
     context "when the best hand is a pair" do
       let(:board) {
         [
-          deck.cards.find_by(rank: "2", suit: "Spades"),
-          deck.cards.find_by(rank: "4", suit: "Clubs"),
-          deck.cards.find_by(rank: "7", suit: "Spades"),
-          deck.cards.find_by(rank: "8", suit: "Clubs"),
-          deck.cards.find_by(rank: "10", suit: "Clubs")
+          deck.cards.find_by(rank: "2", suit: "Spade"),
+          deck.cards.find_by(rank: "4", suit: "Club"),
+          deck.cards.find_by(rank: "7", suit: "Spade"),
+          deck.cards.find_by(rank: "8", suit: "Club"),
+          deck.cards.find_by(rank: "10", suit: "Club")
         ]
       }
       let(:cards) {
         [
-          deck.cards.find_by(rank: "6", suit: "Hearts"),
-          deck.cards.find_by(rank: "8", suit: "Hearts")
+          deck.cards.find_by(rank: "6", suit: "Heart"),
+          deck.cards.find_by(rank: "8", suit: "Heart")
         ]
       }
       let(:hands) { [Hands::Hand.new(cards:, player_id: player1.id)] }
@@ -60,17 +60,17 @@ RSpec.describe Hands::Evaluator, type: :module do
     context "when the best hand is two pairs" do
       let(:board) {
         [
-          deck.cards.find_by(rank: "2", suit: "Spades"),
-          deck.cards.find_by(rank: "4", suit: "Clubs"),
-          deck.cards.find_by(rank: "6", suit: "Spades"),
-          deck.cards.find_by(rank: "8", suit: "Clubs"),
-          deck.cards.find_by(rank: "10", suit: "Clubs")
+          deck.cards.find_by(rank: "2", suit: "Spade"),
+          deck.cards.find_by(rank: "4", suit: "Club"),
+          deck.cards.find_by(rank: "6", suit: "Spade"),
+          deck.cards.find_by(rank: "8", suit: "Club"),
+          deck.cards.find_by(rank: "10", suit: "Club")
         ]
       }
       let(:cards) {
         [
-          deck.cards.find_by(rank: "6", suit: "Hearts"),
-          deck.cards.find_by(rank: "8", suit: "Hearts")
+          deck.cards.find_by(rank: "6", suit: "Heart"),
+          deck.cards.find_by(rank: "8", suit: "Heart")
         ]
       }
       let(:hands) {
@@ -91,17 +91,17 @@ RSpec.describe Hands::Evaluator, type: :module do
     context "when the best hand is a three of a kind" do
       let(:board) {
         [
-          deck.cards.find_by(rank: "2", suit: "Spades"),
-          deck.cards.find_by(rank: "4", suit: "Clubs"),
-          deck.cards.find_by(rank: "6", suit: "Spades"),
-          deck.cards.find_by(rank: "8", suit: "Clubs"),
-          deck.cards.find_by(rank: "10", suit: "Clubs")
+          deck.cards.find_by(rank: "2", suit: "Spade"),
+          deck.cards.find_by(rank: "4", suit: "Club"),
+          deck.cards.find_by(rank: "6", suit: "Spade"),
+          deck.cards.find_by(rank: "8", suit: "Club"),
+          deck.cards.find_by(rank: "10", suit: "Club")
         ]
       }
       let(:cards) {
         [
-          deck.cards.find_by(rank: "6", suit: "Hearts"),
-          deck.cards.find_by(rank: "6", suit: "Diamonds")
+          deck.cards.find_by(rank: "6", suit: "Heart"),
+          deck.cards.find_by(rank: "6", suit: "Diamond")
         ]
       }
       let(:hands) {
@@ -120,17 +120,17 @@ RSpec.describe Hands::Evaluator, type: :module do
     context "when the best hand is a straight" do
       let(:board) {
         [
-          deck.cards.find_by(rank: "2", suit: "Spades"),
-          deck.cards.find_by(rank: "3", suit: "Clubs"),
-          deck.cards.find_by(rank: "4", suit: "Spades"),
-          deck.cards.find_by(rank: "5", suit: "Clubs"),
-          deck.cards.find_by(rank: "6", suit: "Clubs")
+          deck.cards.find_by(rank: "2", suit: "Spade"),
+          deck.cards.find_by(rank: "3", suit: "Club"),
+          deck.cards.find_by(rank: "4", suit: "Spade"),
+          deck.cards.find_by(rank: "5", suit: "Club"),
+          deck.cards.find_by(rank: "6", suit: "Club")
         ]
       }
       let(:cards) {
         [
-          deck.cards.find_by(rank: "7", suit: "Hearts"),
-          deck.cards.find_by(rank: "8", suit: "Diamonds")
+          deck.cards.find_by(rank: "7", suit: "Heart"),
+          deck.cards.find_by(rank: "8", suit: "Diamond")
         ]
       }
       let(:hands) { [Hands::Hand.new(cards:, player_id: player1.id)] }
@@ -146,17 +146,17 @@ RSpec.describe Hands::Evaluator, type: :module do
     context "when the best hand is a flush" do
       let(:board) {
         [
-          deck.cards.find_by(rank: "2", suit: "Spades"),
-          deck.cards.find_by(rank: "4", suit: "Spades"),
-          deck.cards.find_by(rank: "6", suit: "Spades"),
-          deck.cards.find_by(rank: "8", suit: "Spades"),
-          deck.cards.find_by(rank: "10", suit: "Spades")
+          deck.cards.find_by(rank: "2", suit: "Spade"),
+          deck.cards.find_by(rank: "4", suit: "Spade"),
+          deck.cards.find_by(rank: "6", suit: "Spade"),
+          deck.cards.find_by(rank: "8", suit: "Spade"),
+          deck.cards.find_by(rank: "10", suit: "Spade")
         ]
       }
       let(:cards) {
         [
-          deck.cards.find_by(rank: "6", suit: "Hearts"),
-          deck.cards.find_by(rank: "8", suit: "Hearts")
+          deck.cards.find_by(rank: "6", suit: "Heart"),
+          deck.cards.find_by(rank: "8", suit: "Heart")
         ]
       }
       let(:hands) {
@@ -175,17 +175,17 @@ RSpec.describe Hands::Evaluator, type: :module do
     context "when the best hand is a full house" do
       let(:board) {
         [
-          deck.cards.find_by(rank: "2", suit: "Spades"),
-          deck.cards.find_by(rank: "2", suit: "Clubs"),
-          deck.cards.find_by(rank: "6", suit: "Spades"),
-          deck.cards.find_by(rank: "8", suit: "Clubs"),
-          deck.cards.find_by(rank: "10", suit: "Clubs")
+          deck.cards.find_by(rank: "2", suit: "Spade"),
+          deck.cards.find_by(rank: "2", suit: "Club"),
+          deck.cards.find_by(rank: "6", suit: "Spade"),
+          deck.cards.find_by(rank: "8", suit: "Club"),
+          deck.cards.find_by(rank: "10", suit: "Club")
         ]
       }
       let(:cards) {
         [
-          deck.cards.find_by(rank: "6", suit: "Hearts"),
-          deck.cards.find_by(rank: "6", suit: "Diamonds")
+          deck.cards.find_by(rank: "6", suit: "Heart"),
+          deck.cards.find_by(rank: "6", suit: "Diamond")
         ]
       }
       let(:hands) { [Hands::Hand.new(cards:, player_id: player1.id)] }
@@ -202,17 +202,17 @@ RSpec.describe Hands::Evaluator, type: :module do
     context "when the best hand is a four of a kind" do
       let(:board) {
         [
-          deck.cards.find_by(rank: "2", suit: "Spades"),
-          deck.cards.find_by(rank: "2", suit: "Clubs"),
-          deck.cards.find_by(rank: "2", suit: "Hearts"),
-          deck.cards.find_by(rank: "8", suit: "Clubs"),
-          deck.cards.find_by(rank: "10", suit: "Clubs")
+          deck.cards.find_by(rank: "2", suit: "Spade"),
+          deck.cards.find_by(rank: "2", suit: "Club"),
+          deck.cards.find_by(rank: "2", suit: "Heart"),
+          deck.cards.find_by(rank: "8", suit: "Club"),
+          deck.cards.find_by(rank: "10", suit: "Club")
         ]
       }
       let(:cards) {
         [
-          deck.cards.find_by(rank: "2", suit: "Hearts"),
-          deck.cards.find_by(rank: "6", suit: "Diamonds")
+          deck.cards.find_by(rank: "2", suit: "Heart"),
+          deck.cards.find_by(rank: "6", suit: "Diamond")
         ]
       }
       let(:hands) { [Hands::Hand.new(cards:, player_id: player1.id)] }
@@ -229,17 +229,17 @@ RSpec.describe Hands::Evaluator, type: :module do
     context "when the best hand is a straight flush" do
       let(:board) {
         [
-          deck.cards.find_by(rank: "2", suit: "Spades"),
-          deck.cards.find_by(rank: "3", suit: "Spades"),
-          deck.cards.find_by(rank: "4", suit: "Spades"),
-          deck.cards.find_by(rank: "5", suit: "Spades"),
-          deck.cards.find_by(rank: "6", suit: "Spades")
+          deck.cards.find_by(rank: "2", suit: "Spade"),
+          deck.cards.find_by(rank: "3", suit: "Spade"),
+          deck.cards.find_by(rank: "4", suit: "Spade"),
+          deck.cards.find_by(rank: "5", suit: "Spade"),
+          deck.cards.find_by(rank: "6", suit: "Spade")
         ]
       }
       let(:cards) {
         [
-          deck.cards.find_by(rank: "10", suit: "Hearts"),
-          deck.cards.find_by(rank: "9", suit: "Hearts")
+          deck.cards.find_by(rank: "10", suit: "Heart"),
+          deck.cards.find_by(rank: "9", suit: "Heart")
         ]
       }
       let(:hands) {
@@ -260,17 +260,17 @@ RSpec.describe Hands::Evaluator, type: :module do
     context "when there is a straight and a pair" do
       let(:board) {
         [
-          deck.cards.find_by(rank: "2", suit: "Spades"),
-          deck.cards.find_by(rank: "3", suit: "Clubs"),
-          deck.cards.find_by(rank: "4", suit: "Spades"),
-          deck.cards.find_by(rank: "5", suit: "Clubs"),
-          deck.cards.find_by(rank: "6", suit: "Clubs")
+          deck.cards.find_by(rank: "2", suit: "Spade"),
+          deck.cards.find_by(rank: "3", suit: "Club"),
+          deck.cards.find_by(rank: "4", suit: "Spade"),
+          deck.cards.find_by(rank: "5", suit: "Club"),
+          deck.cards.find_by(rank: "6", suit: "Club")
         ]
       }
       let(:cards) {
         [
-          deck.cards.find_by(rank: "7", suit: "Hearts"),
-          deck.cards.find_by(rank: "2", suit: "Diamonds")
+          deck.cards.find_by(rank: "7", suit: "Heart"),
+          deck.cards.find_by(rank: "2", suit: "Diamond")
         ]
       }
       let(:hands) {
@@ -291,15 +291,15 @@ RSpec.describe Hands::Evaluator, type: :module do
     context "when there are multiple hands" do
       let(:cards) {
         [
-          deck.cards.find_by(rank: "5", suit: "Hearts"),
-          deck.cards.find_by(rank: "6", suit: "Diamonds")
+          deck.cards.find_by(rank: "5", suit: "Heart"),
+          deck.cards.find_by(rank: "6", suit: "Diamond")
         ]
       }
 
       let(:player2_cards) {
         [
-          deck.cards.find_by(rank: "7", suit: "Hearts"),
-          deck.cards.find_by(rank: "3", suit: "Diamonds")
+          deck.cards.find_by(rank: "7", suit: "Heart"),
+          deck.cards.find_by(rank: "3", suit: "Diamond")
         ]
       }
       let(:hands) {
@@ -320,14 +320,14 @@ RSpec.describe Hands::Evaluator, type: :module do
     context "and there are multiple hands with the same level" do
       let(:cards) {
         [
-          deck.cards.find_by(rank: "2", suit: "Hearts"),
-          deck.cards.find_by(rank: "10", suit: "Diamonds")
+          deck.cards.find_by(rank: "2", suit: "Heart"),
+          deck.cards.find_by(rank: "10", suit: "Diamond")
         ]
       }
       let(:player2_cards) {
         [
-          deck.cards.find_by(rank: "2", suit: "Clubs"),
-          deck.cards.find_by(rank: "Ace", suit: "Spades")
+          deck.cards.find_by(rank: "2", suit: "Club"),
+          deck.cards.find_by(rank: "A", suit: "Spade")
         ]
       }
       let(:hands) {
@@ -363,23 +363,23 @@ RSpec.describe Hands::Evaluator, type: :module do
     context "when top hands are different" do
       let(:cards) {
         [
-          deck.cards.find_by(rank: "7", suit: "Hearts"),
-          deck.cards.find_by(rank: "8", suit: "Diamonds")
+          deck.cards.find_by(rank: "7", suit: "Heart"),
+          deck.cards.find_by(rank: "8", suit: "Diamond")
         ]
       }
       let(:player2_cards) {
         [
-          deck.cards.find_by(rank: "2", suit: "Hearts"),
-          deck.cards.find_by(rank: "10", suit: "Diamonds")
+          deck.cards.find_by(rank: "2", suit: "Heart"),
+          deck.cards.find_by(rank: "10", suit: "Diamond")
         ]
       }
       let(:board) {
         [
-          deck.cards.find_by(rank: "2", suit: "Spades"),
-          deck.cards.find_by(rank: "3", suit: "Clubs"),
-          deck.cards.find_by(rank: "4", suit: "Spades"),
-          deck.cards.find_by(rank: "7", suit: "Clubs"),
-          deck.cards.find_by(rank: "9", suit: "Clubs")
+          deck.cards.find_by(rank: "2", suit: "Spade"),
+          deck.cards.find_by(rank: "3", suit: "Club"),
+          deck.cards.find_by(rank: "4", suit: "Spade"),
+          deck.cards.find_by(rank: "7", suit: "Club"),
+          deck.cards.find_by(rank: "9", suit: "Club")
         ]
       }
       let(:winning_hand) {
@@ -390,27 +390,20 @@ RSpec.describe Hands::Evaluator, type: :module do
       }
 
       before do
-        winning_hand.cards.each do |card|
+        cards.each do |card|
           card.update!(cardable: player1)
         end
 
-        losing_hand.cards.each do |card|
+        player2_cards.each do |card|
           card.update!(cardable: player2)
         end
       end
 
-      let(:expected) {
-        [
-          deck.cards.find_by(rank: "2", suit: "Hearts"),
-          deck.cards.find_by(rank: "10", suit: "Diamonds"),
-          deck.cards.find_by(rank: "2", suit: "Spades"),
-          deck.cards.find_by(rank: "7", suit: "Clubs"),
-          deck.cards.find_by(rank: "9", suit: "Clubs")
-        ]
-      }
-
       it "returns the winners" do
-        winning_player_ids = described_class.find_winners(hands, board)
+        player_hands = [player1, player2].map do |player|
+          Hands::Hand.new(cards: player.cards, player_id: player.id)
+        end
+        winning_player_ids = described_class.find_winners(player_hands, board)
         expect(winning_player_ids).to eq([player1.id])
       end
     end

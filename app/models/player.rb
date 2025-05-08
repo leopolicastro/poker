@@ -38,18 +38,18 @@ class Player < ApplicationRecord
   end
 
   def small_blind!
-    place_bet!(amount: game.small_blind, bet_type: :blinds)
+    place_bet!(amount: game.small_blind, type: "Blind")
     super
   end
 
   def big_blind!
-    place_bet!(amount: game.big_blind, bet_type: :blinds)
+    place_bet!(amount: game.big_blind, type: "Blind")
     super
   end
 
   def owes_the_pot
     current_round = game.current_round
-    relevant_bets = current_round.bets.where.not(bet_type: [:blinds, :fold])
+    relevant_bets = current_round.bets.where.not(type: ["Blind", "Fold"])
     if game.current_round.type == "PreFlop"
       # TODO: should this be checking
       game.big_blind - bets.where(round: game.current_round).sum(:amount)

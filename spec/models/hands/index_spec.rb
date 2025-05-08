@@ -9,28 +9,28 @@ RSpec.describe Hands::Index, type: :model do
 
   let(:extras) {
     [
-      deck.cards.find_by(rank: "2", suit: "Spades"),
-      deck.cards.find_by(rank: "3", suit: "Clubs")
+      deck.cards.find_by(rank: "2", suit: "Spade"),
+      deck.cards.find_by(rank: "3", suit: "Club")
     ]
   }
 
   let(:top_five) {
     [
-      deck.cards.find_by(rank: "8", suit: "Hearts"),
-      deck.cards.find_by(rank: "7", suit: "Spades"),
-      deck.cards.find_by(rank: "10", suit: "Diamonds"),
-      deck.cards.find_by(rank: "10", suit: "Clubs"),
-      deck.cards.find_by(rank: "8", suit: "Spades")
+      deck.cards.find_by(rank: "8", suit: "Heart"),
+      deck.cards.find_by(rank: "7", suit: "Spade"),
+      deck.cards.find_by(rank: "10", suit: "Diamond"),
+      deck.cards.find_by(rank: "10", suit: "Club"),
+      deck.cards.find_by(rank: "8", suit: "Spade")
 
     ]
   }
   let(:top_five2) {
     [
-      deck.cards.find_by(rank: "4", suit: "Spades"),
-      deck.cards.find_by(rank: "6", suit: "Hearts"),
-      deck.cards.find_by(rank: "4", suit: "Hearts"),
-      deck.cards.find_by(rank: "Jack", suit: "Clubs"),
-      deck.cards.find_by(rank: "Queen", suit: "Spades")
+      deck.cards.find_by(rank: "4", suit: "Spade"),
+      deck.cards.find_by(rank: "6", suit: "Heart"),
+      deck.cards.find_by(rank: "4", suit: "Heart"),
+      deck.cards.find_by(rank: "J", suit: "Club"),
+      deck.cards.find_by(rank: "Q", suit: "Spade")
 
     ]
   }

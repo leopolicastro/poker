@@ -1,7 +1,7 @@
 class Game < ApplicationRecord
   broadcasts_refreshes
 
-  has_one :deck, as: :deckable, dependent: :destroy
+  has_one :deck, dependent: :destroy
   has_many :players, dependent: :destroy
   has_many :hands, dependent: :destroy
   has_many :bets, through: :hands
@@ -26,10 +26,6 @@ class Game < ApplicationRecord
     end
     res = Hands::Evaluator.find_winners(player_hands, cards)
     res.map { |player_id| players.find(player_id) }
-  end
-
-  def draw(count: 1, cardable: self)
-    deck.draw(count:, cardable: self)
   end
 
   def assign_starting_positions_and_turn!

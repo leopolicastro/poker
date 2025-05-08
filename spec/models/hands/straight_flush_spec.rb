@@ -6,13 +6,13 @@ RSpec.describe Hands::StraightFlush, type: :model do
   describe ".satisfied?" do
     it "returns true when the cards are in consecutive order and have the same suit" do
       cards = Hands::Hand.new(cards: [
-        deck.cards.find_by(rank: "2", suit: "Hearts"),
-        deck.cards.find_by(rank: "3", suit: "Hearts"),
-        deck.cards.find_by(rank: "4", suit: "Hearts"),
-        deck.cards.find_by(rank: "5", suit: "Hearts"),
-        deck.cards.find_by(rank: "6", suit: "Hearts"),
-        deck.cards.find_by(rank: "9", suit: "Clubs"),
-        deck.cards.find_by(rank: "10", suit: "Spades")
+        deck.cards.find_by(rank: "2", suit: "Heart"),
+        deck.cards.find_by(rank: "3", suit: "Heart"),
+        deck.cards.find_by(rank: "4", suit: "Heart"),
+        deck.cards.find_by(rank: "5", suit: "Heart"),
+        deck.cards.find_by(rank: "6", suit: "Heart"),
+        deck.cards.find_by(rank: "9", suit: "Club"),
+        deck.cards.find_by(rank: "10", suit: "Spade")
       ], player_id: 1)
 
       expect(described_class.satisfied?(cards)).to be_truthy
@@ -20,13 +20,13 @@ RSpec.describe Hands::StraightFlush, type: :model do
 
     it "returns false when there is a flush but there isn't a straight" do
       cards = Hands::Hand.new(cards: [
-        deck.cards.find_by(rank: "2", suit: "Hearts"),
-        deck.cards.find_by(rank: "3", suit: "Diamonds"),
-        deck.cards.find_by(rank: "4", suit: "Diamonds"),
-        deck.cards.find_by(rank: "5", suit: "Diamonds"),
-        deck.cards.find_by(rank: "7", suit: "Hearts"),
-        deck.cards.find_by(rank: "8", suit: "Diamonds"),
-        deck.cards.find_by(rank: "9", suit: "Diamonds")
+        deck.cards.find_by(rank: "2", suit: "Heart"),
+        deck.cards.find_by(rank: "3", suit: "Diamond"),
+        deck.cards.find_by(rank: "4", suit: "Diamond"),
+        deck.cards.find_by(rank: "5", suit: "Diamond"),
+        deck.cards.find_by(rank: "7", suit: "Heart"),
+        deck.cards.find_by(rank: "8", suit: "Diamond"),
+        deck.cards.find_by(rank: "9", suit: "Diamond")
       ], player_id: 1)
 
       expect(described_class.satisfied?(cards)).to be_falsey
@@ -34,13 +34,13 @@ RSpec.describe Hands::StraightFlush, type: :model do
 
     it "returns false when there is a straight but there isn't a flush" do
       cards = Hands::Hand.new(cards: [
-        deck.cards.find_by(rank: "2", suit: "Hearts"),
-        deck.cards.find_by(rank: "3", suit: "Clubs"),
-        deck.cards.find_by(rank: "4", suit: "Spades"),
-        deck.cards.find_by(rank: "5", suit: "Diamonds"),
-        deck.cards.find_by(rank: "6", suit: "Hearts"),
-        deck.cards.find_by(rank: "9", suit: "Clubs"),
-        deck.cards.find_by(rank: "10", suit: "Spades")
+        deck.cards.find_by(rank: "2", suit: "Heart"),
+        deck.cards.find_by(rank: "3", suit: "Club"),
+        deck.cards.find_by(rank: "4", suit: "Spade"),
+        deck.cards.find_by(rank: "5", suit: "Diamond"),
+        deck.cards.find_by(rank: "6", suit: "Heart"),
+        deck.cards.find_by(rank: "9", suit: "Club"),
+        deck.cards.find_by(rank: "10", suit: "Spade")
       ], player_id: 1)
 
       expect(described_class.satisfied?(cards)).to be_falsey
@@ -52,18 +52,18 @@ RSpec.describe Hands::StraightFlush, type: :model do
 
     let(:extras) {
       [
-        deck.cards.find_by(rank: "2", suit: "Spades"),
-        deck.cards.find_by(rank: "3", suit: "Spades")
+        deck.cards.find_by(rank: "2", suit: "Spade"),
+        deck.cards.find_by(rank: "3", suit: "Spade")
       ]
     }
 
     let(:top_five) {
       [
-        deck.cards.find_by(rank: "4", suit: "Spades"),
-        deck.cards.find_by(rank: "5", suit: "Spades"),
-        deck.cards.find_by(rank: "6", suit: "Spades"),
-        deck.cards.find_by(rank: "9", suit: "Clubs"),
-        deck.cards.find_by(rank: "10", suit: "Spades")
+        deck.cards.find_by(rank: "4", suit: "Spade"),
+        deck.cards.find_by(rank: "5", suit: "Spade"),
+        deck.cards.find_by(rank: "6", suit: "Spade"),
+        deck.cards.find_by(rank: "9", suit: "Club"),
+        deck.cards.find_by(rank: "10", suit: "Spade")
 
       ]
     }

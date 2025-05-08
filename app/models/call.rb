@@ -1,10 +1,4 @@
-FactoryBot.define do
-  factory :bet do
-    association :player, factory: :player
-    association :round, factory: :round
-    amount { 1 }
-    type { "Check" }
-  end
+class Call < Bet
 end
 
 # == Schema Information

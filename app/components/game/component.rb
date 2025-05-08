@@ -11,9 +11,9 @@ class Game::Component < ViewComponent::Base
 
   def check_or_call(player)
     if player.owes_the_pot.positive?
-      "call"
+      "Call"
     else
-      "check"
+      "Check"
     end
   end
 end

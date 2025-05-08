@@ -6,7 +6,7 @@ RSpec.describe Player, type: :model do
   let!(:player1) { create(:player, game: game) }
   let!(:player2) { create(:player, game: game) }
   let!(:player3) { create(:player, game: game) }
-  let(:deck) { create(:deck, deckable: game) }
+  let(:deck) { create(:deck, game:) }
 
   describe "factory" do
     it "has a valid factory" do
@@ -75,8 +75,8 @@ RSpec.describe Player, type: :model do
     let(:player) { create(:player, game:) }
     let(:player_cards) {
       [
-        deck.find_card("2", "Hearts"),
-        deck.find_card("3", "Hearts")
+        deck.find_card("2", "Heart"),
+        deck.find_card("3", "Heart")
       ]
     }
 
@@ -98,11 +98,11 @@ RSpec.describe Player, type: :model do
       create(:player_chip, chippable: player, value: 100)
       create(:player_chip, chippable: player, value: 200)
       create(:player_chip, chippable: player, value: 150)
-      create(:pre_flop, game:)
+      create(:pre_flop, hand: create(:game_hand, game:))
     end
 
     it "places a bet" do
-      bet = player.place_bet!(amount: 100, bet_type: :raise)
+      bet = player.place_bet!(amount: 100, type: "Raise")
       expect(bet).to be_valid
       expect(player.current_holdings).to eq(350)
       expect(player.bets.count).to eq(1)
@@ -111,7 +111,7 @@ RSpec.describe Player, type: :model do
 
     it "does not place a bet if the player does not have enough chips" do
       expect(player.current_holdings).to eq(450)
-      bet = player.place_bet!(amount: 500, bet_type: :raise)
+      bet = player.place_bet!(amount: 500, type: "Raise")
       expect(bet).to be_nil
       expect(game.chips.count).to eq(0)
     end

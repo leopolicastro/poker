@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :pre_flop do
-    association :game_hand, factory: :game_hand
+    association :hand, factory: :game_hand
   end
 end
 
