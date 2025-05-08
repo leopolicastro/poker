@@ -7,10 +7,10 @@ class Flop < Round
   end
 
   def concluded?
-    return false if bets.last&.type == "Raise"
-
     players.active.all? do |player|
-      player.bets.where(round: self).any? && player.bets.where(round: self).sum(:amount) >= player.owes_the_pot
+      bets = player.bets.where(round: self)
+      bets.any? { |bet| ["AllIn"].include?(bet.type) } ||
+        (bets.any? && bets.sum(:amount) >= player.owes_the_pot)
     end
   end
 end

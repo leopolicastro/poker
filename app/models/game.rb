@@ -25,7 +25,7 @@ class Game < ApplicationRecord
     player_hands = players.active.map do |player|
       Hands::Hand.new(cards: player.cards, player_id: player.id)
     end
-    res = Hands::Evaluator.find_winners(player_hands, cards.not_burned)
+    res = Hands::Evaluator.find_winners(player_hands, cards)
     res.map { |player_id| players.find(player_id) }
   end
 
@@ -35,7 +35,7 @@ class Game < ApplicationRecord
     end
     # This ends the big blinds turn, and starts the next players turn
     # Big blinds turn is not a real turn, it is just the "first" turn of the round
-    players.big_blind.first.to_the_left.update!(turn: true)
+    players.big_blind.first.to_the_right.update!(turn: true)
   end
 
   def position_map(index)

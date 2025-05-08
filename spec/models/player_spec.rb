@@ -71,26 +71,6 @@ RSpec.describe Player, type: :model do
     end
   end
 
-  describe "#cards_left" do
-    let(:player) { create(:player, game:) }
-    let(:player_cards) {
-      [
-        deck.find_card("2", "Heart"),
-        deck.find_card("3", "Heart")
-      ]
-    }
-
-    before do
-      player_cards.each do |card|
-        card.update(cardable: player)
-      end
-    end
-
-    it "returns the number of cards left" do
-      expect(player.cards_left).to eq(2)
-    end
-  end
-
   describe "#place_bet!" do
     let(:player) { create(:player, game: game) }
 

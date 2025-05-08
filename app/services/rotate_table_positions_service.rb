@@ -24,6 +24,6 @@ class RotateTablePositionsService
       player.update!(table_position: current_positions[right_player_index])
     end
 
-    @players.find_by(table_position: :big_blind).to_the_right.update!(turn: true)
+    @game.reload.players.ordered.find_by(table_position: :big_blind).to_the_right.update!(turn: true)
   end
 end

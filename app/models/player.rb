@@ -90,16 +90,16 @@ class Player < ApplicationRecord
     table_position == "button"
   end
 
-  def to_the_left
-    game.players.active.ordered.where("position > ?", position).first || game.players.active.ordered.first
+  def to_the_right
+    game.players.ordered.where("position > ?", position).first || game.players.ordered.first
   end
 
-  def to_the_right
+  def to_the_left
     game.players.ordered.where("position < ?", position).last || game.players.ordered.first
   end
 
   def hand
-    h = Hands::Hand.new(cards: cards + game.cards.not_burned, player_id: id)
+    h = Hands::Hand.new(cards: cards + game.cards, player_id: id)
     Hands::Index.new(h)
   end
 
@@ -123,7 +123,7 @@ class Player < ApplicationRecord
     if game.players.active.count.zero?
       game.hands.create!
     else
-      to_the_left.update!(turn: true)
+      to_the_right.update!(turn: true)
     end
   end
 

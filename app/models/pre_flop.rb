@@ -8,6 +8,12 @@ class PreFlop < Round
       game.deck.draw(count: 2, cardable: player)
     end
   end
+
+  def concluded?
+    players.active.all? do |player|
+      player.bets.where(round: self).any? && (player.bets.where(round: self).sum(:amount) >= game.big_blind)
+    end && ["Check", "Fold"].include?(game.players.big_blind.first&.bets&.last&.type)
+  end
 end
 
 # == Schema Information

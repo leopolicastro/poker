@@ -15,18 +15,10 @@ class Round < ApplicationRecord
   after_create_commit :handle_round!
 
   def concluded?
-    return false if bets.last&.type == "Raise"
-
-    if type == "PreFlop" && game.current_hand.bets.where(type: "Raise").empty?
-      players.active.all? do |player|
-        player.bets.where(round: self).any? && (player.bets.where(round: self).sum(:amount) >= game.big_blind)
-      end && ["Check", "Fold"].include?(game.players.big_blind.first&.bets&.last&.type)
-    else
-      players.active.all? do |player|
-        round_bets = player.bets.where(round: self)
-        round_bets.any? { |bet| ["AllIn"].include?(bet.type) } ||
-          (round_bets.any? && round_bets.sum(:amount) >= player.owes_the_pot)
-      end
+    players.active.all? do |player|
+      round_bets = player.bets.where(round: self)
+      round_bets.any? { |bet| ["AllIn"].include?(bet.type) } ||
+        (round_bets.any? && round_bets.sum(:amount) >= player.owes_the_pot)
     end
   end
 
