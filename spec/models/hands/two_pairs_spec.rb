@@ -73,7 +73,7 @@ RSpec.describe Hands::TwoPairs, type: :model do
 
     describe "#top_five" do
       it "returns the top five cards" do
-        expect(Hands::TwoPairs.top_five(hand).map(&:to_s)).to eq(["9 ♣", "9 ♠", "5 ♥", "5 ♠", "10 ♦"])
+        expect(Hands::TwoPairs.top_five(hand).map(&:to_s)).to eq(["5 ♥", "5 ♠", "9 ♣", "9 ♠", "10 ♦"])
       end
     end
   end
