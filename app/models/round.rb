@@ -16,15 +16,8 @@ class Round < ApplicationRecord
 
   after_create_commit :handle_round!
 
-  # def timeout_if_unresponsive
-  #   return if type == "Rounds::Showdown"
-
-  #   FoldIfUnresponsiveJob.set(wait: PLAYER_TIMEOUT_WAIT).perform_later(
-  #     round_id: id,
-  #     player_id: first_to_act.id,
-  #     current_bets_count: first_to_act.bets.where(round: self).count
-  #   )
-  # end
+  def handle_round!
+  end
 
   def concluded?
     players.active.all? do |player|
