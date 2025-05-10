@@ -10,7 +10,17 @@ class Player::Component < ViewComponent::Base
     player.present?
   end
 
-    def check_or_call(player)
+  def card_bg_color
+    if player.folded?
+      "bg-gray-200"
+    elsif game.top_hands.include?(player)
+      "bg-green-200"
+    else
+      ""
+    end
+  end
+
+  def check_or_call(player)
     if player.owes_the_pot.positive?
       "Call"
     else

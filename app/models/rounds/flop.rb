@@ -11,14 +11,6 @@ class Rounds::Flop < Round
     game.draw(count: 1, burn_card: true)
     game.draw(count: 3)
   end
-
-  def concluded?
-    players.active.all? do |player|
-      bets = player.bets.where(round: self)
-      bets.any? { |bet| ["Bets::AllIn"].include?(bet.type) } ||
-        (bets.any? && bets.sum(:amount) >= player.owes_the_pot)
-    end
-  end
 end
 
 # == Schema Information

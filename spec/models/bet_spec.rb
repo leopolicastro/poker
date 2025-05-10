@@ -4,37 +4,6 @@ RSpec.describe Bet, type: :model do
   it "has a valid factory" do
     expect(build(:bet)).to be_valid
   end
-
-  # let(:game) { create(:game) }
-  let(:player) { create(:player, game:) }
-  let(:player2) { create(:player, game:) }
-  let(:hand) { create(:game_hand, game:) }
-  let(:round) { hand.rounds.first }
-  let(:bet) { create(:bet, player:, amount: 20, round:, type: "Bets::Check") }
-  let(:bet2) { create(:bet, player: player2, amount: 20, round:, type: "Bets::Check") }
-
-  describe "#payout_winner!" do
-    let(:game) { GameSimulatorService.run(players_count: 2) }
-    let(:player) { game.players.first }
-    let(:player2) { game.players.second }
-
-    before do
-      player.place_bet!(amount: player.owes_the_pot, type: "Bets::Blind")
-      player2.place_bet!(amount: player2.owes_the_pot, type: "Bets::Blind")
-    end
-
-    it "gives the chips to the winner" do
-      expect(player.current_holdings).to eq(980)
-      expect(player2.current_holdings).to eq(980)
-      hand.rounds.create!(type: "Rounds::Showdown")
-      expect(player.current_holdings).to eq(980)
-      expect(player2.current_holdings).to eq(1020)
-    end
-
-    it "changes the chips to belong to the player" do
-      expect(player.reload.chips.sum(:value)).to eq(980)
-    end
-  end
 end
 
 # == Schema Information

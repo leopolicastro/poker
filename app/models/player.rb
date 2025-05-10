@@ -22,6 +22,14 @@ class Player < ApplicationRecord
 
   validate :only_one_player_per_turn
 
+  def top_five_cards
+    hand.top_five
+  end
+
+  def top_five_cards_html
+    top_five_cards.map { |card| card.to_html }.join("").html_safe
+  end
+
   def only_one_player_per_turn
     if game.players.turn.count > 1
       errors.add(:base, "Only one player can have turn at a time")
@@ -63,12 +71,14 @@ class Player < ApplicationRecord
   end
 
   def owes_the_pot
+    relevant_bet_types = ["Bets::AllIn", "Bets::Raise"]
     current_round = game.current_round
-    relevant_bets = current_round.bets.where.not(type: ["Bets::Blind", "Bets::Fold"])
+    relevant_bets = current_round.bets.where(type: relevant_bet_types)
     if game.current_round.type == "Rounds::PreFlop"
-      # TODO: should this be checking
-      game.big_blind - bets.where(round: game.current_round).sum(:amount)
+      # TODO: this should be checking for raises also
+      game.big_blind - bets.where(round: current_round).sum(:amount)
     elsif relevant_bets.any?
+      # TODO: this should be checking for raises also
       # The highest amount any player has bet in this round
       highest_bet = relevant_bets.group(:player_id).sum(:amount).values.max || 0
 
@@ -127,7 +137,9 @@ class Player < ApplicationRecord
   end
 
   def current_hand
-    hand&.level&.to_s&.demodulize&.titleize
+    return if hand.nil?
+
+    hand.level.to_s.demodulize.titleize
   end
 
   private

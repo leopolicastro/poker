@@ -1,11 +1,11 @@
-<div class="flex flex-col gap-2 border rounded-lg p-4 min-w-[273px] <%= player.folded? ? "bg-gray-200" : "" %>">
+<div class="flex flex-col gap-2 border rounded-lg p-4 min-w-[273px] <%= card_bg_color %>">
   <div>
     <strong><%= player.display_name %></strong>
   </div>
   <div>
     <strong>Hand:</strong> <%= player.current_hand %>
     <aside class="flex flex-wrap gap-2">
-      <%= player.hand.top_five.map { |card| card.to_html }.join("").html_safe %>
+      <%= player.top_five_cards_html %>
     </aside>
   </div>
   <div>

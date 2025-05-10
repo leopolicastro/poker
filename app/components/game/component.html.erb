@@ -19,6 +19,9 @@
         <strong>State:</strong> <%= game.state %>
       </div>
       <div class="mt-4">
+        <strong>Total bets (moves):</strong> <%= game.bets.count %>
+      </div>
+      <div class="mt-4">
         <strong>Current Turn:</strong> <%= game.current_turn&.name %>
       </div>
       <div class="mt-4">
@@ -46,7 +49,7 @@
         <strong>Bets this round:</strong> <%= game.current_round.bets.count %>
       </div>
       <div class="mt-4">
-        <strong>Top hand:</strong> <%= game.top_hands.map(&:display_name).join(", ") %>
+        <strong>Top hands:</strong> <%= game.top_hands.map(&:display_name).join(", ") %>
       </div>
       <div class=" mt-4">
         <strong>Current Round:</strong> <%= game.current_round.type %>

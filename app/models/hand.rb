@@ -1,6 +1,6 @@
 class Hand < ApplicationRecord
   belongs_to :game
-  has_many :rounds
+  has_many :rounds, dependent: :destroy
   has_many :bets, through: :rounds
 
   delegate :players, to: :game

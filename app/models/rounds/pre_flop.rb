@@ -16,10 +16,13 @@ class Rounds::PreFlop < Round
   end
 
   def concluded?
-    players.active.all? do |player|
-      player.bets.where(round: self).any? && (player.bets.where(round: self).sum(:amount) >= game.big_blind)
-    end && big_blind_checked?
+    super && big_blind_checked?
   end
+  # def concluded?
+  #   players.active.all? do |player|
+  #     player.bets.where(round: self).any? && (player.bets.where(round: self).sum(:amount) >= game.big_blind)
+  #   end && big_blind_checked?
+  # end
 
   def big_blind_checked?
     big_blind_bets = game.players.big_blind.first.bets
