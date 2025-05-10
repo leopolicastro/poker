@@ -4,7 +4,7 @@ Rails.application.routes.draw do
   resource :session
   resources :passwords, param: :token
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-  resources :games, only: [] do
+  resources :games, only: [:show] do
     resources :bets, only: [:create]
   end
 

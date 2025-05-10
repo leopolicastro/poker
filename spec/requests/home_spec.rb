@@ -8,7 +8,7 @@ RSpec.describe "Homes", type: :request do
 
     it "returns http success" do
       get "/"
-      expect(response.body).to include("Demo Game")
+      expect(response.body).to include("Poker")
     end
   end
 end
