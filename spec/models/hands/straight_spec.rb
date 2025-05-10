@@ -126,4 +126,126 @@ RSpec.describe Hands::Straight, type: :model do
       end
     end
   end
+
+  describe "#<=>" do
+    context "when comparing hands with different high cards" do
+      let(:higher_hand) do
+        Hands::Hand.new(cards: [
+          deck.cards.find_by(rank: "10", suit: "Heart"),
+          deck.cards.find_by(rank: "J", suit: "Spade"),
+          deck.cards.find_by(rank: "Q", suit: "Club"),
+          deck.cards.find_by(rank: "K", suit: "Diamond"),
+          deck.cards.find_by(rank: "A", suit: "Diamond"),
+          deck.cards.find_by(rank: "2", suit: "Heart"),
+          deck.cards.find_by(rank: "3", suit: "Spade")
+        ], player_id: 1)
+      end
+
+      let(:lower_hand) do
+        Hands::Hand.new(cards: [
+          deck.cards.find_by(rank: "9", suit: "Heart"),
+          deck.cards.find_by(rank: "10", suit: "Spade"),
+          deck.cards.find_by(rank: "J", suit: "Club"),
+          deck.cards.find_by(rank: "Q", suit: "Diamond"),
+          deck.cards.find_by(rank: "K", suit: "Diamond"),
+          deck.cards.find_by(rank: "2", suit: "Heart"),
+          deck.cards.find_by(rank: "3", suit: "Spade")
+        ], player_id: 2)
+      end
+
+      it "returns 1 when first hand has higher straight" do
+        expect(Hands::Straight.new(higher_hand) <=> Hands::Straight.new(lower_hand)).to eq(1)
+      end
+
+      it "returns -1 when first hand has lower straight" do
+        expect(Hands::Straight.new(lower_hand) <=> Hands::Straight.new(higher_hand)).to eq(-1)
+      end
+    end
+
+    context "when comparing ace-high vs ace-low straights" do
+      let(:ace_high_hand) do
+        Hands::Hand.new(cards: [
+          deck.cards.find_by(rank: "10", suit: "Heart"),
+          deck.cards.find_by(rank: "J", suit: "Spade"),
+          deck.cards.find_by(rank: "Q", suit: "Club"),
+          deck.cards.find_by(rank: "K", suit: "Diamond"),
+          deck.cards.find_by(rank: "A", suit: "Diamond"),
+          deck.cards.find_by(rank: "2", suit: "Heart"),
+          deck.cards.find_by(rank: "3", suit: "Spade")
+        ], player_id: 1)
+      end
+
+      let(:ace_low_hand) do
+        Hands::Hand.new(cards: [
+          deck.cards.find_by(rank: "A", suit: "Heart"),
+          deck.cards.find_by(rank: "2", suit: "Spade"),
+          deck.cards.find_by(rank: "3", suit: "Club"),
+          deck.cards.find_by(rank: "4", suit: "Diamond"),
+          deck.cards.find_by(rank: "5", suit: "Diamond"),
+          deck.cards.find_by(rank: "6", suit: "Heart"),
+          deck.cards.find_by(rank: "7", suit: "Spade")
+        ], player_id: 2)
+      end
+
+      it "returns 1 when comparing ace-high to ace-low" do
+        expect(Hands::Straight.new(ace_high_hand) <=> Hands::Straight.new(ace_low_hand)).to eq(1)
+      end
+
+      it "returns -1 when comparing ace-low to ace-high" do
+        expect(Hands::Straight.new(ace_low_hand) <=> Hands::Straight.new(ace_high_hand)).to eq(-1)
+      end
+    end
+
+    context "when comparing middle straights" do
+      let(:higher_hand) do
+        Hands::Hand.new(cards: [
+          deck.cards.find_by(rank: "8", suit: "Heart"),
+          deck.cards.find_by(rank: "9", suit: "Spade"),
+          deck.cards.find_by(rank: "10", suit: "Club"),
+          deck.cards.find_by(rank: "J", suit: "Diamond"),
+          deck.cards.find_by(rank: "Q", suit: "Diamond"),
+          deck.cards.find_by(rank: "2", suit: "Heart"),
+          deck.cards.find_by(rank: "3", suit: "Spade")
+        ], player_id: 1)
+      end
+
+      let(:lower_hand) do
+        Hands::Hand.new(cards: [
+          deck.cards.find_by(rank: "7", suit: "Heart"),
+          deck.cards.find_by(rank: "8", suit: "Spade"),
+          deck.cards.find_by(rank: "9", suit: "Club"),
+          deck.cards.find_by(rank: "10", suit: "Diamond"),
+          deck.cards.find_by(rank: "J", suit: "Diamond"),
+          deck.cards.find_by(rank: "2", suit: "Heart"),
+          deck.cards.find_by(rank: "3", suit: "Spade")
+        ], player_id: 2)
+      end
+
+      it "returns 1 when first hand has higher straight" do
+        expect(Hands::Straight.new(higher_hand) <=> Hands::Straight.new(lower_hand)).to eq(1)
+      end
+
+      it "returns -1 when first hand has lower straight" do
+        expect(Hands::Straight.new(lower_hand) <=> Hands::Straight.new(higher_hand)).to eq(-1)
+      end
+    end
+
+    context "when comparing identical hands" do
+      let(:hand) do
+        Hands::Hand.new(cards: [
+          deck.cards.find_by(rank: "10", suit: "Heart"),
+          deck.cards.find_by(rank: "J", suit: "Spade"),
+          deck.cards.find_by(rank: "Q", suit: "Club"),
+          deck.cards.find_by(rank: "K", suit: "Diamond"),
+          deck.cards.find_by(rank: "A", suit: "Diamond"),
+          deck.cards.find_by(rank: "2", suit: "Heart"),
+          deck.cards.find_by(rank: "3", suit: "Spade")
+        ], player_id: 1)
+      end
+
+      it "returns 0 when hands are identical" do
+        expect(Hands::Straight.new(hand) <=> Hands::Straight.new(hand)).to eq(0)
+      end
+    end
+  end
 end

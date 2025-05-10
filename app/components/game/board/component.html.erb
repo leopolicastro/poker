@@ -9,12 +9,37 @@
   <div class="relative flex items-center justify-center w-20 h-20 rounded-full border-[6px] border-white bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg hover:shadow-xl transition-shadow duration-200 mb-8">
     <!-- Inner ring -->
     <div class="absolute w-14 h-14 rounded-full border-[3px] border-white"></div>
-    <!-- Chip notches -->
-    <% 6.times do |i| %>
-      <div class="absolute w-2 h-4 bg-white rounded"
-         style="transform: rotate(<%= i * 60 %>deg) translateY(-40px); transform-origin: center;"></div>
-    <% end %>
     <!-- Pot amount -->
     <span class="relative text-white font-bold text-lg z-10"><%= game.pot %></span>
   </div>
 </aside>
+<section class="flex justify-center w-full text-white">
+  <div class="border rounded-lg py-8 px-8 w-auto flex gap-8 justify-center">
+    <div class="w-auto flex flex-col">
+      <div class="">
+        <strong>Small Blind:</strong> <%= number_to_currency(game.small_blind) %>
+      </div>
+      <div class="">
+        <strong>Big Blind:</strong> <%= number_to_currency(game.big_blind) %>
+      </div>
+    </div>
+    <div class="w-auto flex flex-col">
+      <div class="">
+        <strong>Chip leader:</strong> <%= game.chip_leader&.display_name %>
+      </div>
+      <div class="">
+        <strong>Hand #:</strong> <%= game.hands.count %>
+      </div>
+      <% if game.current_round.type == "Rounds::Showdown" %>
+        <div class="">
+          <strong>Won:</strong> <%= number_to_currency(game.current_round.pot) %>
+        </div>
+      <% end %>
+    </div>
+    <div class="w-auto flex flex-col">
+      <div class="flex flex-col gap-2">
+        <strong>Cards left:</strong> <%= game.deck.cards_left %>
+      </div>
+    </div>
+  </div>
+</section>

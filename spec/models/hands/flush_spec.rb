@@ -76,4 +76,128 @@ RSpec.describe Hands::Flush, type: :model do
       expect(Hands::Flush.top_five(hand).map(&:to_s)).to eq(["K ♠", "J ♠", "9 ♠", "7 ♠", "5 ♠"])
     end
   end
+
+  describe "#<=>" do
+    let(:deck) { create(:deck) }
+
+    context "when comparing hands with different high cards" do
+      let(:higher_hand) do
+        Hands::Hand.new(cards: [
+          deck.cards.find_by(rank: "A", suit: "Heart"),
+          deck.cards.find_by(rank: "K", suit: "Heart"),
+          deck.cards.find_by(rank: "Q", suit: "Heart"),
+          deck.cards.find_by(rank: "J", suit: "Heart"),
+          deck.cards.find_by(rank: "9", suit: "Heart"),
+          deck.cards.find_by(rank: "8", suit: "Diamond"),
+          deck.cards.find_by(rank: "7", suit: "Spade")
+        ], player_id: 1)
+      end
+
+      let(:lower_hand) do
+        Hands::Hand.new(cards: [
+          deck.cards.find_by(rank: "K", suit: "Heart"),
+          deck.cards.find_by(rank: "Q", suit: "Heart"),
+          deck.cards.find_by(rank: "J", suit: "Heart"),
+          deck.cards.find_by(rank: "10", suit: "Heart"),
+          deck.cards.find_by(rank: "9", suit: "Heart"),
+          deck.cards.find_by(rank: "8", suit: "Diamond"),
+          deck.cards.find_by(rank: "7", suit: "Spade")
+        ], player_id: 2)
+      end
+
+      it "returns 1 when first hand has higher flush" do
+        expect(Hands::Flush.new(higher_hand) <=> Hands::Flush.new(lower_hand)).to eq(1)
+      end
+
+      it "returns -1 when first hand has lower flush" do
+        expect(Hands::Flush.new(lower_hand) <=> Hands::Flush.new(higher_hand)).to eq(-1)
+      end
+    end
+
+    context "when comparing hands with same high card but different second card" do
+      let(:higher_hand) do
+        Hands::Hand.new(cards: [
+          deck.cards.find_by(rank: "A", suit: "Heart"),
+          deck.cards.find_by(rank: "K", suit: "Heart"),
+          deck.cards.find_by(rank: "Q", suit: "Heart"),
+          deck.cards.find_by(rank: "J", suit: "Heart"),
+          deck.cards.find_by(rank: "9", suit: "Heart"),
+          deck.cards.find_by(rank: "8", suit: "Diamond"),
+          deck.cards.find_by(rank: "7", suit: "Spade")
+        ], player_id: 1)
+      end
+
+      let(:lower_hand) do
+        Hands::Hand.new(cards: [
+          deck.cards.find_by(rank: "A", suit: "Heart"),
+          deck.cards.find_by(rank: "Q", suit: "Heart"),
+          deck.cards.find_by(rank: "J", suit: "Heart"),
+          deck.cards.find_by(rank: "10", suit: "Heart"),
+          deck.cards.find_by(rank: "9", suit: "Heart"),
+          deck.cards.find_by(rank: "8", suit: "Diamond"),
+          deck.cards.find_by(rank: "7", suit: "Spade")
+        ], player_id: 2)
+      end
+
+      it "returns 1 when first hand has higher second card" do
+        expect(Hands::Flush.new(higher_hand) <=> Hands::Flush.new(lower_hand)).to eq(1)
+      end
+
+      it "returns -1 when first hand has lower second card" do
+        expect(Hands::Flush.new(lower_hand) <=> Hands::Flush.new(higher_hand)).to eq(-1)
+      end
+    end
+
+    context "when comparing hands with same first two cards but different third card" do
+      let(:higher_hand) do
+        Hands::Hand.new(cards: [
+          deck.cards.find_by(rank: "A", suit: "Heart"),
+          deck.cards.find_by(rank: "K", suit: "Heart"),
+          deck.cards.find_by(rank: "Q", suit: "Heart"),
+          deck.cards.find_by(rank: "J", suit: "Heart"),
+          deck.cards.find_by(rank: "9", suit: "Heart"),
+          deck.cards.find_by(rank: "8", suit: "Diamond"),
+          deck.cards.find_by(rank: "7", suit: "Spade")
+        ], player_id: 1)
+      end
+
+      let(:lower_hand) do
+        Hands::Hand.new(cards: [
+          deck.cards.find_by(rank: "A", suit: "Heart"),
+          deck.cards.find_by(rank: "K", suit: "Heart"),
+          deck.cards.find_by(rank: "J", suit: "Heart"),
+          deck.cards.find_by(rank: "10", suit: "Heart"),
+          deck.cards.find_by(rank: "9", suit: "Heart"),
+          deck.cards.find_by(rank: "8", suit: "Diamond"),
+          deck.cards.find_by(rank: "7", suit: "Spade")
+        ], player_id: 2)
+      end
+
+      it "returns 1 when first hand has higher third card" do
+        expect(Hands::Flush.new(higher_hand) <=> Hands::Flush.new(lower_hand)).to eq(1)
+      end
+
+      it "returns -1 when first hand has lower third card" do
+        expect(Hands::Flush.new(lower_hand) <=> Hands::Flush.new(higher_hand)).to eq(-1)
+      end
+    end
+
+    context "when comparing identical hands" do
+      let(:hand) do
+        Hands::Hand.new(cards: [
+          deck.cards.find_by(rank: "A", suit: "Heart"),
+          deck.cards.find_by(rank: "K", suit: "Heart"),
+          deck.cards.find_by(rank: "Q", suit: "Heart"),
+          deck.cards.find_by(rank: "J", suit: "Heart"),
+          deck.cards.find_by(rank: "9", suit: "Heart"),
+          deck.cards.find_by(rank: "8", suit: "Diamond"),
+          deck.cards.find_by(rank: "7", suit: "Spade")
+        ], player_id: 1)
+      end
+
+      it "returns 0 when hands are identical" do
+        expect(Hands::Flush.new(hand) <=> Hands::Flush.new(hand)).to eq(0)
+      end
+    end
+  end
 end

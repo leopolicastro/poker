@@ -15,8 +15,6 @@ module Hands
       end
 
       def top_five(hand)
-        # Flush.top_five(hand).sort_by { |card| card.value }
-
         # Determine the most frequent suit in the hand
         most_frequent_suit = hand.suits.max_by { |suit| hand.suits.count(suit) }
 
@@ -52,6 +50,23 @@ module Hands
         straights.max_by { |combination| combination.sum(&value_method) }
           .sort_by(&value_method)
       end
+    end
+
+    def detail_compare(other)
+      # Get the top five cards for both hands
+      my_cards = self.class.top_five(hand)
+      other_cards = self.class.top_five(other.hand)
+
+      # Check if either hand is an Ace-high straight flush
+      my_is_ace_high = my_cards.last.value == 14 && my_cards.first.value == 10
+      other_is_ace_high = other_cards.last.value == 14 && other_cards.first.value == 10
+
+      # If one is Ace-high and the other isn't, Ace-high wins
+      return 1 if my_is_ace_high && !other_is_ace_high
+      return -1 if !my_is_ace_high && other_is_ace_high
+
+      # If both are Ace-high or both are Ace-low, compare highest cards
+      my_cards.last.value <=> other_cards.last.value
     end
   end
 end

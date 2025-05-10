@@ -1,10 +1,10 @@
 module Hands
   class TwoPairs < Base
-    def self.satisfied?(cards)
-      cards.sorted_values
+    def self.satisfied?(hand)
+      hand.sorted_values
         .group_by(&:itself)
         .count { |_, group| group.size == 2 }
-        .eql?(2)
+        .>= 2
     end
 
     def self.top_five(hand)

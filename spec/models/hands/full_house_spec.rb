@@ -70,4 +70,124 @@ RSpec.describe Hands::FullHouse, type: :model do
       end
     end
   end
+
+  describe "#<=>" do
+    let(:deck) { create(:deck) }
+
+    context "when comparing hands with different three of a kind values" do
+      let(:higher_hand) do
+        Hands::Hand.new(cards: [
+          deck.cards.find_by(rank: "A", suit: "Heart"),
+          deck.cards.find_by(rank: "A", suit: "Spade"),
+          deck.cards.find_by(rank: "A", suit: "Club"),
+          deck.cards.find_by(rank: "K", suit: "Diamond"),
+          deck.cards.find_by(rank: "K", suit: "Heart"),
+          deck.cards.find_by(rank: "Q", suit: "Diamond"),
+          deck.cards.find_by(rank: "J", suit: "Spade")
+        ], player_id: 1)
+      end
+
+      let(:lower_hand) do
+        Hands::Hand.new(cards: [
+          deck.cards.find_by(rank: "K", suit: "Heart"),
+          deck.cards.find_by(rank: "K", suit: "Spade"),
+          deck.cards.find_by(rank: "K", suit: "Club"),
+          deck.cards.find_by(rank: "A", suit: "Diamond"),
+          deck.cards.find_by(rank: "A", suit: "Heart"),
+          deck.cards.find_by(rank: "Q", suit: "Diamond"),
+          deck.cards.find_by(rank: "J", suit: "Spade")
+        ], player_id: 2)
+      end
+
+      it "returns 1 when first hand has higher three of a kind" do
+        expect(Hands::FullHouse.new(higher_hand) <=> Hands::FullHouse.new(lower_hand)).to eq(1)
+      end
+
+      it "returns -1 when first hand has lower three of a kind" do
+        expect(Hands::FullHouse.new(lower_hand) <=> Hands::FullHouse.new(higher_hand)).to eq(-1)
+      end
+    end
+
+    context "when comparing hands with same three of a kind but different pair values" do
+      let(:higher_hand) do
+        Hands::Hand.new(cards: [
+          deck.cards.find_by(rank: "A", suit: "Heart"),
+          deck.cards.find_by(rank: "A", suit: "Spade"),
+          deck.cards.find_by(rank: "A", suit: "Club"),
+          deck.cards.find_by(rank: "K", suit: "Diamond"),
+          deck.cards.find_by(rank: "K", suit: "Heart"),
+          deck.cards.find_by(rank: "Q", suit: "Diamond"),
+          deck.cards.find_by(rank: "J", suit: "Spade")
+        ], player_id: 1)
+      end
+
+      let(:lower_hand) do
+        Hands::Hand.new(cards: [
+          deck.cards.find_by(rank: "A", suit: "Heart"),
+          deck.cards.find_by(rank: "A", suit: "Spade"),
+          deck.cards.find_by(rank: "A", suit: "Club"),
+          deck.cards.find_by(rank: "Q", suit: "Diamond"),
+          deck.cards.find_by(rank: "Q", suit: "Heart"),
+          deck.cards.find_by(rank: "K", suit: "Diamond"),
+          deck.cards.find_by(rank: "J", suit: "Spade")
+        ], player_id: 2)
+      end
+
+      it "returns 1 when first hand has higher pair" do
+        expect(Hands::FullHouse.new(higher_hand) <=> Hands::FullHouse.new(lower_hand)).to eq(1)
+      end
+
+      it "returns -1 when first hand has lower pair" do
+        expect(Hands::FullHouse.new(lower_hand) <=> Hands::FullHouse.new(higher_hand)).to eq(-1)
+      end
+    end
+
+    context "when comparing hands with same three of a kind and pair values but different suits" do
+      let(:hand1) do
+        Hands::Hand.new(cards: [
+          deck.cards.find_by(rank: "A", suit: "Heart"),
+          deck.cards.find_by(rank: "A", suit: "Spade"),
+          deck.cards.find_by(rank: "A", suit: "Club"),
+          deck.cards.find_by(rank: "K", suit: "Diamond"),
+          deck.cards.find_by(rank: "K", suit: "Heart"),
+          deck.cards.find_by(rank: "Q", suit: "Diamond"),
+          deck.cards.find_by(rank: "J", suit: "Spade")
+        ], player_id: 1)
+      end
+
+      let(:hand2) do
+        Hands::Hand.new(cards: [
+          deck.cards.find_by(rank: "A", suit: "Diamond"),
+          deck.cards.find_by(rank: "A", suit: "Club"),
+          deck.cards.find_by(rank: "A", suit: "Spade"),
+          deck.cards.find_by(rank: "K", suit: "Club"),
+          deck.cards.find_by(rank: "K", suit: "Spade"),
+          deck.cards.find_by(rank: "Q", suit: "Diamond"),
+          deck.cards.find_by(rank: "J", suit: "Spade")
+        ], player_id: 2)
+      end
+
+      it "returns 0 when hands have same ranks but different suits" do
+        expect(Hands::FullHouse.new(hand1) <=> Hands::FullHouse.new(hand2)).to eq(0)
+      end
+    end
+
+    context "when comparing identical hands" do
+      let(:hand) do
+        Hands::Hand.new(cards: [
+          deck.cards.find_by(rank: "A", suit: "Heart"),
+          deck.cards.find_by(rank: "A", suit: "Spade"),
+          deck.cards.find_by(rank: "A", suit: "Club"),
+          deck.cards.find_by(rank: "K", suit: "Diamond"),
+          deck.cards.find_by(rank: "K", suit: "Heart"),
+          deck.cards.find_by(rank: "Q", suit: "Diamond"),
+          deck.cards.find_by(rank: "J", suit: "Spade")
+        ], player_id: 1)
+      end
+
+      it "returns 0 when hands are identical" do
+        expect(Hands::FullHouse.new(hand) <=> Hands::FullHouse.new(hand)).to eq(0)
+      end
+    end
+  end
 end

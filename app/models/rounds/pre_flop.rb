@@ -15,18 +15,19 @@ class Rounds::PreFlop < Round
     first_to_act.update!(turn: true)
   end
 
-  def concluded?
-    super && big_blind_checked?
-  end
   # def concluded?
-  #   players.active.all? do |player|
-  #     player.bets.where(round: self).any? && (player.bets.where(round: self).sum(:amount) >= game.big_blind)
-  #   end && big_blind_checked?
+  #   super && big_blind_checked?
   # end
+  def concluded?
+    players.active.all? do |player|
+      player.bets.where(round: self).any? && (player.bets.where(round: self).sum(:amount) >= game.big_blind)
+    end && big_blind_checked?
+  end
 
   def big_blind_checked?
     big_blind_bets = game.players.big_blind.first.bets
-    big_blind_bets.count > 1
+    small_blind_bets = game.players.small_blind.first.bets
+    big_blind_bets.count > 1 && small_blind_bets.count > 1
   end
 
   def first_to_act
