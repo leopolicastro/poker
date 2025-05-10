@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe PayoutWinnersService, type: :service do
-  let(:game) { GameSimulatorService.run(players_count: 2) }
+  let(:game) { create(:game, :with_simulated_players, players_count: 2) }
   let(:player) { game.players.first }
   let(:player2) { game.players.second }
 

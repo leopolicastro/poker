@@ -1,7 +1,7 @@
 require "rails_helper"
 
 RSpec.describe StartNextHandJob, type: :job do
-  let(:game) { GameSimulatorService.run(players_count: 2) }
+  let(:game) { create(:game, :with_simulated_players, players_count: 2) }
 
   describe "#perform" do
     it "creates a new hand" do
