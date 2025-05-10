@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :showdown, class: "Rounds::Showdown" do
-    association :game, factory: :game
+    association :hand, factory: :game_hand
   end
 end
 

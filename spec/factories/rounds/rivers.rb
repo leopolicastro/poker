@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :river, class: "Rounds::River" do
-    association :game, factory: :game
+    association :hand, factory: :game_hand
   end
 end
 
