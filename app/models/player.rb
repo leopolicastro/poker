@@ -7,6 +7,7 @@ class Player < ApplicationRecord
   include Chippable
   include Cardable
   has_many :bets, dependent: :destroy
+  has_many :rounds, through: :bets
 
   accepts_nested_attributes_for :bets, allow_destroy: true
 
@@ -21,6 +22,12 @@ class Player < ApplicationRecord
   scope :not_turn, -> { where.not(turn: true) }
 
   validate :only_one_player_per_turn
+
+  enum :state, {
+    active: 0,
+    folded: 1,
+    all_in: 2
+  }
 
   def top_five_cards
     hand.top_five
@@ -91,14 +98,6 @@ class Player < ApplicationRecord
       0
     end
   end
-
-  enum :state, {
-    active: 0,
-    folded: 1,
-    all_in: 2
-  }
-
-  has_many :rounds, through: :bets
 
   def folded?
     state == "folded"
