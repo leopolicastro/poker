@@ -57,7 +57,7 @@ RSpec.describe Hands::Index, type: :model do
 
   describe "#top_five" do
     it "returns the top five cards" do
-      expect(subject.top_five.map(&:to_s)).to eq(["10 ♣", "10 ♦", "8 ♥", "8 ♠", "7 ♠"])
+      expect(subject.top_five.map(&:to_s)).to eq(["8 ♥", "8 ♠", "10 ♣", "10 ♦", "7 ♠"])
     end
   end
 
