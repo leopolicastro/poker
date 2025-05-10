@@ -8,8 +8,8 @@ class Hand < ApplicationRecord
   after_create_commit :create_pre_flop!
 
   def create_pre_flop!
-    Rounds::PreFlop.create!(hand: self)
     players.update_all(state: "active")
+    Rounds::PreFlop.create!(hand: self)
   end
 end
 

@@ -1,4 +1,10 @@
 class Bets::Blind < Bet
+  def throw_into_pot!
+    # consolidate the players chips into one chip record
+    player.consolidate_chips
+    # place the bet in the pot
+    player.split_chips(amount:, chippable: game)
+  end
 end
 
 # == Schema Information

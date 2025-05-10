@@ -1,4 +1,4 @@
-<section class="w-full">
+<section class="w-full" id="<%= dom_id game %>">
   <section class="flex  gap-8 w-full">
     <div class="border rounded-lg py-8 px-8 w-full">
       <h2 class="text-2xl font-bold mb-8">Demo Game:</h2>
@@ -28,6 +28,9 @@
       <h2 class="text-2xl font-bold mb-8">Hands:</h2>
       <div class="mt-4">
         <strong>Hand #:</strong> <%= game.hands.count %>
+      </div>
+      <div class="mt-4">
+        <strong>Bets this round:</strong> <%= game.current_round.bets.count %>
       </div>
       <div class="mt-4">
         <strong>Top hand:</strong> <%= game.top_hands.map(&:display_name).join(", ") %>
@@ -103,7 +106,7 @@
           </div>
         </div>
         <% if player.turn? && player.still_in? && game.current_round.type != "Rounds::Showdown" %>
-          <div class="inline-flex justify-center rounded-md shadow-xs mt-5" role="group">
+          <div class="inline-flex justify-center rounded-md shadow-xs mt-5" role="group" >
             <%= button_to check_or_call(player).capitalize, game_bets_path(game_id: game.id, type: check_or_call(player)), params: { player_id: player.id, amount: game.big_blind }, class: "cursor-pointer px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white" %>
             <button type="button" class="px-4 py-2 text-sm font-medium text-gray-900 bg-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white">
               Raise

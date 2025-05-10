@@ -1,4 +1,6 @@
 class Player < ApplicationRecord
+  broadcasts_refreshes
+
   belongs_to :user
   belongs_to :game, touch: true
 
@@ -47,7 +49,7 @@ class Player < ApplicationRecord
     return unless amount.present?
     return if current_holdings < amount
 
-    bets.create!(amount:, round: game.hands.last.rounds.last, type:)
+    bets.create!(amount:, round: game.current_round, type:)
   end
 
   def small_blind!

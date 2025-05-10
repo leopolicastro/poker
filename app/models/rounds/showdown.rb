@@ -1,14 +1,6 @@
 class Rounds::Showdown < Round
   def handle_round!
-    game.current_turn.update!(turn: false)
-    top_hands = game.top_hands
-    if top_hands.count > 1
-      # TODO: its kinda weird that the game is responsible for figuring out how to split the pot
-      game.split_pot_payout!(winners: top_hands)
-    else
-      # But the payout method is on the player model
-      game.top_hands.each(&:payout!)
-    end
+    PayoutWinnersService.call(game:)
 
     game.hands.last.bets.placed.update_all(state: :lost)
 

@@ -1,3 +1,5 @@
+# This service is used to rotate the table positions of the players
+# It is called when a hand ends
 class RotateTablePositionsService
   def self.call(game:)
     new(game:).call
@@ -9,7 +11,6 @@ class RotateTablePositionsService
   end
 
   def call
-    @players.update_all(turn: false)
     players = @players.to_a
 
     # Store current positions
@@ -21,7 +22,8 @@ class RotateTablePositionsService
     # Assign each player the position of the player to their right
     players.each_with_index do |player, index|
       right_player_index = (index + 1) % players.size
-      player.update!(table_position: current_positions[right_player_index])
+      position = :"#{current_positions[right_player_index]}!"
+      player.send(position)
     end
   end
 end

@@ -2,6 +2,8 @@ class Round < ApplicationRecord
   belongs_to :hand
   has_many :bets, dependent: :destroy
 
+  PLAYER_TIMEOUT_WAIT = Rails.env.local? ? 10.seconds : 30.seconds
+
   delegate :game, to: :hand
 
   delegate :deck, :players, :current_turn, to: :game
@@ -14,10 +16,20 @@ class Round < ApplicationRecord
 
   after_create_commit :handle_round!
 
+  # def timeout_if_unresponsive
+  #   return if type == "Rounds::Showdown"
+
+  #   FoldIfUnresponsiveJob.set(wait: PLAYER_TIMEOUT_WAIT).perform_later(
+  #     round_id: id,
+  #     player_id: first_to_act.id,
+  #     current_bets_count: first_to_act.bets.where(round: self).count
+  #   )
+  # end
+
   def concluded?
     players.active.all? do |player|
       round_bets = player.bets.where(round: self)
-      round_bets.any? { |bet| ["Bets::AllIn"].include?(bet.type) } ||
+      round_bets.any? { |bet| ["Bets::AllIn", "Bets::Fold"].include?(bet.type) } ||
         (round_bets.any? && round_bets.sum(:amount) >= player.owes_the_pot)
     end
   end
@@ -33,16 +45,14 @@ class Round < ApplicationRecord
   end
 
   def first_to_act
-    # Start from the position after small blind
-    small_blind_position = players.small_blind.first.position
-
-    # Find the first active player to the right of small blind
-    # Using a single query instead of a loop
-    players.active.ordered
-      .where("position >= ?", small_blind_position)
-      .first || players.active.ordered.first
-
-    # Return nil if no active players found
+    count = 0
+    first = players.small_blind.first
+    until first.active?
+      first = first.to_the_right
+      count += 1
+      raise "Infinite loop" if count > players.count
+    end
+    first
   end
 end
 

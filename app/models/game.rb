@@ -4,6 +4,7 @@ class Game < ApplicationRecord
   has_one :deck, dependent: :destroy
   has_many :players, dependent: :destroy
   has_many :hands, dependent: :destroy
+  has_many :rounds, through: :hands
   has_many :bets, through: :hands
 
   after_create_commit :create_deck!
@@ -23,7 +24,7 @@ class Game < ApplicationRecord
     winners.each do |player|
       player.chips.create!(value: winnings_per_player)
       player.consolidate_chips
-      game.current_hand.bets.placed.where(player:).update_all(state: :won)
+      current_hand.bets.placed.where(player:).update_all(state: :won)
     end
     pot.destroy!
   end
@@ -60,8 +61,7 @@ class Game < ApplicationRecord
   end
 
   def in_progress!
-    hand = hands.last
-    hand.rounds.create!(type: "PreFlop") unless hand.rounds.any?
+    current_hand.rounds.create!(type: "Rounds::PreFlop") unless current_hand.rounds.any?
     super
   end
 

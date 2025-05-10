@@ -29,6 +29,7 @@ class GameSimulatorService
         user.password = "password"
       end
       player = game.players.find_or_create_by!(user:)
+      player.active!
       instance_variable_set("@player#{i}", player)
       user.chips.create! value: 10000
       player.buy_in(1000)

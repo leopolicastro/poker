@@ -22,8 +22,17 @@ class Bet < ApplicationRecord
   def throw_into_pot!
     # consolidate the players chips into one chip record
     player.consolidate_chips
-    # place the bet in the post
-    player.split_chips(amount:, chippable: player.game)
+    # place the bet in the pot
+    player.split_chips(amount:, chippable: game)
+    rotate_turn!
+  end
+
+  def rotate_turn!
+    if game.current_round.concluded?
+      game.current_round.next_round!
+    else
+      RotateTurnService.call(game:)
+    end
   end
 end
 

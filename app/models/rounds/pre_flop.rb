@@ -7,6 +7,7 @@ class Rounds::PreFlop < Round
       game.deck.draw(count: 2, cardable: player)
     end
     game.assign_starting_positions! if game.first_hand?
+    game.players.update_all(turn: false)
     first_to_act.update!(turn: true)
   end
 
@@ -21,7 +22,6 @@ class Rounds::PreFlop < Round
     big_blind_bets.count > 1
   end
 
-  # PICK UP HERE
   def first_to_act
     game.players.big_blind.first.to_the_right
   end

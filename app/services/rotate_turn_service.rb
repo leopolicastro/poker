@@ -9,18 +9,20 @@ class RotateTurnService
   end
 
   def call
+    return if @game.current_round.concluded?
+
     if @players.active.count <= 1
       return @game.hands.create!
     end
     # Get all active players in order
-    players = @players.to_a
+    players = @game.reload.players.to_a
 
     # Find the current player with turn
     current_player = players.find { |p| p.turn? }
 
     # If no player has turn, start with the first player
     if current_player.nil?
-      raise "No active players"
+      raise "No players with turn found"
     end
 
     @players.update_all(turn: false)
@@ -32,10 +34,18 @@ class RotateTurnService
 
     # Update turns
     player = players[next_index]
+    count = 0
     until player.active?
       next_index = (next_index + 1) % players.size
       player = players[next_index]
+      count += 1
+      raise "Infinite loop" if count > 10
     end
     player.update!(turn: true)
+    # FoldIfUnresponsiveJob.set(wait: Round::PLAYER_TIMEOUT_WAIT).perform_later(
+    #   round_id: @game.current_round.id,
+    #   player_id: player.id,
+    #   current_bets_count: @game.current_round.bets.where(player:).count
+    # )
   end
 end
