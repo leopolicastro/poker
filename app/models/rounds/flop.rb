@@ -5,7 +5,6 @@ class Rounds::Flop < Round
     end
 
     players.active.update_all(turn: false)
-
     first_to_act.update!(turn: true)
 
     game.draw(count: 1, burn_card: true)
