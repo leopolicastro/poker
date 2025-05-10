@@ -1,75 +1,40 @@
 <section class="w-full" id="<%= dom_id game %>">
-  <aside class="flex flex-wrap gap-8 justify-center">
-    <% game.cards.updated_at_asc.each do |card| %>
-      <div class="flex flex-col gap-2">
-        <%#=  card.to_html %>
-        <%= image_tag card.image, class: "h-32 mb-10" %>
-      </div>
-    <% end %>
-  </aside>
+  <%= render Game::Board::Component.new(game:) %>
   <aside class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 mb-16 justify-center">
     <% game.players.each do |player| %>
       <%= render Player::Component.new(player) %>
     <% end %>
   </aside>
-  <section class="flex  gap-8 w-full">
-    <div class="border rounded-lg py-8 px-8 w-full">
-      <h2 class="text-2xl font-bold mb-8">Demo Game:</h2>
-      <div class="mt-4">
-        <strong>State:</strong> <%= game.state %>
-      </div>
-      <div class="mt-4">
-        <strong>Total bets (moves):</strong> <%= game.bets.count %>
-      </div>
-      <div class="mt-4">
-        <strong>Current Turn:</strong> <%= game.current_turn&.name %>
-      </div>
-      <div class="mt-4">
-        <strong>Small Blind:</strong> <%= number_to_currency(game.small_blind) %>
-      </div>
-      <div class="mt-4">
-        <strong>Big Blind:</strong> <%= number_to_currency(game.big_blind) %>
-      </div>
-      <div class="mt-4">
-        <strong>Chip leader:</strong> <%= game.chip_leader&.name %>
-      </div>
-      <div class="mt-4">
-        <strong>Pot:</strong> <%= number_to_currency(game.pot) %>
-      </div>
-      <div class="mt-4">
-        <strong>Concluded:</strong> <%= game.current_round.concluded? %>
-      </div>
-    </div>
-    <div class="border rounded-lg py-8 px-8 w-full">
-      <h2 class="text-2xl font-bold mb-8">Hands:</h2>
-      <div class="mt-4">
-        <strong>Hand #:</strong> <%= game.hands.count %>
-      </div>
-      <div class="mt-4">
-        <strong>Bets this round:</strong> <%= game.current_round.bets.count %>
-      </div>
-      <div class="mt-4">
-        <strong>Top hands:</strong> <%= game.top_hands.map(&:display_name).join(", ") %>
-      </div>
-      <div class=" mt-4">
-        <strong>Current Round:</strong> <%= game.current_round.type %>
-      </div>
-      <% if game.current_round.type == "Rounds::Showdown" %>
+  <section class="flex justify-around w-full">
+    <div class="border rounded-lg py-8 px-8 w-full flex gap-8">
+      <div class="w-full flex flex-col items-center">
+        <h2 class="text-2xl font-bold">Stats:</h2>
         <div class="mt-4">
-          <strong>Won:</strong> <%= number_to_currency(game.current_round.pot) %>
+          <strong>Small Blind:</strong> <%= number_to_currency(game.small_blind) %>
         </div>
-      <% end %>
-      <div class="mt-4">
-        <strong>Current Turn:</strong> <%= game.current_turn&.display_name %>
+        <div class="mt-4">
+          <strong>Big Blind:</strong> <%= number_to_currency(game.big_blind) %>
+        </div>
+        <div class="mt-4">
+          <strong>Chip leader:</strong> <%= game.chip_leader&.display_name %>
+        </div>
       </div>
-      <div class="mt-4">
-        <strong>Next Turn:</strong> <%= game.next_player&.display_name %>
+      <div class="w-full flex flex-col items-center">
+        <h2 class="text-2xl font-bold">Hands:</h2>
+        <div class="mt-4">
+          <strong>Hand #:</strong> <%= game.hands.count %>
+        </div>
+        <% if game.current_round.type == "Rounds::Showdown" %>
+          <div class="mt-4">
+            <strong>Won:</strong> <%= number_to_currency(game.current_round.pot) %>
+          </div>
+        <% end %>
       </div>
-    </div>
-    <div class="border rounded-lg py-8 px-8 w-full">
-      <h2 class="text-2xl font-bold mb-8">Deck:</h2>
-      <div class="flex flex-col gap-2">
-        <strong>Cards left:</strong> <%= game.deck.cards_left %>
+      <div class="w-full flex flex-col items-center">
+        <h2 class="text-2xl font-bold">Deck:</h2>
+        <div class="flex flex-col gap-2">
+          <strong>Cards left:</strong> <%= game.deck.cards_left %>
+        </div>
       </div>
     </div>
   </section>
