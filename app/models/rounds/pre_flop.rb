@@ -6,7 +6,11 @@ class Rounds::PreFlop < Round
     game.players.ordered.each do |player|
       game.deck.draw(count: 2, cardable: player)
     end
-    game.assign_starting_positions! if game.first_hand?
+    if game.first_hand?
+      game.assign_starting_positions!
+    else
+      RotateTablePositionsService.call(game:)
+    end
     game.players.update_all(turn: false)
     first_to_act.update!(turn: true)
   end
