@@ -78,25 +78,18 @@ class Player < ApplicationRecord
   end
 
   def owes_the_pot
-    relevant_bet_types = ["Bets::AllIn", "Bets::Raise"]
     current_round = game.current_round
-    relevant_bets = current_round.bets.where(type: relevant_bet_types)
-    if game.current_round.type == "Rounds::PreFlop"
-      # TODO: this should be checking for raises also
-      game.big_blind - bets.where(round: current_round).sum(:amount)
-    elsif relevant_bets.any?
-      # TODO: this should be checking for raises also
-      # The highest amount any player has bet in this round
-      highest_bet = relevant_bets.group(:player_id).sum(:amount).values.max || 0
+    # Get all bets in this round
+    all_bets = current_round.bets
 
-      # How much this player has already bet in this round
-      my_bet = relevant_bets.where(player: self).sum(:amount)
+    # Get the highest total bet amount from any player
+    highest_bet = current_round.bets.group(:player_id).sum(:amount).values.max || 0
 
-      # The amount needed to call (can't be negative)
-      [highest_bet - my_bet, 0].max
-    else
-      0
-    end
+    # Get how much this player has already bet in this round
+    my_bet = all_bets.where(player: self).sum(:amount)
+
+    # Calculate how much more they need to bet to match the highest bet
+    [highest_bet - my_bet, 0].max
   end
 
   def folded?
@@ -139,6 +132,10 @@ class Player < ApplicationRecord
     return if hand.nil?
 
     hand.level.to_s.demodulize.titleize
+  end
+
+  def in_for
+    game.current_hand.bets.where(player: self).sum(:amount)
   end
 
   private

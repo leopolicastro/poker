@@ -20,6 +20,13 @@ class BetsController < ApplicationController
   private
 
   def amount
-    (params[:type] == "Fold") ? 0 : @player.owes_the_pot
+    case params[:type]
+    when "Fold"
+      0
+    when "Raise"
+      params[:amount]
+    else
+      @player.owes_the_pot
+    end
   end
 end

@@ -24,11 +24,13 @@ class Bet < ApplicationRecord
     player.consolidate_chips
     # place the bet in the pot
     player.split_chips(amount:, chippable: game)
-    rotate_turn!
+    rotate_turn! unless rotate_turn == false
   end
 
   def rotate_turn!
-    if game.current_round.concluded?
+    if game.players.where.not(state: :folded).count == 1
+      game.current_hand.rounds.create!(type: "Rounds::Showdown")
+    elsif game.current_round.concluded?
       game.current_round.next_round!
     else
       RotateTurnService.call(game:)
@@ -40,15 +42,16 @@ end
 #
 # Table name: bets
 #
-#  id         :integer          not null, primary key
-#  amount     :integer          default(0), not null
-#  answered   :boolean          default(FALSE), not null
-#  state      :integer          default("placed"), not null
-#  type       :string           not null
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  player_id  :integer          not null
-#  round_id   :integer          not null
+#  id          :integer          not null, primary key
+#  amount      :integer          default(0), not null
+#  answered    :boolean          default(FALSE), not null
+#  rotate_turn :boolean          default(TRUE), not null
+#  state       :integer          default("placed"), not null
+#  type        :string           not null
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#  player_id   :integer          not null
+#  round_id    :integer          not null
 #
 # Indexes
 #

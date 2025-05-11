@@ -6,6 +6,9 @@ Rails.application.routes.draw do
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
   resources :games, only: [:show] do
     resources :bets, only: [:create]
+    namespace :bets do
+      resources :raises, only: [:create]
+    end
   end
 
   resources :decks, only: [:show]

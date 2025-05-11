@@ -1,0 +1,31 @@
+<% if player.turn? && player.still_in? && game.current_round.type != "Rounds::Showdown" %>
+  <div class="inline-flex justify-center rounded-md shadow-xs mt-5" role="group" >
+    <%= button_to check_or_call_with_amount(player), game_bets_path(game_id: game.id, type: check_or_call(player)), params: { player_id: player.id, amount: game.big_blind }, class: "cursor-pointer px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-s-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white" %>
+    <!-- Modal toggle -->
+    <button data-modal-target="default-modal" data-modal-toggle="default-modal" class="px-4 py-2 text-sm font-medium text-gray-900 bg-white border-t border-b border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white" type="button">
+      Raise
+    </button>
+    <!-- Main modal -->
+    <div id="default-modal" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+      <div class="relative p-4 w-full max-w-2xl max-h-full">
+        <!-- Modal content -->
+        <div class="relative bg-white rounded-lg shadow-sm dark:bg-gray-700">
+          <!-- Modal body -->
+          <div class="p-4 md:p-5 space-y-4">
+            <%= form_with url: game_bets_raises_path(game.id) do |form| %>
+              <%= form.hidden_field :player_id, value: player.id %>
+              <%= form.number_field :amount,
+                value: starting_raise_amount(player),
+                min: starting_raise_amount(player),
+                max: player.current_holdings,
+                step: raise_step_amount(player.game),
+                class: "my-4 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" %>
+              <%= form.submit "Raise", class: "text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800" %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+    <%= button_to "Fold", game_bets_path(game_id: game.id, type: "Fold"), params: { player_id: player.id, amount: game.big_blind }, class: "cursor-pointer px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-e-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:text-white dark:hover:bg-gray-700 dark:focus:ring-blue-500 dark:focus:text-white" %>
+  </div>
+<% end %>

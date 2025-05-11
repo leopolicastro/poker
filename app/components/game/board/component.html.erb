@@ -10,7 +10,7 @@
     <!-- Inner ring -->
     <div class="absolute w-14 h-14 rounded-full border-[3px] border-white"></div>
     <!-- Pot amount -->
-    <span class="relative text-white font-bold text-lg z-10"><%= game.pot %></span>
+    <span class="relative text-white text-sm font-bold z-10"><%= number_to_currency(game.pot, precision: 0) %></span>
   </div>
 </aside>
 <section class="flex justify-center w-full text-white">

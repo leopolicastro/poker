@@ -10,6 +10,10 @@ class Player::Component < ViewComponent::Base
     player.present?
   end
 
+  def last_round_bet
+    player.bets.where(round: game.current_round).last
+  end
+
   def card_bg_color
     if player.folded?
       "bg-gray-400"
@@ -17,14 +21,6 @@ class Player::Component < ViewComponent::Base
       "bg-green-200"
     else
       "bg-white"
-    end
-  end
-
-  def check_or_call(player)
-    if player.owes_the_pot.positive?
-      "Call"
-    else
-      "Check"
     end
   end
 end
