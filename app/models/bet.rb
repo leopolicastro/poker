@@ -7,6 +7,7 @@ class Bet < ApplicationRecord
   after_create_commit :throw_into_pot!
 
   include Chippable
+  include ActionView::Helpers::NumberHelper
 
   enum :state, {
     placed: 0,

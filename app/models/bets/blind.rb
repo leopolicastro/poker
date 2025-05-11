@@ -5,6 +5,10 @@ class Bets::Blind < Bet
     # place the bet in the pot
     player.split_chips(amount:, chippable: game)
   end
+
+  def display_name
+    "Blind for #{number_to_currency(amount)}"
+  end
 end
 
 # == Schema Information

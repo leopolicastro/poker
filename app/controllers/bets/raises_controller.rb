@@ -12,17 +12,18 @@ class Bets::RaisesController < ApplicationController
   private
 
   def handle_raise
-    if @player.owes_the_pot > 0
+    owes_the_pot = @player.owes_the_pot
+    if owes_the_pot > 0
       @game.current_round.bets.create!(
         player: @player,
-        amount: @player.owes_the_pot,
+        amount: owes_the_pot,
         type: "Bets::Call",
         rotate_turn: false
       )
     end
 
     # Then create the raise bet
-    raise_amount = params[:amount].to_i - @player.owes_the_pot
+    raise_amount = params[:amount].to_i - owes_the_pot
     if raise_amount > 0
       @game.current_round.bets.create!(
         player: @player,

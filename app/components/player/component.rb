@@ -10,8 +10,8 @@ class Player::Component < ViewComponent::Base
     player.present?
   end
 
-  def last_round_bet
-    player.bets.where(round: game.current_round).last
+  def last_round_bets
+    player.bets.where(round: game.current_round)
   end
 
   def card_bg_color

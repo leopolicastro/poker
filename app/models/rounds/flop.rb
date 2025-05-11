@@ -1,9 +1,5 @@
 class Rounds::Flop < Round
   def handle_round!
-    if game.players.active.count.zero?
-      return game.hands.create!
-    end
-
     players.active.update_all(turn: false)
     first_to_act.update!(turn: true)
 

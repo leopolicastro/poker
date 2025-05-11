@@ -30,7 +30,7 @@ class Round < ApplicationRecord
   def next_round!
     current_type_index = ROUND_TYPES.index(type)
     next_type = ROUND_TYPES[current_type_index + 1]
-    if game.hands.last.rounds.last.type == "Rounds::Showdown"
+    if game.current_round.type == "Rounds::Showdown"
       game.hands.create!
     elsif next_type
       game.hands.last.rounds.create!(type: next_type)

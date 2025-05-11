@@ -31,8 +31,10 @@ class Player::Actions::Component < ViewComponent::Base
     # Get all raises in the current round
     raises = current_round.bets.where(type: "Bets::Raise")
 
-    if raises.any?
-      [raises.last.amount * 2, player.game.big_blind].max
+    if raises.any? && current_round.type == "Rounds::PreFlop"
+      (raises.last.amount * 2) + player.game.big_blind
+    elsif raises.any?
+      [raises.last.amount, player.game.big_blind].max * 2
     else
       player.game.big_blind
     end

@@ -1,4 +1,7 @@
 class Bets::Check < Bet
+  def display_name
+    "Checked"
+  end
 end
 
 # == Schema Information

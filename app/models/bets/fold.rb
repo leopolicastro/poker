@@ -2,6 +2,13 @@ class Bets::Fold < Bet
   def throw_into_pot!
     super
     player.folded!
+    if game.players.where.not(state: :folded).count == 1
+      game.current_hand.rounds.create!(type: "Rounds::Showdown")
+    end
+  end
+
+  def display_name
+    "Folded"
   end
 end
 

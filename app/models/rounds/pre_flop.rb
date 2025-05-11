@@ -15,10 +15,22 @@ class Rounds::PreFlop < Round
     first_to_act.update!(turn: true)
   end
 
+  # def concluded?
+  #   players.active.all? do |player|
+  #     player.bets.where(round: self).any? && (player.bets.where(round: self).sum(:amount) >= game.big_blind)
+  #   end && big_blind_checked?
+  # end
+  #
+  # def concluded?
+  #   players.active.all? do |player|
+  #     round_bets = player.bets.where(round: self)
+  #     round_bets.any? { |bet| ["Bets::AllIn", "Bets::Fold"].include?(bet.type) } ||
+  #       (round_bets.any? && round_bets.sum(:amount) >= player.owes_the_pot)
+  #   end && big_blind_checked?
+  # end
+
   def concluded?
-    players.active.all? do |player|
-      player.bets.where(round: self).any? && (player.bets.where(round: self).sum(:amount) >= game.big_blind)
-    end && big_blind_checked?
+    super && big_blind_checked?
   end
 
   def big_blind_checked?

@@ -1,4 +1,7 @@
 class Bets::Raise < Bet
+  def display_name
+    "Raised #{number_to_currency(amount)}"
+  end
 end
 
 # == Schema Information

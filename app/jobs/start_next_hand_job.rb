@@ -3,6 +3,6 @@ class StartNextHandJob < ApplicationJob
 
   def perform(game_id:)
     game = Game.find(game_id)
-    game.reload.hands.create!
+    game.hands.create!
   end
 end

@@ -12,7 +12,7 @@
     <strong>Table position:</strong> <%= player.table_position %>
   </div>
   <div>
-    <strong>Owes the:</strong> <%= player.table_position %>
+    <strong>Owes the pot:</strong> <%= number_to_currency(player.owes_the_pot) %>
   </div>
   <div>
     <strong>In for:</strong> <%= number_to_currency(game.current_hand.bets.where(player: player).sum(:amount)) %>
@@ -26,11 +26,14 @@
   <div>
     <strong>State:</strong> <%= player.state %>
   </div>
-  <% if last_round_bet.present? %>
-    <div>
-      <strong>Round Action:</strong> <%= last_round_bet.type.demodulize %> for <%= number_to_currency(last_round_bet&.amount) %>
-    </div>
-  <% end %>
+  <div>
+    <strong>Round Actions:</strong>
+    <% last_round_bets.each do |bet| %>
+      <div>
+        <%= bet.display_name %>
+      </div>
+    <% end %>
+  </div>
   <div>
     <strong>Current Holdings:</strong> <%= number_to_currency(player.current_holdings) %>
   </div>

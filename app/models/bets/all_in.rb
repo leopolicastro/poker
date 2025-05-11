@@ -1,4 +1,7 @@
 class Bets::AllIn < Bet
+  def display_name
+    "All In for #{number_to_currency(amount)}"
+  end
 end
 
 # == Schema Information
