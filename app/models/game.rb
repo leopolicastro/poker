@@ -9,6 +9,8 @@ class Game < ApplicationRecord
 
   after_create_commit :create_deck!
 
+  validates :name, presence: true
+
   include Chippable
   include Cardable
 
@@ -22,11 +24,56 @@ class Game < ApplicationRecord
     pot = consolidate_chips
     winnings_per_player = pot.value / winners.size
     winners.each do |player|
-      player.chips.create!(value: winnings_per_player)
+      split_chips(amount: winnings_per_player, chippable: player)
       player.consolidate_chips
       current_hand.bets.placed.where(player:).update_all(state: :won)
     end
-    pot.destroy!
+  end
+
+  def all_in_payout!(winners:)
+    all_in_winners = winners.select(&:all_in?)
+    consolidate_chips
+    return split_pot_payout!(winners:) if all_in_winners.empty?
+
+    # Get all players who placed bets, sorted by their bet amount
+    betting_players = current_hand.bets.placed.includes(:player).map(&:player).uniq
+    betting_players.sort_by! { |player| player.current_holdings }
+
+    # Process each all-in player's side pot
+    all_in_winners.each do |all_in_player|
+      # Find the minimum bet amount for this side pot
+      min_bet = all_in_player.current_holdings
+
+      # Get eligible players for this side pot (those who bet at least min_bet)
+      eligible_players = betting_players.select { |p| p.current_holdings >= min_bet }
+
+      # Calculate side pot amount
+      side_pot_amount = eligible_players.sum { |p| [p.current_holdings, min_bet].min }
+
+      # Find winners eligible for this side pot
+      eligible_winners = winners.select { |w| eligible_players.include?(w) }
+
+      # Pay out the side pot
+      winnings_per_player = side_pot_amount / eligible_winners.size
+      eligible_winners.each do |winner|
+        split_chips(amount: winnings_per_player, chippable: winner)
+        winner.consolidate_chips
+        current_hand.bets.placed.where(player: winner).update_all(state: :won)
+      end
+    end
+
+    # Pay out the main pot to remaining winners
+    remaining_winners = winners - all_in_winners
+    if remaining_winners.any?
+      main_pot = consolidate_chips
+      winnings_per_player = main_pot.value / remaining_winners.size
+      remaining_winners.each do |winner|
+        winner.chips.create!(value: winnings_per_player)
+        winner.consolidate_chips
+        current_hand.bets.placed.where(player: winner).update_all(state: :won)
+      end
+      main_pot.destroy!
+    end
   end
 
   def draw(count: 1, burn_card: false)

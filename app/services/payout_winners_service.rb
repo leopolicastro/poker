@@ -6,11 +6,14 @@ class PayoutWinnersService
 
   def initialize(game:)
     @game = game
+    @players = game.players
   end
 
   def call
     top_hands = game.top_hands
-    if top_hands.count > 1
+    if @players.all_in.where(id: top_hands.map(&:id)).any?
+      game.all_in_payout!(winners: top_hands)
+    elsif top_hands.count > 1
       # TODO: it's kind of weird that split_pot_payout! is on the game model
       game.split_pot_payout!(winners: top_hands)
     else

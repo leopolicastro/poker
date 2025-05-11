@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :round do
     association :hand, factory: :game_hand
-    type { "PreFlop" }
+    type { "Rounds::PreFlop" }
   end
 end
 
