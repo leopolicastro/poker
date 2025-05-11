@@ -1,5 +1,6 @@
 class Bets::FoldsController < ApplicationController
   allow_unauthenticated_access
+
   def create
     @game = Game.find(params[:game_id])
     @player = @game.players.active.find(params[:player_id])

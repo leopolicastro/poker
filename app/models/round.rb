@@ -40,14 +40,12 @@ class Round < ApplicationRecord
   end
 
   def first_to_act
-    count = 0
-    player = players.small_blind.first
-    until player.reload.state != "folded"
-      player = player.to_the_right
-      count += 1
-      raise "No active players found" if count > players.count
+    current = players.small_blind.first
+    players.count.times do
+      return current if ["folded", "all_in"].exclude?(current.state)
+      current = current.to_the_right
     end
-    player
+    raise "No active players found"
   end
 end
 

@@ -17,6 +17,8 @@ class Player::Component < ViewComponent::Base
   def card_bg_color
     if player.folded?
       "bg-gray-400"
+    elsif player.all_in?
+      "bg-yellow-200"
     elsif game.top_hands.include?(player)
       "bg-green-200"
     else

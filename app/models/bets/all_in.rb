@@ -1,4 +1,9 @@
 class Bets::AllIn < Bet
+  def throw_into_pot!
+    player.all_in!
+    super
+  end
+
   def display_name
     "All In for #{number_to_currency(amount)}"
   end
