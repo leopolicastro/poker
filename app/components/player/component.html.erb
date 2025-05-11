@@ -36,6 +36,14 @@
   </div>
   <div>
     <strong>Current Holdings:</strong> <%= number_to_currency(player.current_holdings) %>
+    <% if player == game.chip_leader %>
+      <strong>Chip Leader</strong>
+    <% end %>
+    <% if game.current_round.type == "Rounds::Showdown" && game.top_hands.include?(player) %>
+      <div class="">
+        <strong>Won:</strong> <%= number_to_currency(game.current_round.pot) %>
+      </div>
+    <% end %>
   </div>
   <div>
     <div class="flex flex-wrap gap-2">

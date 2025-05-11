@@ -141,7 +141,10 @@ class Player < ApplicationRecord
   private
 
   def conditions_met?
-    game.current_turn.nil? && position >= 4 && game.rounds_count == 1 && game.players.count >= 4
+    game.current_turn.nil? &&
+      position >= 4 &&
+      game.rounds_count == 1 &&
+      game.players.count >= 4
   end
 end
 

@@ -1,24 +1,12 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## TODO
 
-Things you may want to cover:
+### Poker engine
 
-* Ruby version
+- [ ] Handle All Ins Properly
+- [ ] Tournament style
 
-* System dependencies
+### Poker app
 
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+- [ ] UI for player sitting at a table
