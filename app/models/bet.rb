@@ -2,6 +2,8 @@ class Bet < ApplicationRecord
   belongs_to :player
   belongs_to :round
 
+  validate :player_has_enough_chips
+
   delegate :game, to: :player
 
   after_create_commit :throw_into_pot!
@@ -36,6 +38,12 @@ class Bet < ApplicationRecord
     else
       RotateTurnService.call(game:)
     end
+  end
+
+  private
+
+  def player_has_enough_chips
+    raise "Player does not have enough chips" if player.current_holdings < amount
   end
 end
 
