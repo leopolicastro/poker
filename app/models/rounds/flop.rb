@@ -1,6 +1,7 @@
 class Rounds::Flop < Round
   def handle_round!
-    players.active.update_all(turn: false)
+    players.update_all(turn: false)
+
     first_to_act.update!(turn: true)
 
     game.draw(count: 1, burn_card: true)

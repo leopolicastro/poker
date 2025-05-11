@@ -25,10 +25,10 @@ class Bet < ApplicationRecord
     player.consolidate_chips
     # place the bet in the pot
     player.split_chips(amount:, chippable: game)
-    rotate_turn! unless rotate_turn == false
+    handle_bet! unless rotate_turn == false
   end
 
-  def rotate_turn!
+  def handle_bet!
     if game.players.where.not(state: :folded).count == 1
       game.current_hand.rounds.create!(type: "Rounds::Showdown")
     elsif game.current_round.concluded?

@@ -76,7 +76,7 @@ RSpec.describe Rounds::PreFlop, type: :model do
 
       context "when big blind has checked" do
         before do
-          allow(pre_flop).to receive(:big_blind_checked?).and_return(true)
+          allow(pre_flop).to receive(:blind_options_satisfied?).and_return(true)
         end
 
         it "returns true" do
@@ -86,7 +86,7 @@ RSpec.describe Rounds::PreFlop, type: :model do
 
       context "when big blind has not checked" do
         before do
-          allow(pre_flop).to receive(:big_blind_checked?).and_return(false)
+          allow(pre_flop).to receive(:blind_options_satisfied?).and_return(false)
         end
 
         it "returns false" do
@@ -102,7 +102,7 @@ RSpec.describe Rounds::PreFlop, type: :model do
     end
   end
 
-  describe "#big_blind_checked?" do
+  describe "#blind_options_satisfied?" do
     let(:big_blind_player) { players.first }
     let(:small_blind_player) { players.second }
 
@@ -118,13 +118,13 @@ RSpec.describe Rounds::PreFlop, type: :model do
       end
 
       it "returns true" do
-        expect(pre_flop.big_blind_checked?).to be true
+        expect(pre_flop.blind_options_satisfied?).to be true
       end
     end
 
     context "when either blind has not made multiple bets" do
       it "returns false" do
-        expect(pre_flop.big_blind_checked?).to be false
+        expect(pre_flop.blind_options_satisfied?).to be false
       end
     end
   end

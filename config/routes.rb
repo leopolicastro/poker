@@ -8,6 +8,7 @@ Rails.application.routes.draw do
     resources :bets, only: [:create]
     namespace :bets do
       resources :raises, only: [:create]
+      resources :folds, only: [:create]
     end
   end
 

@@ -22,8 +22,10 @@ class Round < ApplicationRecord
   def concluded?
     players.active.all? do |player|
       round_bets = player.bets.where(round: self)
-      round_bets.any? { |bet| ["Bets::AllIn", "Bets::Fold"].include?(bet.type) } ||
-        (round_bets.any? && round_bets.sum(:amount) >= player.owes_the_pot)
+      return false if round_bets.empty?
+
+      all_ins = round_bets.where(player:, type: "Bets::AllIn")
+      all_ins.any? || round_bets.sum(:amount) >= player.owes_the_pot
     end
   end
 
@@ -33,19 +35,19 @@ class Round < ApplicationRecord
     if game.current_round.type == "Rounds::Showdown"
       game.hands.create!
     elsif next_type
-      game.hands.last.rounds.create!(type: next_type)
+      next_type.constantize.create!(hand: game.current_hand)
     end
   end
 
   def first_to_act
     count = 0
-    first = players.small_blind.first
-    until first.active?
-      first = first.to_the_right
+    player = players.small_blind.first
+    until player.reload.state != "folded"
+      player = player.to_the_right
       count += 1
-      raise "Infinite loop" if count > players.count
+      raise "No active players found" if count > players.count
     end
-    first
+    player
   end
 end
 

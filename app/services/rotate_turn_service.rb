@@ -9,8 +9,6 @@ class RotateTurnService
   end
 
   def call
-    return if @game.current_round.concluded?
-
     if @players.active.count <= 1
       return @game.hands.create!
     end
