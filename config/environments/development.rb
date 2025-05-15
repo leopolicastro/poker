@@ -73,4 +73,6 @@ Rails.application.configure do
   config.active_job.queue_adapter = :solid_queue
   config.solid_queue.connects_to = {database: {writing: :queue}}
   config.mission_control.jobs.http_basic_auth_enabled = false
+
+  config.mission_control.jobs.base_controller_class = "MissionController"
 end
