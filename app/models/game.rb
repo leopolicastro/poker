@@ -161,6 +161,10 @@ class Game < ApplicationRecord
   def first_hand?
     hands.count == 1
   end
+
+  def hand_odds
+    HandOddsService.call(game: self)
+  end
 end
 
 # == Schema Information

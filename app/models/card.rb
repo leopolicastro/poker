@@ -12,6 +12,8 @@ class Card < ApplicationRecord
 
   scope :left, -> { where(cardable: nil) }
   scope :drawn, -> { where.not(cardable: nil) }
+  scope :burned, -> { where(burn_card: true) }
+  scope :community, -> { where(cardable_type: "Game", burn_card: false) }
   scope :shuffled, -> { order(position: :asc) }
   scope :updated_at_desc, -> { order(updated_at: :desc) }
   scope :updated_at_asc, -> { order(updated_at: :asc) }

@@ -14,9 +14,14 @@ class Round < ApplicationRecord
     scope round_type.demodulize.underscore, -> { where(type: round_type) }
   end
 
-  after_create_commit :handle_round!
+  after_create_commit -> { handle_round! && CalculateOddsJob.perform_later(self) }
 
   def handle_round!
+    raise "#handle_round! not implemented for #{type}"
+  end
+
+  def calculate_odds
+    update!(odds: HandOddsService.call(game:))
   end
 
   def concluded?
@@ -48,6 +53,7 @@ end
 # Table name: rounds
 #
 #  id         :integer          not null, primary key
+#  odds       :json             not null
 #  type       :string
 #  created_at :datetime         not null
 #  updated_at :datetime         not null

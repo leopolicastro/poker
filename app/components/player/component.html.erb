@@ -29,6 +29,11 @@
   <div>
     <strong>State:</strong> <%= player.state %>
   </div>
+  <% unless ["Rounds::Showdown", "Rounds::River"].include?(game.current_round.type) %>
+    <div>
+      <strong>Odds to win:</strong> <%= player.odds_to_win %>
+    </div>
+  <% end %>
   <div>
     <strong>Round Actions:</strong>
     <% last_round_bets.each do |bet| %>

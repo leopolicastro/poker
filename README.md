@@ -7,6 +7,7 @@
 - [ ] Handle All Ins Properly (In Progress)
   - [ ] Pot and Sidepot models???
 - [ ] Tournament style (raise blinds every x # of hands)
+- [ ] Use ruby_llm gem for ai players
 
 ### Poker app
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_05_10_233426) do
+ActiveRecord::Schema[8.0].define(version: 2025_05_15_032814) do
   create_table "bets", force: :cascade do |t|
     t.integer "player_id", null: false
     t.integer "round_id", null: false
@@ -90,6 +90,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_05_10_233426) do
     t.string "type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.json "odds", default: {}, null: false
     t.index ["hand_id"], name: "index_rounds_on_hand_id"
   end
 

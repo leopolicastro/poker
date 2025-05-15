@@ -33,6 +33,15 @@ class Player < ApplicationRecord
     hand.top_five
   end
 
+  def odds_to_win
+    round = game.current_round
+    return "Calculating..." if round.odds == {}
+    odds = round.odds[id.to_s]
+    return "0%" if odds.nil?
+
+    "#{odds}%"
+  end
+
   def top_five_cards_html
     top_five_cards.map { |card| card.to_html }.join("").html_safe
   end
