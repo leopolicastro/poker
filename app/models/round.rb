@@ -22,6 +22,7 @@ class Round < ApplicationRecord
 
   def calculate_odds
     update!(odds: HandOddsService.call(game:))
+    game.touch
   end
 
   def concluded?
