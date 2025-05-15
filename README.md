@@ -5,9 +5,12 @@
 ### Poker engine
 
 - [ ] Handle All Ins Properly (In Progress)
-- [ ] Tournament style
+  - [ ] Pot and Sidepot models???
+- [ ] Tournament style (raise blinds every x # of hands)
 
 ### Poker app
 
-- [ ] UI for player sitting at a table
-- [ ] Player bots to fill tables when not enough players
+- [ ] UI
+- [ ] Player bots to fill tables when not enough players?
+- [ ] Ability for users to create their own games and invite their own friends
+- [ ]

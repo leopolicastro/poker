@@ -1,0 +1,137 @@
+---
+description: Follow testing standards when creating or modifying tests
+globs: ["test/**/*.rb"]
+alwaysApply: false
+---
+
+# Testing Standards
+
+## Context
+
+- In Ruby on Rails 8.0 test files
+- Using RSpec for testing
+- Tests should be thorough and maintainable
+
+## Requirements
+
+- Use RSpec for all tests
+- Write tests for models, controllers, services, and other components
+- Use factories for test data
+- Organize tests into appropriate test classes
+- Use descriptive test names
+- Use assertions that best match what you're testing
+- Keep tests focused on a single concern
+- Use setup/teardown methods for common setup code
+- Use test helpers for reusable test code
+- Test both happy and sad paths
+- Test edge cases and boundary conditions
+- Avoid testing the framework itself
+- Keep tests independent and idempotent
+- Don't pipe test output into cat (`bundle exec rspec` not `bundle exec rspec | cat`)
+
+## Examples
+
+<example type="invalid">
+```ruby
+require "rails_helper"
+
+RSpec.describe Player, type: :model do
+  let(:game) { create(:game) }
+
+  let!(:player1) { create(:player, game: game) }
+  let!(:player2) { create(:player, game: game) }
+  let!(:player3) { create(:player, game: game) }
+  let(:deck) { create(:deck, game:) }
+
+  describe "factory" do
+    it "has a valid factory" do
+      expect(build(:player)).to be_valid
+    end
+  end
+
+  describe "#position" do
+    # let(:game) { create(:game) }
+
+    before do
+      player1
+      player2
+      player3
+    end
+
+    it "auto increments the position" do
+      expect(player1.position).to eq(1)
+      expect(player2.position).to eq(2)
+      expect(player3.position).to eq(3)
+    end
+
+    it "manages positions per game" do
+      game2 = create(:game)
+      player4 = create(:player, game: game2)
+      player5 = create(:player, game: game2)
+      expect(player4.position).to eq(1)
+      expect(player5.position).to eq(2)
+    end
+
+    it "updates the position when a player is destroyed" do
+      player2.destroy
+      player3.reload
+      expect(player3.position).to eq(2)
+    end
+
+    it "updates the position when a player is inserted in the middle" do
+      player2.destroy
+      player4 = create(:player, game: game)
+      player3.reload
+      expect(player3.position).to eq(2)
+      expect(player4.position).to eq(3)
+    end
+
+    describe "higher_item" do
+      it "returns the next higher item" do
+        expect(player1.higher_item).to eq(nil)
+        expect(player2.higher_item).to eq(player1)
+        expect(player3.higher_item).to eq(player2)
+      end
+    end
+
+    describe "lower_item" do
+      it "returns the next lower item" do
+        expect(player1.lower_item).to eq(player2)
+        expect(player2.lower_item).to eq(player3)
+        expect(player3.lower_item).to eq(nil)
+      end
+    end
+
+    describe "gets the first item" do
+    end
+  end
+
+  describe "#place_bet!" do
+    let(:player) { create(:player, game: game) }
+
+    before do
+      create(:player_chip, chippable: player, value: 100)
+      create(:player_chip, chippable: player, value: 200)
+      create(:player_chip, chippable: player, value: 150)
+      create(:pre_flop, hand: create(:game_hand, game:))
+    end
+
+    it "places a bet" do
+      bet = player.place_bet!(amount: 100, type: "Bets::Raise")
+      expect(bet).to be_valid
+      expect(player.current_holdings).to eq(350)
+      expect(player.bets.count).to eq(1)
+      expect(game.chips.count).to eq(1)
+    end
+
+    it "does not place a bet if the player does not have enough chips" do
+      expect(player.current_holdings).to eq(450)
+      bet = player.place_bet!(amount: 500, type: "Bets::Raise")
+      expect(bet).to be_nil
+      expect(game.chips.count).to eq(0)
+    end
+  end
+end
+````
+
+</example>
