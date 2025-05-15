@@ -36,7 +36,7 @@ class Player::Actions::Component < ViewComponent::Base
     elsif raises.any?
       [raises.last.amount, player.game.big_blind].max * 2
     else
-      player.game.big_blind
+      player.game.big_blind * 2
     end
   end
 

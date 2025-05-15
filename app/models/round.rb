@@ -20,13 +20,7 @@ class Round < ApplicationRecord
   end
 
   def concluded?
-    players.active.all? do |player|
-      round_bets = player.bets.where(round: self)
-      return false if round_bets.empty?
-
-      all_ins = round_bets.where(player:, type: "Bets::AllIn")
-      all_ins.any? || round_bets.sum(:amount) >= player.owes_the_pot
-    end
+    RoundCompletePolicy.new(self).satisfied?
   end
 
   def next_round!

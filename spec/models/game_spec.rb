@@ -42,7 +42,6 @@ RSpec.describe Game, type: :model do
       # Create some chips in the pot
       winners.each do |winner|
         game.current_round.bets.create!(player: winner, amount: winner.owes_the_pot, type: "Bets::Call")
-        # winner.chips.create!(value: 1000)
       end
     end
 
