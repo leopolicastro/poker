@@ -19,10 +19,10 @@ RSpec.describe Round, type: :model do
   describe "scopes" do
     let(:game) { create(:game, :with_simulated_players, players_count: 2) }
     let(:pre_flop) { game.current_round }
-    let(:flop) { create(:round, type: "Rounds::Flop", hand: pre_flop.hand) }
-    let(:turn) { create(:round, type: "Rounds::Turn", hand: flop.hand) }
-    let(:river) { create(:round, type: "Rounds::River", hand: turn.hand) }
-    let(:showdown) { create(:round, type: "Rounds::Showdown", hand: river.hand) }
+    let(:flop) { create(:flop, hand: game.current_hand) }
+    let(:turn) { create(:turn, hand: game.current_hand) }
+    let(:river) { create(:river, hand: game.current_hand) }
+    let(:showdown) { create(:showdown, hand: game.current_hand) }
 
     describe ".pre_flop" do
       it "returns the pre flop rounds" do
