@@ -20,6 +20,10 @@ class Game < ApplicationRecord
     finished: 2
   }
 
+  def payout_winners!(winners:)
+    winners.each(&:payout!)
+  end
+
   def split_pot_payout!(winners:)
     pot = consolidate_chips
     winnings_per_player = pot.value / winners.size
@@ -30,49 +34,46 @@ class Game < ApplicationRecord
     end
   end
 
+  # Takes a collection of players, and pays out the pot to them
   def all_in_payout!(winners:)
-    all_in_winners = winners.select(&:all_in?)
-    consolidate_chips
-    return split_pot_payout!(winners:) if all_in_winners.empty?
-
-    # Get all players who placed bets, sorted by their bet amount
-    betting_players = current_hand.bets.placed.includes(:player).map(&:player).uniq
-    betting_players.sort_by! { |player| player.current_holdings }
-
-    # Process each all-in player's side pot
-    all_in_winners.each do |all_in_player|
-      # Find the minimum bet amount for this side pot
-      min_bet = all_in_player.current_holdings
-
-      # Get eligible players for this side pot (those who bet at least min_bet)
-      eligible_players = betting_players.select { |p| p.current_holdings >= min_bet }
-
-      # Calculate side pot amount
-      side_pot_amount = eligible_players.sum { |p| [p.current_holdings, min_bet].min }
-
-      # Find winners eligible for this side pot
-      eligible_winners = winners.select { |w| eligible_players.include?(w) }
-
-      # Pay out the side pot
-      winnings_per_player = side_pot_amount / eligible_winners.size
-      eligible_winners.each do |winner|
-        split_chips(amount: winnings_per_player, chippable: winner)
-        winner.consolidate_chips
-        current_hand.bets.placed.where(player: winner).update_all(state: :won)
-      end
+    # first check if the winners are all in for the same amount
+    # if so, payout the winners normally
+    if winners.one? || winners.all? { |p| p.in_for == winners.first.in_for }
+      return payout_winners!(winners:)
     end
+    # Step 1: Sort players by how much they put in (ascending)
+    remaining_players = winners.sort_by(&:in_for)
+    remaining_players.map! { |p| {player: p, in_for: p.in_for} }
+    pots = []
 
-    # Pay out the main pot to remaining winners
-    remaining_winners = winners - all_in_winners
-    if remaining_winners.any?
-      main_pot = consolidate_chips
-      winnings_per_player = main_pot.value / remaining_winners.size
-      remaining_winners.each do |winner|
-        winner.chips.create!(value: winnings_per_player)
-        winner.consolidate_chips
-        current_hand.bets.placed.where(player: winner).update_all(state: :won)
+    # Step 2: Build pots based on all-in amounts
+    while remaining_players.any?
+      min_in_for = remaining_players.first[:in_for]
+      eligible = remaining_players.dup
+      pot_amount = min_in_for * eligible.size
+      pots << {
+        amount: pot_amount,
+        eligible_players: eligible.map { |p| p[:player] }
+      }
+      # Subtract min_contrib from everyone
+      remaining_players.each do |p|
+        p[:in_for] -= min_in_for
       end
-      main_pot.destroy!
+      # remaining_players.reject! { |p| p[:in_for] <= 0 }
+      remaining_players.reject! { |p| p[:in_for] == 0 }
+    end
+    # Step 3: Sort all players by hand rank (0 is worst)
+
+    sorted_winners = winners.sort_by { |p| Hands::Index::RANKED_HANDS.index(p.hand.level) }
+    # Step 4: Distribute each pot to best eligible player(s)
+    pots.each do |pot|
+      sorted_winners.each do |player|
+        next unless pot[:eligible_players].include?(player)
+
+        split_chips(amount: pot[:amount], chippable: player)
+        player.consolidate_chips
+        current_hand.bets.placed.where(player:).update_all(state: :won)
+      end
     end
   end
 
