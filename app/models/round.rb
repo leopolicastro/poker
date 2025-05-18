@@ -17,7 +17,8 @@ class Round < ApplicationRecord
   after_create_commit -> { handle_round! && CalculateOddsJob.perform_later(self) }
 
   def handle_round!
-    raise "#handle_round! not implemented for #{type}"
+    players.update_all(turn: false)
+    first_to_act.update!(turn: true)
   end
 
   def calculate_odds

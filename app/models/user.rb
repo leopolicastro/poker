@@ -3,9 +3,21 @@ class User < ApplicationRecord
   has_many :sessions, dependent: :destroy
   has_many :players, dependent: :destroy
 
+  has_one :bot_settings, dependent: :destroy, class_name: "BotSetting"
+
+  has_one_attached :avatar
+
   normalizes :email_address, with: ->(e) { e.strip.downcase }
 
   include Chippable
+
+  after_create_commit :create_bot_settings
+
+  private
+
+  def create_bot_settings
+    BotSetting.create(user: self)
+  end
 end
 
 # == Schema Information

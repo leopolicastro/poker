@@ -9,6 +9,8 @@ class Player < ApplicationRecord
   has_many :bets, dependent: :destroy
   has_many :rounds, through: :bets
 
+  has_one_attached :avatar
+
   accepts_nested_attributes_for :bets, allow_destroy: true
 
   acts_as_list scope: :game
@@ -23,14 +25,45 @@ class Player < ApplicationRecord
 
   validate :only_one_player_per_turn
 
+  include Player::Bot
+
+  after_save_commit -> { handle_turn_job! }
+
   enum :state, {
     active: 0,
     folded: 1,
     all_in: 2
   }
 
+  enum :table_position, {
+    field: 0,
+    button: 1,
+    small_blind: 2,
+    big_blind: 3
+  }
+
+  def display_name
+    name || "Player #{id}"
+  end
+
+  def bot?
+    user.bot_settings.active?
+  end
+
+  def bets_this_hand
+    game.current_hand.bets.where(player: self).map(&:as_json)
+  end
+
+  def in_for
+    game.current_hand.bets.where(player: self).sum(:amount)
+  end
+
   def top_five_cards
     hand.top_five
+  end
+
+  def top_five_cards_to_s
+    top_five_cards.map(&:as_json)
   end
 
   def odds_to_win
@@ -51,13 +84,6 @@ class Player < ApplicationRecord
       errors.add(:base, "Only one player can have turn at a time")
     end
   end
-
-  enum :table_position, {
-    field: 0,
-    button: 1,
-    small_blind: 2,
-    big_blind: 3
-  }
 
   def payout!
     # TODO: this method only works correctly when there is one winner
@@ -133,18 +159,10 @@ class Player < ApplicationRecord
     chips.update(chippable: self)
   end
 
-  def display_name
-    name || "Player #{id}"
-  end
-
   def current_hand
     return if hand.nil?
 
     hand.level.to_s.demodulize.titleize
-  end
-
-  def in_for
-    game.current_hand.bets.where(player: self).sum(:amount)
   end
 
   private

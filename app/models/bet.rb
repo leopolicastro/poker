@@ -17,6 +17,17 @@ class Bet < ApplicationRecord
     lost: 2
   }
 
+  def as_json
+    {
+      id:,
+      amount: amount,
+      type: type.demodulize.titleize,
+      round_id: round.id,
+      player_id: player.id,
+      state: state
+    }
+  end
+
   BET_TYPES = %w[Bets::Check Bets::Call Bets::Raise Bets::Fold Bets::Blind Bets::AllIn].freeze
   BET_TYPES.each do |bet_type|
     scope bet_type.demodulize.underscore, -> { where(type: bet_type) }

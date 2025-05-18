@@ -71,3 +71,4 @@ group :test do
 end
 
 gem "mission_control-jobs"
+gem "ruby_llm"
