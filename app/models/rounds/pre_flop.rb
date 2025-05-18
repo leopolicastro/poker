@@ -13,6 +13,12 @@ class Rounds::PreFlop < Round
     end
     game.players.update_all(turn: false)
     first_to_act.update!(turn: true)
+
+    # FoldIfUnresponsiveJob.set(wait: Round::PLAYER_TIMEOUT_WAIT).perform_later(
+    #   round: game.current_round,
+    #   player: first_to_act,
+    #   current_bets_count: 0
+    # )
   end
 
   def concluded?

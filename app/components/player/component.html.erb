@@ -2,17 +2,19 @@
   <% if player == game.chip_leader %>
     <div class="text-green-500 absolute top-0 right-0 font-bold">CL</div>
   <% end %>
-  <div>
+  <div class="flex items-center gap-2">
     <strong><%= player.display_name %></strong>
+    <% unless player.table_position == "field" %>
+      <div>
+        <span class="text-green-500 font-bold"><%= player.table_position.titleize %></span>
+      </div>
+    <% end %>
   </div>
   <div>
     <strong>Hand:</strong> <%= player.current_hand %>
     <aside class="flex flex-wrap gap-2">
       <%= player.top_five_cards_html %>
     </aside>
-  </div>
-  <div>
-    <strong>Table position:</strong> <%= player.table_position %>
   </div>
   <div>
     <strong>Owes the pot:</strong> <%= number_to_currency(player.owes_the_pot) %>

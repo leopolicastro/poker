@@ -1,7 +1,7 @@
 class Rounds::Turn < Round
   def handle_round!
-    players.update_all(turn: false)
-    first_to_act.update!(turn: true)
+    super
+
     game.draw(count: 1, burn_card: true)
     game.draw
   end

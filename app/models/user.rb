@@ -5,6 +5,8 @@ class User < ApplicationRecord
 
   normalizes :email_address, with: ->(e) { e.strip.downcase }
 
+  has_one_attached :avatar
+
   include Chippable
 end
 

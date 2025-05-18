@@ -2,10 +2,9 @@ class Round < ApplicationRecord
   belongs_to :hand
   has_many :bets, dependent: :destroy
 
-  PLAYER_TIMEOUT_WAIT = Rails.env.local? ? 10.seconds : 30.seconds
+  PLAYER_TIMEOUT_WAIT = Rails.env.local? ? 5.seconds : 30.seconds
 
   delegate :game, to: :hand
-
   delegate :deck, :players, :current_turn, to: :game
 
   ROUND_TYPES = %w[Rounds::PreFlop Rounds::Flop Rounds::Turn Rounds::River Rounds::Showdown].freeze
@@ -17,7 +16,8 @@ class Round < ApplicationRecord
   after_create_commit -> { handle_round! && CalculateOddsJob.perform_later(self) }
 
   def handle_round!
-    raise "#handle_round! not implemented for #{type}"
+    players.update_all(turn: false)
+    first_to_act.update!(turn: true)
   end
 
   def calculate_odds
