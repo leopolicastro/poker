@@ -7,8 +7,7 @@ module Hands
     end
 
     # When you call max on an array of instances of a class, Ruby will use the <=> (spaceship)
-    # operator to compare the objects. By default, the <=> operator returns nil unless the
-    # class has a custom implementation for it.
+    # operator to compare the objects.
     def <=>(other)
       unless other.instance_of?(self.class)
         fail "Can't detail compare hands of different level"

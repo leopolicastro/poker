@@ -35,6 +35,7 @@ class Game < ApplicationRecord
   end
 
   # Takes a collection of players, and pays out the pot to them
+  # TODO: not sure this method is working correctly yet...
   def all_in_payout!(winners:)
     # first check if the winners are all in for the same amount
     # if so, payout the winners normally

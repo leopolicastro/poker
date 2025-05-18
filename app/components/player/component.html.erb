@@ -51,7 +51,7 @@
     </div>
     <% if game.current_round.type == "Rounds::Showdown" && game.top_hands.include?(player) %>
       <div class="">
-        <strong>Won:</strong> <%= number_to_currency(game.current_round.pot) %>
+        <strong>Won:</strong> <%= number_to_currency(game.current_round.pot) / game.top_hands.count %>
       </div>
     <% end %>
   </div>

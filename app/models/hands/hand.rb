@@ -16,15 +16,11 @@ module Hands
     end
 
     def sorted_values
-      values = cards.map(&:value)
-      values.sort!
-      values
+      cards_sorted_for_ace_high.map(&:value)
     end
 
-    def sorted_for_ace_low_values
-      values = cards.map(&:ace_low_value)
-      values.sort!
-      values
+    def ace_low_values
+      cards_sorted_for_ace_low.map(&:ace_low_value)
     end
 
     def cards_sorted_for_ace_low
@@ -35,23 +31,9 @@ module Hands
       cards.sort_by(&:value)
     end
 
-    # def hand_strength
-    #   @hand_strength ||= HandStrength.new(self)
-    # end
-
     def +(other)
       Hand.new(cards: cards + other.cards, player_id:)
     end
-
-    # def values_desc_by_occurency
-    #   values = cards.map(&:value)
-
-    #   values.sort do |a, b|
-    #     coefficient_occurency = (values.count(a) <=> values.count(b))
-
-    #     coefficient_occurency.zero? ? -(a <=> b) : -coefficient_occurency
-    #   end
-    # end
 
     def values_desc_by_occurency
       values = cards.map(&:value)

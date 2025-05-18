@@ -10,7 +10,7 @@ module Hands
 
       # called by satisfied? method
       def ace_low_satisfied?(hand)
-        sorted_values = hand.sorted_for_ace_low_values
+        sorted_values = hand.ace_low_values
         sorted_values.each_cons(2).all? { |a, b| b == a + 1 }
       end
 
