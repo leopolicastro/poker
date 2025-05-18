@@ -1,6 +1,6 @@
 # Monte Carlo simulation to calculate the odds of each player winning the hand
 class HandOddsService
-  SIMULATIONS = 2_000
+  SIMULATIONS = Rails.env.local? ? 100 : 1_000
 
   def self.call(game:)
     new(game:).call
@@ -16,7 +16,7 @@ class HandOddsService
   def call
     return {} if @active_players.count <= 1
 
-    return if @community_cards.size == 5
+    return {} if @community_cards.size == 5
 
     calculate_monte_carlo_odds
   end

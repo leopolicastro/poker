@@ -28,9 +28,10 @@ class GameSimulatorService
       user = User.find_or_create_by!(email_address: "demo-player#{i}@example.com") do |user|
         user.password = "password"
       end
+      user.bot_settings.update!(active: true)
       player = game.players.find_or_create_by!(user:)
       player.active!
-      instance_variable_set("@player#{i}", player)
+      # instance_variable_set("@player#{i}", player)
       user.chips.create! value: 10000
       player.buy_in(1000)
     end

@@ -19,6 +19,14 @@ module Card::Presenter
       "#{rank} #{suit_icon}"
     end
 
+    def as_json
+      {
+        id:,
+        suit:,
+        rank:
+      }
+    end
+
     private
 
     def rank_for_image

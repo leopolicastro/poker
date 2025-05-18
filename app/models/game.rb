@@ -20,6 +20,37 @@ class Game < ApplicationRecord
     finished: 2
   }
 
+  def context
+    {
+      game: as_json(
+        only: %i[id],
+        methods: [:current_round_type, :current_round_id, :community_cards, :hand_bets, :pot],
+        include: {
+          players: {
+            only: %i[id position state turn table_position],
+            methods: %i[display_name in_for current_holdings bets_this_hand]
+          }
+        }
+      )
+    }
+  end
+
+  def current_round_type
+    current_round.type.demodulize.humanize
+  end
+
+  def current_round_id
+    current_round.id
+  end
+
+  def community_cards
+    cards.map(&:as_json)
+  end
+
+  def hand_bets
+    current_hand.bets.map(&:as_json)
+  end
+
   def payout_winners!(winners:)
     winners.each(&:payout!)
   end
