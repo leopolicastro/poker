@@ -1,6 +1,6 @@
-# Croupier
+# Poker Table
 
-Digital Poker Table is a real-time, social-first online poker app where friends can play Texas Hold'em from anywhere. Built with Ruby on Rails, it combines seamless gameplay, tournament and cash game formats, and optional video integration for an authentic poker night experience — no chips, no shuffling, just Poker.
+Poker Table is a real-time, social-first online poker app where friends can play Texas Hold'em from anywhere. Built with Ruby on Rails, it combines seamless gameplay, tournament and cash game formats, and optional video integration for an authentic poker night experience — no chips, no shuffling, just Poker.
 
 🛠️ This project is currently in active development.
 
