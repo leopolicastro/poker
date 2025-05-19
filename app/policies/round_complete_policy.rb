@@ -12,7 +12,7 @@ class RoundCompletePolicy
     return false if this_rounds_bets.empty?
 
     # Get all raises in this round
-    raises = this_rounds_bets.where(type: "Bets::Raise")
+    raises = this_rounds_bets.where(type: %w[Bets::Raise])
 
     # If there are raises, we need to ensure all players have acted after the last raise
     if raises.any?
@@ -31,7 +31,7 @@ class RoundCompletePolicy
       round_bets = this_rounds_bets.where(player:)
       return false if round_bets.empty?
 
-      all_ins = round_bets.where(player:, type: "Bets::AllIn")
+      all_ins = round_bets.where(player: player, type: "Bets::AllIn")
       all_ins.any? || round_bets.sum(:amount) >= player.owes_the_pot
     end
   end

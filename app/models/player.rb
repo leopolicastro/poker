@@ -26,8 +26,13 @@ class Player < ApplicationRecord
   enum :state, {
     active: 0,
     folded: 1,
-    all_in: 2
+    all_in: 2,
+    out_of_chips: 3
   }
+
+  def broke?
+    current_holdings < game.big_blind
+  end
 
   def top_five_cards
     hand.top_five
@@ -98,7 +103,9 @@ class Player < ApplicationRecord
     my_bet = all_bets.where(player: self).sum(:amount)
 
     # Calculate how much more they need to bet to match the highest bet
-    [highest_bet - my_bet, 0].max
+    amount_owed = highest_bet - my_bet
+    # Return the minimum between what they owe and what they can actually pay
+    [amount_owed, current_holdings].min
   end
 
   def folded?

@@ -6,6 +6,7 @@ class Bet < ApplicationRecord
 
   delegate :game, to: :player
 
+  before_validation :handle_bet_type!, on: :create
   after_create_commit :throw_into_pot!
 
   include Chippable
@@ -20,6 +21,12 @@ class Bet < ApplicationRecord
   BET_TYPES = %w[Bets::Check Bets::Call Bets::Raise Bets::Fold Bets::Blind Bets::AllIn].freeze
   BET_TYPES.each do |bet_type|
     scope bet_type.demodulize.underscore, -> { where(type: bet_type) }
+  end
+
+  def handle_bet_type!
+    if player.broke?
+      self.type = "Bets::AllIn"
+    end
   end
 
   def throw_into_pot!

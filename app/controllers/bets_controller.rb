@@ -11,9 +11,19 @@ class BetsController < ApplicationController
     @game.current_round.bets.create!(
       player: @player,
       amount: @player.owes_the_pot,
-      type: "Bets::#{params[:type]}"
+      type: handle_bet_type!
     )
 
     redirect_back(fallback_location: root_path)
+  end
+
+  private
+
+  def handle_bet_type!
+    if @player.current_holdings <= @player.owes_the_pot
+      "Bets::AllIn"
+    else
+      "Bets::#{params[:type]}"
+    end
   end
 end

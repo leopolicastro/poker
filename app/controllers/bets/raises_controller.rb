@@ -12,12 +12,11 @@ class Bets::RaisesController < ApplicationController
   private
 
   def player_is_all_in?
-    @player.current_holdings.to_i <= params[:amount].to_i
+    @player.current_holdings <= params[:amount].to_i
   end
 
   def handle_raise
     owes_the_pot = @player.owes_the_pot
-    all_in = player_is_all_in?
     if owes_the_pot > 0
       @game.current_round.bets.create!(
         player: @player,
@@ -33,7 +32,7 @@ class Bets::RaisesController < ApplicationController
       @game.current_round.bets.create!(
         player: @player,
         amount: raise_amount,
-        type: all_in ? "Bets::AllIn" : "Bets::Raise"
+        type: player_is_all_in? ? "Bets::AllIn" : "Bets::Raise"
       )
     end
   end

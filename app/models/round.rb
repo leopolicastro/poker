@@ -13,9 +13,17 @@ class Round < ApplicationRecord
     scope round_type.demodulize.underscore, -> { where(type: round_type) }
   end
 
-  after_create_commit -> { handle_round! && CalculateOddsJob.perform_later(self) }
+  after_create_commit -> { handle_round! & CalculateOddsJob.perform_later(self) }
 
   def handle_round!
+    validate_funds!
+
+    # return next_round! if everyone_is_all_in?
+
+    if players.all?(&:broke?)
+      # TODO: handle this case better
+      return
+    end
     players.update_all(turn: false)
     first_to_act.update!(turn: true)
   end
@@ -23,6 +31,12 @@ class Round < ApplicationRecord
   def calculate_odds
     update!(odds: HandOddsService.call(game:))
     game.touch
+  end
+
+  def validate_funds!
+    players.each do |player|
+      player.all_in! if player.active? && player.broke?
+    end
   end
 
   def concluded?
@@ -39,10 +53,14 @@ class Round < ApplicationRecord
     end
   end
 
+  def everyone_is_all_in?
+    players.all_in.count == players.count
+  end
+
   def first_to_act
     current = players.small_blind.first
     players.count.times do
-      return current if ["folded", "all_in"].exclude?(current.state)
+      return current if ["folded", "all_in", "out_of_chips"].exclude?(current.state)
       current = current.to_the_right
     end
     raise "No active players found"

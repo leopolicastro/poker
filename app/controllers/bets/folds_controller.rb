@@ -3,7 +3,7 @@ class Bets::FoldsController < ApplicationController
 
   def create
     @game = Game.find(params[:game_id])
-    @player = @game.players.active.find
+    @player = @game.players.active.find(params[:player_id])
 
     unless @player.present?
       redirect_back(fallback_location: root_path, alert: "Player not found")

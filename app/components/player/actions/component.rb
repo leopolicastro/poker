@@ -7,7 +7,7 @@ class Player::Actions::Component < ViewComponent::Base
   end
 
   def render?
-    player.present?
+    player.present? && player.active?
   end
 
   def check_or_call(player)

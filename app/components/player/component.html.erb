@@ -1,7 +1,4 @@
 <div class="flex flex-col gap-2 border rounded-lg p-4 min-w-[273px] relative <%= card_bg_color %>">
-  <% if player == game.chip_leader %>
-    <div class="text-green-500 absolute top-0 right-0 font-bold">CL</div>
-  <% end %>
   <div class="flex items-center gap-2">
     <strong><%= player.display_name %></strong>
     <% unless player.table_position == "field" %>
@@ -51,7 +48,7 @@
     </div>
     <% if game.current_round.type == "Rounds::Showdown" && game.top_hands.include?(player) %>
       <div class="">
-        <strong>Won:</strong> <%= number_to_currency(game.current_round.pot) / game.top_hands.count %>
+        <strong>Won:</strong> <%= number_to_currency(game.current_round.pot / game.top_hands.count) %>
       </div>
     <% end %>
   </div>

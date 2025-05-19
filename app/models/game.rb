@@ -35,45 +35,84 @@ class Game < ApplicationRecord
   end
 
   # Takes a collection of players, and pays out the pot to them
-  # TODO: not sure this method is working correctly yet...
   def all_in_payout!(winners:)
     # first check if the winners are all in for the same amount
     # if so, payout the winners normally
     if winners.one? || winners.all? { |p| p.in_for == winners.first.in_for }
       return payout_winners!(winners:)
     end
-    # Step 1: Sort players by how much they put in (ascending)
-    remaining_players = winners.sort_by(&:in_for)
-    remaining_players.map! { |p| {player: p, in_for: p.in_for} }
+
+    # Get all players who contributed to the pot
+    all_contributors = current_hand.bets.placed.map(&:player).uniq
+
+    # Step 1: Sort all contributors by how much they put in (ascending)
+    sorted_contributors = all_contributors.sort_by(&:in_for)
+
+    # Step 2: Build side pots
     pots = []
+    remaining_amount = 0
 
-    # Step 2: Build pots based on all-in amounts
-    while remaining_players.any?
-      min_in_for = remaining_players.first[:in_for]
-      eligible = remaining_players.dup
-      pot_amount = min_in_for * eligible.size
-      pots << {
-        amount: pot_amount,
-        eligible_players: eligible.map { |p| p[:player] }
-      }
-      # Subtract min_contrib from everyone
-      remaining_players.each do |p|
-        p[:in_for] -= min_in_for
+    sorted_contributors.each_with_index do |player, index|
+      # Calculate how much this player contributed more than previous player
+      previous_contribution = (index > 0) ? sorted_contributors[index - 1].in_for : 0
+      additional_contribution = player.in_for - previous_contribution
+
+      # Everyone still in the hand contributes this much to the current pot
+      current_pot_amount = additional_contribution * (sorted_contributors.size - index)
+      remaining_amount += current_pot_amount
+
+      # Players eligible for this pot are those who put in at least this much
+      eligible_players = winners.select { |w| w.in_for >= player.in_for }
+
+      if eligible_players.any?
+        pots << {
+          amount: current_pot_amount,
+          eligible_players: eligible_players
+        }
       end
-      # remaining_players.reject! { |p| p[:in_for] <= 0 }
-      remaining_players.reject! { |p| p[:in_for] == 0 }
     end
-    # Step 3: Sort all players by hand rank (0 is worst)
 
-    sorted_winners = winners.sort_by { |p| Hands::Index::RANKED_HANDS.index(p.hand.level) }
+    # Add remaining chips (if any) to the last pot
+    if remaining_amount > 0
+      if pots.any?
+        pots.last[:amount] += remaining_amount
+      else
+        # If no pots created yet (shouldn't happen but just in case)
+        pots << {
+          amount: remaining_amount,
+          eligible_players: winners
+        }
+      end
+    end
+
+    # Step 3: Sort winners by hand rank (highest rank first)
+    # Reversed the sorting to get highest hand first
+    sorted_winners = winners.sort_by { |p| Hands::Index::RANKED_HANDS.index(p.hand.level) }.reverse
+
     # Step 4: Distribute each pot to best eligible player(s)
     pots.each do |pot|
-      sorted_winners.each do |player|
-        next unless pot[:eligible_players].include?(player)
+      best_hand_rank = -1
+      best_players = []
 
-        split_chips(amount: pot[:amount], chippable: player)
-        player.consolidate_chips
-        current_hand.bets.placed.where(player:).update_all(state: :won)
+      # Find the players with the best hand among eligible players
+      pot[:eligible_players].each do |player|
+        hand_rank = Hands::Index::RANKED_HANDS.index(player.hand.level)
+        if hand_rank > best_hand_rank
+          best_hand_rank = hand_rank
+          best_players = [player]
+        elsif hand_rank == best_hand_rank
+          best_players << player
+        end
+      end
+
+      # Split the pot among tied winners
+      if best_players.any?
+        amount_per_player = pot[:amount] / best_players.size
+        best_players.each do |player|
+          split_chips(amount: amount_per_player, chippable: player)
+          player.consolidate_chips
+          current_hand.bets.placed.where(player:).update_all(state: :won)
+        end
       end
     end
   end

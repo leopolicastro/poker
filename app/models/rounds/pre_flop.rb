@@ -3,7 +3,12 @@ class Rounds::PreFlop < Round
     deck.shuffle!
     game.in_progress!
 
-    game.players.ordered.each do |player|
+    game.players.active.ordered.each do |player|
+      if player.broke?
+        player.out_of_chips!
+        next
+      end
+
       game.deck.draw(count: 2, cardable: player)
     end
     if game.first_hand?
